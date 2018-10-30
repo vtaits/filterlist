@@ -30,5 +30,8 @@
     "eslint-plugin-import": "^2.14.0",
     "eslint-plugin-jest": "^21.26.2",
     "jest-cli": "^23.6.0"
+  },
+  "dependencies": {
+    "fbemitter": "^2.1.1"
   }
 }
