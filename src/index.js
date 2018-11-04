@@ -3,13 +3,138 @@ import { EventEmitter } from 'fbemitter';
 import collectListInitialState from './collectListInitialState';
 import collectOptions from './collectOptions';
 
+import * as eventTypes from './eventTypes';
+import { LoadListError } from './errors';
+
 class Filterlist extends EventEmitter {
   constructor(params) {
     super();
 
+    const {
+      loadItems,
+    } = params;
+
+    if (!loadItems) {
+      throw new Error('loadItems is required');
+    }
+
+    if (typeof loadItems !== 'function') {
+      throw new Error('loadItems should be a function');
+    }
+
+    this.itemsLoader = loadItems;
+
     this.requestId = 0;
     this.listState = collectListInitialState(params);
     this.options = collectOptions(params);
+
+    this.onInit();
+  }
+
+  emitEvent(eventType) {
+    this.emit(eventType, this.listState);
+  }
+
+  onInit() {
+    const {
+      autoload,
+    } = this.options;
+
+    if (autoload) {
+      this.loadItems();
+    }
+  }
+
+  async loadItems() {
+    const prevListState = this.listState;
+
+    this.listState = {
+      ...prevListState,
+
+      loading: true,
+      error: null,
+      shouldClean: false,
+    };
+
+    this.emitEvent(eventTypes.loadItems);
+
+    await this.requestItems();
+  }
+
+  async requestItems() {
+    const nextRequestId = this.requestId + 1;
+    ++this.requestId;
+
+    this.emitEvent(eventTypes.requestItems);
+
+    let response;
+    let error;
+    try {
+      response = await this.itemsLoader(this.listState);
+    } catch (e) {
+      error = e;
+    }
+
+    if (this.requestId !== nextRequestId) {
+      return;
+    }
+
+    if (error) {
+      if (error instanceof LoadListError) {
+        this.onError(error);
+        return;
+      }
+
+      throw error;
+    }
+
+    this.onSuccess(response);
+  }
+
+  onSuccess(response) {
+    const prevListState = this.listState;
+
+    const {
+      saveItemsWhileLoad,
+    } = this.options;
+
+    this.listState = {
+      ...prevListState,
+
+      loading: false,
+      shouldClean: false,
+
+      items: (saveItemsWhileLoad && prevListState.shouldClean)
+        ? response.items
+        : prevListState.items.concat(response.items),
+
+      additional: (typeof response.additional !== 'undefined')
+        ? response.additional
+        : prevListState.additional,
+    };
+
+    this.emitEvent(eventTypes.loadItemsSuccess);
+  }
+
+  onError(error) {
+    const prevListState = this.listState;
+
+    this.listState = {
+      ...prevListState,
+
+      loading: false,
+      shouldClean: false,
+
+      error: (typeof error.error !== 'undefined')
+        ? error.error
+        : null,
+
+      additional: (typeof error.additional !== 'undefined')
+        ? error.additional
+        : prevListState.additional,
+    };
+
+    this.emitEvent(eventTypes.loadItemsError);
   }
 
   getListState() {
