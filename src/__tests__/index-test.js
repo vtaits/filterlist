@@ -663,3 +663,51 @@ describe('onError', () => {
     expect(filterlist.listState.additional).toBe('additional2');
   });
 });
+
+describe('public methods', () => {
+  test('should set filter value', () => {
+    const filterlist = new ManualFilterlist({
+      ...defaultParams,
+    });
+
+    const onSetFilterValue = jest.fn();
+
+    filterlist.addListener(eventTypes.setFilterValue, onSetFilterValue);
+
+    const prevState = filterlist.getListState();
+
+    const nextState = {
+      ...prevState,
+
+      filters: {
+        test1: 'value1',
+        test2: 'value2',
+      },
+
+      items: [1, 2, 3],
+
+      additional: {
+        count: 3,
+      },
+    };
+
+    filterlist.listState = nextState;
+
+    filterlist.setFilterValue('test2', 'value3');
+
+    const expectedListState = {
+      ...nextState,
+
+      filters: {
+        ...nextState.filters,
+        test2: 'value3',
+      },
+    };
+
+    expect(filterlist.listState).toEqual(expectedListState);
+
+    expect(onSetFilterValue.mock.calls.length).toBe(1);
+    expect(onSetFilterValue.mock.calls[0][0]).toEqual(expectedListState);
+  });
+
+});
