@@ -1,6 +1,7 @@
 export const loadItems = 'loadItems';
 
 export const setFilterValue = 'setFilterValue';
+export const applyFilter = 'applyFilter';
 
 export const requestItems = 'requestItems';
 

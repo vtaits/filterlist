@@ -664,6 +664,124 @@ describe('onError', () => {
   });
 });
 
+describe('getListStateBeforeChange', () => {
+  test('should reset previous items', () => {
+    const filterlist = new ManualFilterlist({
+      ...defaultParams,
+
+      alwaysResetFilters: {
+        test2: 'value2_3',
+      },
+    });
+
+    const prevState = filterlist.getListState();
+
+    const nextState = {
+      ...prevState,
+
+      filters: {
+        test1: 'value1_1',
+        test2: 'value2_1',
+      },
+
+      appliedFilters: {
+        test1: 'value1_2',
+        test2: 'value2_2',
+      },
+
+      items: [1, 2, 3],
+
+      error: 'error',
+
+      additional: {
+        count: 3,
+      },
+    };
+
+    filterlist.listState = nextState;
+
+    const expectedState = {
+      ...nextState,
+
+      filters: {
+        ...nextState.filters,
+        test2: 'value2_3',
+      },
+
+      appliedFilters: {
+        ...nextState.appliedFilters,
+        test2: 'value2_3',
+      },
+
+      items: [],
+      error: null,
+      loading: true,
+      shouldClean: true,
+    };
+
+    expect(filterlist.getListStateBeforeChange()).toEqual(expectedState);
+  });
+
+  test('should save previous items', () => {
+    const filterlist = new ManualFilterlist({
+      ...defaultParams,
+
+      saveItemsWhileLoad: true,
+
+      alwaysResetFilters: {
+        test2: 'value2_3',
+      },
+    });
+
+    const prevState = filterlist.getListState();
+
+    const nextState = {
+      ...prevState,
+
+      filters: {
+        test1: 'value1_1',
+        test2: 'value2_1',
+      },
+
+      appliedFilters: {
+        test1: 'value1_2',
+        test2: 'value2_2',
+      },
+
+      items: [1, 2, 3],
+
+      error: 'error',
+
+      additional: {
+        count: 3,
+      },
+    };
+
+    filterlist.listState = nextState;
+
+    const expectedState = {
+      ...nextState,
+
+      filters: {
+        ...nextState.filters,
+        test2: 'value2_3',
+      },
+
+      appliedFilters: {
+        ...nextState.appliedFilters,
+        test2: 'value2_3',
+      },
+
+      items: [1, 2, 3],
+      error: null,
+      loading: true,
+      shouldClean: true,
+    };
+
+    expect(filterlist.getListStateBeforeChange()).toEqual(expectedState);
+  });
+});
+
 describe('public methods', () => {
   test('should set filter value', () => {
     const filterlist = new ManualFilterlist({
@@ -708,6 +826,61 @@ describe('public methods', () => {
 
     expect(onSetFilterValue.mock.calls.length).toBe(1);
     expect(onSetFilterValue.mock.calls[0][0]).toEqual(expectedListState);
+
+    expect(requestItemsMethod.mock.calls.length).toBe(0);
   });
 
+  test('should apply filter', async () => {
+    const filterlist = new ManualFilterlist({
+      ...defaultParams,
+    });
+
+    const onApplyFilter = jest.fn();
+
+    filterlist.addListener(eventTypes.applyFilter, onApplyFilter);
+
+    const prevState = filterlist.getListState();
+
+    const nextState = {
+      ...prevState,
+
+      filters: {
+        test1: 'value1_1',
+        test2: 'value2_1',
+      },
+
+      appliedFilters: {
+        test1: 'value1_2',
+        test2: 'value2_2',
+      },
+
+      items: [1, 2, 3],
+
+      additional: {
+        count: 3,
+      },
+    };
+
+    filterlist.listState = nextState;
+
+    const listStateBeforeChange = filterlist.getListStateBeforeChange();
+
+    await filterlist.applyFilter('test2');
+
+    const expectedListState = {
+      ...listStateBeforeChange,
+
+      appliedFilters: {
+        ...listStateBeforeChange.appliedFilters,
+        test2: 'value2_1',
+      },
+    };
+
+    expect(filterlist.listState).toEqual(expectedListState);
+
+    expect(onApplyFilter.mock.calls.length).toBe(1);
+    expect(onApplyFilter.mock.calls[0][0]).toEqual(expectedListState);
+
+    expect(requestItemsMethod.mock.calls.length).toBe(1);
+  });
 });

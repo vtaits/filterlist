@@ -31,6 +31,36 @@ class Filterlist extends EventEmitter {
     this.onInit();
   }
 
+  getListStateBeforeChange() {
+    const prevListState = this.listState;
+
+    const {
+      saveItemsWhileLoad,
+      alwaysResetFilters,
+    } = this.options;
+
+    return {
+      ...prevListState,
+
+      filters: {
+        ...prevListState.filters,
+        ...alwaysResetFilters,
+      },
+
+      appliedFilters: {
+        ...prevListState.appliedFilters,
+        ...alwaysResetFilters,
+      },
+
+      loading: true,
+      error: null,
+
+      items: saveItemsWhileLoad ? prevListState.items : [],
+
+      shouldClean: true,
+    };
+  }
+
   emitEvent(eventType) {
     this.emit(eventType, this.listState);
   }
@@ -75,6 +105,24 @@ class Filterlist extends EventEmitter {
     };
 
     this.emitEvent(eventTypes.setFilterValue);
+  }
+
+  async applyFilter(filterName) {
+    const prevListState = this.listState;
+    const stateBeforeChange = this.getListStateBeforeChange();
+
+    this.listState = {
+      ...stateBeforeChange,
+
+      appliedFilters: {
+        ...stateBeforeChange.appliedFilters,
+        [filterName]: prevListState.filters[filterName],
+      },
+    };
+
+    this.emitEvent(eventTypes.applyFilter);
+
+    await this.requestItems();
   }
 
   async requestItems() {
