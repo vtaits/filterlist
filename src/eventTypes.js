@@ -11,6 +11,7 @@ export const resetFilters = 'resetFilters';
 export const resetAllFilters = 'resetAllFilters';
 export const setSorting = 'setSorting';
 export const resetSorting = 'resetSorting';
+export const setFiltersAndSorting = 'setFiltersAndSorting';
 
 export const requestItems = 'requestItems';
 

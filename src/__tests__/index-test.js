@@ -1605,4 +1605,148 @@ describe('public methods', () => {
 
     expect(requestItemsMethod.mock.calls.length).toBe(1);
   });
+
+  test('should set filters and sorting', async () => {
+    const filterlist = new ManualFilterlist({
+      ...defaultParams,
+
+      sort: {
+        param: 'testParam1',
+        asc: false,
+      },
+    });
+
+    const onSetFiltersAndSorting = jest.fn();
+
+    filterlist.addListener(eventTypes.setFiltersAndSorting, onSetFiltersAndSorting);
+
+    const prevState = filterlist.getListState();
+
+    const nextState = {
+      ...prevState,
+
+      filters: {
+        test1: 'value1_1',
+        test2: 'value2_1',
+        test3: 'value3_1',
+      },
+
+      appliedFilters: {
+        test1: 'value1_2',
+        test2: 'value2_2',
+        test3: 'value3_2',
+      },
+
+      items: [1, 2, 3],
+
+      additional: {
+        count: 3,
+      },
+    };
+
+    filterlist.listState = nextState;
+
+    const listStateBeforeChange = filterlist.getListStateBeforeChange();
+
+    await filterlist.setFiltersAndSorting({
+      filters: {
+        test1: 'value1_3',
+        test2: 'value2_3',
+      },
+
+      appliedFilters: {
+        test1: 'value1_4',
+        test2: 'value2_4',
+      },
+
+      sort: {
+        param: 'testParam2',
+        asc: true,
+      },
+    });
+
+    const expectedListState = {
+      ...listStateBeforeChange,
+
+      filters: {
+        test1: 'value1_3',
+        test2: 'value2_3',
+      },
+
+      appliedFilters: {
+        test1: 'value1_4',
+        test2: 'value2_4',
+      },
+
+      sort: {
+        param: 'testParam2',
+        asc: true,
+      },
+    };
+
+    expect(filterlist.listState).toEqual(expectedListState);
+
+    expect(onSetFiltersAndSorting.mock.calls.length).toBe(1);
+    expect(onSetFiltersAndSorting.mock.calls[0][0]).toEqual(expectedListState);
+
+    expect(requestItemsMethod.mock.calls.length).toBe(1);
+  });
+
+  test('should not change filters and sorting with setFiltersAndSorting', async () => {
+    const filterlist = new ManualFilterlist({
+      ...defaultParams,
+
+      sort: {
+        param: 'testParam1',
+        asc: false,
+      },
+    });
+
+    const onSetFiltersAndSorting = jest.fn();
+
+    filterlist.addListener(eventTypes.setFiltersAndSorting, onSetFiltersAndSorting);
+
+    const prevState = filterlist.getListState();
+
+    const nextState = {
+      ...prevState,
+
+      filters: {
+        test1: 'value1_1',
+        test2: 'value2_1',
+        test3: 'value3_1',
+      },
+
+      appliedFilters: {
+        test1: 'value1_2',
+        test2: 'value2_2',
+        test3: 'value3_2',
+      },
+
+      items: [1, 2, 3],
+
+      additional: {
+        count: 3,
+      },
+    };
+
+    filterlist.listState = nextState;
+
+    const listStateBeforeChange = filterlist.getListStateBeforeChange();
+
+    await filterlist.setFiltersAndSorting({
+      filters: null,
+      appliedFilters: null,
+      sort: null,
+    });
+
+    const expectedListState = listStateBeforeChange;
+
+    expect(filterlist.listState).toEqual(expectedListState);
+
+    expect(onSetFiltersAndSorting.mock.calls.length).toBe(1);
+    expect(onSetFiltersAndSorting.mock.calls[0][0]).toEqual(expectedListState);
+
+    expect(requestItemsMethod.mock.calls.length).toBe(1);
+  });
 });
