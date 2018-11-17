@@ -272,6 +272,50 @@ class Filterlist extends EventEmitter {
     await this.requestItems();
   }
 
+  async resetAllFilters() {
+    const prevListState = this.listState;
+    const stateBeforeChange = this.getListStateBeforeChange();
+
+    const {
+      initialFilters,
+      saveFiltersOnResetAll,
+    } = this.options;
+
+    const savedFilters = saveFiltersOnResetAll
+      .reduce((res, filterName) => {
+        res[filterName] = prevListState.filters[filterName];
+
+        return res;
+      }, {});
+
+    const savedAppliedFilters = saveFiltersOnResetAll
+      .reduce((res, filterName) => {
+        res[filterName] = prevListState.appliedFilters[filterName];
+
+        return res;
+      }, {});
+
+    this.listState = {
+      ...stateBeforeChange,
+
+      filters: {
+        ...prevListState.filters,
+        ...initialFilters,
+        ...savedFilters,
+      },
+
+      appliedFilters: {
+        ...stateBeforeChange.appliedFilters,
+        ...initialFilters,
+        ...savedAppliedFilters,
+      },
+    };
+
+    this.emitEvent(eventTypes.resetAllFilters);
+
+    await this.requestItems();
+  }
+
   async requestItems() {
     const nextRequestId = this.requestId + 1;
     ++this.requestId;

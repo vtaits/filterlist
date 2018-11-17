@@ -8,6 +8,7 @@ export const setFiltersValues = 'setFiltersValues';
 export const applyFilters = 'applyFilters';
 export const setAndApplyFilters = 'setAndApplyFilters';
 export const resetFilters = 'resetFilters';
+export const resetAllFilters = 'resetAllFilters';
 
 export const requestItems = 'requestItems';
 
