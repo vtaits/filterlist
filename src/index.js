@@ -125,6 +125,30 @@ class Filterlist extends EventEmitter {
     await this.requestItems();
   }
 
+  async setAndApplyFilter(filterName, value) {
+    const prevListState = this.listState;
+    const stateBeforeChange = this.getListStateBeforeChange();
+
+    this.listState = {
+      ...stateBeforeChange,
+
+      filters: {
+        ...prevListState.filters,
+
+        [filterName]: value,
+      },
+
+      appliedFilters: {
+        ...stateBeforeChange.appliedFilters,
+        [filterName]: value,
+      },
+    };
+
+    this.emitEvent(eventTypes.setAndApplyFilter);
+
+    await this.requestItems();
+  }
+
   async requestItems() {
     const nextRequestId = this.requestId + 1;
     ++this.requestId;
