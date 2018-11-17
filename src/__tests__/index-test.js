@@ -1006,7 +1006,7 @@ describe('public methods', () => {
     expect(requestItemsMethod.mock.calls.length).toBe(1);
   });
 
-  test('should set filter value', () => {
+  test('should set values of multiple filters', () => {
     const filterlist = new ManualFilterlist({
       ...defaultParams,
     });
@@ -1055,5 +1055,62 @@ describe('public methods', () => {
     expect(onSetFiltersValues.mock.calls[0][0]).toEqual(expectedListState);
 
     expect(requestItemsMethod.mock.calls.length).toBe(0);
+  });
+
+  test('should apply multiple filters', async () => {
+    const filterlist = new ManualFilterlist({
+      ...defaultParams,
+    });
+
+    const onApplyFilters = jest.fn();
+
+    filterlist.addListener(eventTypes.applyFilters, onApplyFilters);
+
+    const prevState = filterlist.getListState();
+
+    const nextState = {
+      ...prevState,
+
+      filters: {
+        test1: 'value1_1',
+        test2: 'value2_1',
+        test3: 'value3_1',
+      },
+
+      appliedFilters: {
+        test1: 'value1_2',
+        test2: 'value2_2',
+        test3: 'value3_2',
+      },
+
+      items: [1, 2, 3],
+
+      additional: {
+        count: 3,
+      },
+    };
+
+    filterlist.listState = nextState;
+
+    const listStateBeforeChange = filterlist.getListStateBeforeChange();
+
+    await filterlist.applyFilters(['test2', 'test3']);
+
+    const expectedListState = {
+      ...listStateBeforeChange,
+
+      appliedFilters: {
+        ...listStateBeforeChange.appliedFilters,
+        test2: 'value2_1',
+        test3: 'value3_1',
+      },
+    };
+
+    expect(filterlist.listState).toEqual(expectedListState);
+
+    expect(onApplyFilters.mock.calls.length).toBe(1);
+    expect(onApplyFilters.mock.calls[0][0]).toEqual(expectedListState);
+
+    expect(requestItemsMethod.mock.calls.length).toBe(1);
   });
 });

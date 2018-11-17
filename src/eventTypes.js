@@ -5,6 +5,7 @@ export const applyFilter = 'applyFilter';
 export const setAndApplyFilter = 'setAndApplyFilter';
 export const resetFilter = 'resetFilter';
 export const setFiltersValues = 'setFiltersValues';
+export const applyFilters = 'applyFilters';
 
 export const requestItems = 'requestItems';
 

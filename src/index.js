@@ -149,21 +149,6 @@ class Filterlist extends EventEmitter {
     await this.requestItems();
   }
 
-  setFiltersValues(values) {
-    const prevListState = this.listState;
-
-    this.listState = {
-      ...prevListState,
-
-      filters: {
-        ...prevListState.filters,
-        ...values,
-      },
-    };
-
-    this.emitEvent(eventTypes.setFiltersValues);
-  }
-
   async resetFilter(filterName) {
     const prevListState = this.listState;
     const stateBeforeChange = this.getListStateBeforeChange();
@@ -186,6 +171,46 @@ class Filterlist extends EventEmitter {
     };
 
     this.emitEvent(eventTypes.resetFilter);
+
+    await this.requestItems();
+  }
+
+  setFiltersValues(values) {
+    const prevListState = this.listState;
+
+    this.listState = {
+      ...prevListState,
+
+      filters: {
+        ...prevListState.filters,
+        ...values,
+      },
+    };
+
+    this.emitEvent(eventTypes.setFiltersValues);
+  }
+
+  async applyFilters(filtersNames) {
+    const prevListState = this.listState;
+    const stateBeforeChange = this.getListStateBeforeChange();
+
+    const newAppliedFilters = filtersNames
+      .reduce((res, filterName) => {
+        res[filterName] = prevListState.filters[filterName];
+
+        return res;
+      }, {});
+
+    this.listState = {
+      ...stateBeforeChange,
+
+      appliedFilters: {
+        ...stateBeforeChange.appliedFilters,
+        ...newAppliedFilters,
+      },
+    };
+
+    this.emitEvent(eventTypes.applyFilters);
 
     await this.requestItems();
   }
