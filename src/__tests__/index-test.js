@@ -1005,4 +1005,55 @@ describe('public methods', () => {
 
     expect(requestItemsMethod.mock.calls.length).toBe(1);
   });
+
+  test('should set filter value', () => {
+    const filterlist = new ManualFilterlist({
+      ...defaultParams,
+    });
+
+    const onSetFiltersValues = jest.fn();
+
+    filterlist.addListener(eventTypes.setFiltersValues, onSetFiltersValues);
+
+    const prevState = filterlist.getListState();
+
+    const nextState = {
+      ...prevState,
+
+      filters: {
+        test1: 'value1',
+        test2: 'value2',
+      },
+
+      items: [1, 2, 3],
+
+      additional: {
+        count: 3,
+      },
+    };
+
+    filterlist.listState = nextState;
+
+    filterlist.setFiltersValues({
+      test2: 'value3',
+      test3: 'value4',
+    });
+
+    const expectedListState = {
+      ...nextState,
+
+      filters: {
+        ...nextState.filters,
+        test2: 'value3',
+        test3: 'value4',
+      },
+    };
+
+    expect(filterlist.listState).toEqual(expectedListState);
+
+    expect(onSetFiltersValues.mock.calls.length).toBe(1);
+    expect(onSetFiltersValues.mock.calls[0][0]).toEqual(expectedListState);
+
+    expect(requestItemsMethod.mock.calls.length).toBe(0);
+  });
 });
