@@ -9,6 +9,7 @@ export const applyFilters = 'applyFilters';
 export const setAndApplyFilters = 'setAndApplyFilters';
 export const resetFilters = 'resetFilters';
 export const resetAllFilters = 'resetAllFilters';
+export const setSorting = 'setSorting';
 
 export const requestItems = 'requestItems';
 

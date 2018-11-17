@@ -316,6 +316,39 @@ class Filterlist extends EventEmitter {
     await this.requestItems();
   }
 
+  getNextAsc(param, asc) {
+    if (typeof asc === 'boolean') {
+      return asc;
+    }
+
+    const prevListState = this.listState;
+
+    if (prevListState.sort.param === param) {
+      return !prevListState.sort.asc;
+    }
+
+    return this.options.isDefaultSortAsc;
+  }
+
+  async setSorting(param, asc) {
+    const stateBeforeChange = this.getListStateBeforeChange();
+
+    const nextAsc = this.getNextAsc(param, asc);
+
+    this.listState = {
+      ...stateBeforeChange,
+
+      sort: {
+        param,
+        asc: nextAsc,
+      },
+    };
+
+    this.emitEvent(eventTypes.setSorting);
+
+    await this.requestItems();
+  }
+
   async requestItems() {
     const nextRequestId = this.requestId + 1;
     ++this.requestId;

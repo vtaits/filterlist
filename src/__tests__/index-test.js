@@ -1314,4 +1314,193 @@ describe('public methods', () => {
 
     expect(requestItemsMethod.mock.calls.length).toBe(1);
   });
+
+  test('should set sorting with asc is isDefaultSortAsc (false)', async () => {
+    const filterlist = new ManualFilterlist({
+      ...defaultParams,
+
+      isDefaultSortAsc: false,
+    });
+
+    const onSetSorting = jest.fn();
+
+    filterlist.addListener(eventTypes.setSorting, onSetSorting);
+
+    const prevState = filterlist.getListState();
+
+    const nextState = {
+      ...prevState,
+
+      items: [1, 2, 3],
+
+      additional: {
+        count: 3,
+      },
+    };
+
+    filterlist.listState = nextState;
+
+    const listStateBeforeChange = filterlist.getListStateBeforeChange();
+
+    await filterlist.setSorting('sortParam');
+
+    const expectedListState = {
+      ...listStateBeforeChange,
+
+      sort: {
+        param: 'sortParam',
+        asc: false,
+      },
+    };
+
+    expect(filterlist.listState).toEqual(expectedListState);
+
+    expect(onSetSorting.mock.calls.length).toBe(1);
+    expect(onSetSorting.mock.calls[0][0]).toEqual(expectedListState);
+
+    expect(requestItemsMethod.mock.calls.length).toBe(1);
+  });
+
+  test('should set sorting with asc is isDefaultSortAsc (true)', async () => {
+    const filterlist = new ManualFilterlist({
+      ...defaultParams,
+
+      isDefaultSortAsc: true,
+    });
+
+    const onSetSorting = jest.fn();
+
+    filterlist.addListener(eventTypes.setSorting, onSetSorting);
+
+    const prevState = filterlist.getListState();
+
+    const nextState = {
+      ...prevState,
+
+      items: [1, 2, 3],
+
+      additional: {
+        count: 3,
+      },
+    };
+
+    filterlist.listState = nextState;
+
+    const listStateBeforeChange = filterlist.getListStateBeforeChange();
+
+    await filterlist.setSorting('sortParam');
+
+    const expectedListState = {
+      ...listStateBeforeChange,
+
+      sort: {
+        param: 'sortParam',
+        asc: true,
+      },
+    };
+
+    expect(filterlist.listState).toEqual(expectedListState);
+
+    expect(onSetSorting.mock.calls.length).toBe(1);
+    expect(onSetSorting.mock.calls[0][0]).toEqual(expectedListState);
+
+    expect(requestItemsMethod.mock.calls.length).toBe(1);
+  });
+
+  test('should change sort asc', async () => {
+    const filterlist = new ManualFilterlist({
+      ...defaultParams,
+
+      isDefaultSortAsc: true,
+
+      sort: {
+        param: 'sortParam',
+        asc: true,
+      },
+    });
+
+    const onSetSorting = jest.fn();
+
+    filterlist.addListener(eventTypes.setSorting, onSetSorting);
+
+    const prevState = filterlist.getListState();
+
+    const nextState = {
+      ...prevState,
+
+      items: [1, 2, 3],
+
+      additional: {
+        count: 3,
+      },
+    };
+
+    filterlist.listState = nextState;
+
+    const listStateBeforeChange = filterlist.getListStateBeforeChange();
+
+    await filterlist.setSorting('sortParam');
+
+    const expectedListState = {
+      ...listStateBeforeChange,
+
+      sort: {
+        param: 'sortParam',
+        asc: false,
+      },
+    };
+
+    expect(filterlist.listState).toEqual(expectedListState);
+
+    expect(onSetSorting.mock.calls.length).toBe(1);
+    expect(onSetSorting.mock.calls[0][0]).toEqual(expectedListState);
+
+    expect(requestItemsMethod.mock.calls.length).toBe(1);
+  });
+
+  test('should set sorting with asc from arguments', async () => {
+    const filterlist = new ManualFilterlist({
+      ...defaultParams,
+
+      isDefaultSortAsc: false,
+    });
+
+    const onSetSorting = jest.fn();
+
+    filterlist.addListener(eventTypes.setSorting, onSetSorting);
+
+    const prevState = filterlist.getListState();
+
+    const nextState = {
+      ...prevState,
+
+      items: [1, 2, 3],
+
+      additional: {
+        count: 3,
+      },
+    };
+
+    filterlist.listState = nextState;
+
+    const listStateBeforeChange = filterlist.getListStateBeforeChange();
+
+    await filterlist.setSorting('sortParam', true);
+
+    const expectedListState = {
+      ...listStateBeforeChange,
+
+      sort: {
+        param: 'sortParam',
+        asc: true,
+      },
+    };
+
+    expect(filterlist.listState).toEqual(expectedListState);
+
+    expect(onSetSorting.mock.calls.length).toBe(1);
+    expect(onSetSorting.mock.calls[0][0]).toEqual(expectedListState);
+
+    expect(requestItemsMethod.mock.calls.length).toBe(1);
+  });
 });
