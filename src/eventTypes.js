@@ -10,6 +10,7 @@ export const setAndApplyFilters = 'setAndApplyFilters';
 export const resetFilters = 'resetFilters';
 export const resetAllFilters = 'resetAllFilters';
 export const setSorting = 'setSorting';
+export const resetSorting = 'resetSorting';
 
 export const requestItems = 'requestItems';
 

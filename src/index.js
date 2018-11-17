@@ -349,6 +349,27 @@ class Filterlist extends EventEmitter {
     await this.requestItems();
   }
 
+  async resetSorting() {
+    const stateBeforeChange = this.getListStateBeforeChange();
+
+    const {
+      isDefaultSortAsc,
+    } = this.options;
+
+    this.listState = {
+      ...stateBeforeChange,
+
+      sort: {
+        param: null,
+        asc: isDefaultSortAsc,
+      },
+    };
+
+    this.emitEvent(eventTypes.resetSorting);
+
+    await this.requestItems();
+  }
+
   async requestItems() {
     const nextRequestId = this.requestId + 1;
     ++this.requestId;
