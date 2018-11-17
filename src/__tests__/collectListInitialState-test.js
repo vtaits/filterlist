@@ -52,3 +52,13 @@ test('should no set additional (null by default)', () => {
 
   expect(state.additional).toEqual(null);
 });
+
+test('should set items', () => {
+  const items = [1, 2, 3];
+
+  const state = collectListInitialState({
+    items,
+  });
+
+  expect(state.items).toBe(items);
+});

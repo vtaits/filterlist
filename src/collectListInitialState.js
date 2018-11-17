@@ -4,6 +4,8 @@ export default function collectListInitialState(params) {
   return {
     ...listInitialState,
 
+    items: params.items || listInitialState.items,
+
     sort: params.sort || listInitialState.sort,
 
     /* eslint-disable no-prototype-builtins */
