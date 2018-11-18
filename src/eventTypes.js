@@ -13,6 +13,10 @@ export const setSorting = 'setSorting';
 export const resetSorting = 'resetSorting';
 export const setFiltersAndSorting = 'setFiltersAndSorting';
 
+export const insertItem = 'insertItem';
+export const deleteItem = 'deleteItem';
+export const updateItem = 'updateItem';
+
 export const requestItems = 'requestItems';
 
 export const loadItemsSuccess = 'loadItemsSuccess';

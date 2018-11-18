@@ -747,6 +747,11 @@ array-equal@^1.0.0:
   resolved "https://registry.yarnpkg.com/array-equal/-/array-equal-1.0.0.tgz#8c2a5ef2472fd9ea742b04c77a75093ba2757c93"
   integrity sha1-jCpe8kcv2ep0KwTHenUJO6J1fJM=
 
+array-insert@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/array-insert/-/array-insert-2.0.0.tgz#994f8834efea4d210695e6c7cef1aa07e01c51c6"
+  integrity sha1-mU+INO/qTSEGlebHzvGqB+AcUcY=
+
 array-union@^1.0.1:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/array-union/-/array-union-1.0.2.tgz#9a34410e4f4e3da23dea375be5be70f24778ec39"

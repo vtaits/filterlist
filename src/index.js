@@ -1,4 +1,5 @@
 import { EventEmitter } from 'fbemitter';
+import arrayInsert from 'array-insert';
 
 import collectListInitialState from './collectListInitialState';
 import collectOptions from './collectOptions';
@@ -464,6 +465,62 @@ class Filterlist extends EventEmitter {
     };
 
     this.emitEvent(eventTypes.loadItemsError);
+  }
+
+  insertItem(itemIndex, item, additional) {
+    const prevListState = this.listState;
+
+    this.listState = {
+      ...prevListState,
+
+      items: arrayInsert(prevListState.items, itemIndex, item),
+
+      additional: typeof additional !== 'undefined'
+        ? additional
+        : prevListState.additional,
+    };
+
+    this.emitEvent(eventTypes.insertItem);
+  }
+
+  deleteItem(itemIndex, additional) {
+    const prevListState = this.listState;
+
+    this.listState = {
+      ...prevListState,
+
+      items: prevListState.items
+        .filter((item, index) => index !== itemIndex),
+
+      additional: typeof additional !== 'undefined'
+        ? additional
+        : prevListState.additional,
+    };
+
+    this.emitEvent(eventTypes.deleteItem);
+  }
+
+  updateItem(itemIndex, item, additional) {
+    const prevListState = this.listState;
+
+    this.listState = {
+      ...prevListState,
+
+      items: prevListState.items
+        .map((stateItem, index) => {
+          if (index === itemIndex) {
+            return item;
+          }
+
+          return stateItem;
+        }),
+
+      additional: typeof additional !== 'undefined'
+        ? additional
+        : prevListState.additional,
+    };
+
+    this.emitEvent(eventTypes.updateItem);
   }
 
   getListState() {

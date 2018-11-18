@@ -1749,4 +1749,334 @@ describe('public methods', () => {
 
     expect(requestItemsMethod.mock.calls.length).toBe(1);
   });
+
+  test('should insert item and not change additional', () => {
+    const filterlist = new ManualFilterlist({
+      ...defaultParams,
+
+      items: [{
+        label: 1,
+        value: 1,
+      }, {
+        label: 2,
+        value: 2,
+      }, {
+        label: 3,
+        value: 3,
+      }, {
+        label: 4,
+        value: 4,
+      }, {
+        label: 5,
+        value: 5,
+      }],
+
+      additional: {
+        count: 5,
+      },
+    });
+
+    filterlist.insertItem(2, {
+      label: 6,
+      value: 6,
+    });
+
+    const nextState = filterlist.getListState();
+
+    expect(nextState.items).toEqual([{
+      label: 1,
+      value: 1,
+    }, {
+      label: 2,
+      value: 2,
+    }, {
+      label: 6,
+      value: 6,
+    }, {
+      label: 3,
+      value: 3,
+    }, {
+      label: 4,
+      value: 4,
+    }, {
+      label: 5,
+      value: 5,
+    }]);
+
+    expect(nextState.additional).toEqual({
+      count: 5,
+    });
+  });
+
+  test('should insert item and change additional', () => {
+    const filterlist = new ManualFilterlist({
+      ...defaultParams,
+
+      items: [{
+        label: 1,
+        value: 1,
+      }, {
+        label: 2,
+        value: 2,
+      }, {
+        label: 3,
+        value: 3,
+      }, {
+        label: 4,
+        value: 4,
+      }, {
+        label: 5,
+        value: 5,
+      }],
+
+      additional: {
+        count: 5,
+      },
+    });
+
+    filterlist.insertItem(2, {
+      label: 6,
+      value: 6,
+    }, {
+      count: 6,
+    });
+
+    const nextState = filterlist.getListState();
+
+    expect(nextState.items).toEqual([{
+      label: 1,
+      value: 1,
+    }, {
+      label: 2,
+      value: 2,
+    }, {
+      label: 6,
+      value: 6,
+    }, {
+      label: 3,
+      value: 3,
+    }, {
+      label: 4,
+      value: 4,
+    }, {
+      label: 5,
+      value: 5,
+    }]);
+
+    expect(nextState.additional).toEqual({
+      count: 6,
+    });
+  });
+
+  test('should delete item and not change additional', () => {
+    const filterlist = new ManualFilterlist({
+      ...defaultParams,
+
+      items: [{
+        label: 1,
+        value: 1,
+      }, {
+        label: 2,
+        value: 2,
+      }, {
+        label: 3,
+        value: 3,
+      }, {
+        label: 4,
+        value: 4,
+      }, {
+        label: 5,
+        value: 5,
+      }],
+
+      additional: {
+        count: 5,
+      },
+    });
+
+    filterlist.deleteItem(2);
+
+    const nextState = filterlist.getListState();
+
+    expect(nextState.items).toEqual([{
+      label: 1,
+      value: 1,
+    }, {
+      label: 2,
+      value: 2,
+    }, {
+      label: 4,
+      value: 4,
+    }, {
+      label: 5,
+      value: 5,
+    }]);
+
+    expect(nextState.additional).toEqual({
+      count: 5,
+    });
+  });
+
+  test('should delete item and change additional', () => {
+    const filterlist = new ManualFilterlist({
+      ...defaultParams,
+
+      items: [{
+        label: 1,
+        value: 1,
+      }, {
+        label: 2,
+        value: 2,
+      }, {
+        label: 3,
+        value: 3,
+      }, {
+        label: 4,
+        value: 4,
+      }, {
+        label: 5,
+        value: 5,
+      }],
+
+      additional: {
+        count: 5,
+      },
+    });
+
+    filterlist.deleteItem(2, {
+      count: 4,
+    });
+
+    const nextState = filterlist.getListState();
+
+    expect(nextState.items).toEqual([{
+      label: 1,
+      value: 1,
+    }, {
+      label: 2,
+      value: 2,
+    }, {
+      label: 4,
+      value: 4,
+    }, {
+      label: 5,
+      value: 5,
+    }]);
+
+    expect(nextState.additional).toEqual({
+      count: 4,
+    });
+  });
+
+  test('should update item and not change additional', () => {
+    const filterlist = new ManualFilterlist({
+      ...defaultParams,
+
+      items: [{
+        label: 1,
+        value: 1,
+      }, {
+        label: 2,
+        value: 2,
+      }, {
+        label: 3,
+        value: 3,
+      }, {
+        label: 4,
+        value: 4,
+      }, {
+        label: 5,
+        value: 5,
+      }],
+
+      additional: {
+        count: 5,
+      },
+    });
+
+    filterlist.updateItem(2, {
+      label: 10,
+      value: 10,
+    });
+
+    const nextState = filterlist.getListState();
+
+    expect(nextState.items).toEqual([{
+      label: 1,
+      value: 1,
+    }, {
+      label: 2,
+      value: 2,
+    }, {
+      label: 10,
+      value: 10,
+    }, {
+      label: 4,
+      value: 4,
+    }, {
+      label: 5,
+      value: 5,
+    }]);
+
+    expect(nextState.additional).toEqual({
+      count: 5,
+    });
+  });
+
+  test('should update item and change additional', () => {
+    const filterlist = new ManualFilterlist({
+      ...defaultParams,
+
+      items: [{
+        label: 1,
+        value: 1,
+      }, {
+        label: 2,
+        value: 2,
+      }, {
+        label: 3,
+        value: 3,
+      }, {
+        label: 4,
+        value: 4,
+      }, {
+        label: 5,
+        value: 5,
+      }],
+
+      additional: {
+        count: 5,
+      },
+    });
+
+    filterlist.updateItem(2, {
+      label: 10,
+      value: 10,
+    }, {
+      count: 4,
+    });
+
+    const nextState = filterlist.getListState();
+
+    expect(nextState.items).toEqual([{
+      label: 1,
+      value: 1,
+    }, {
+      label: 2,
+      value: 2,
+    }, {
+      label: 10,
+      value: 10,
+    }, {
+      label: 4,
+      value: 4,
+    }, {
+      label: 5,
+      value: 5,
+    }]);
+
+    expect(nextState.additional).toEqual({
+      count: 4,
+    });
+  });
 });
