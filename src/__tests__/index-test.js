@@ -13,7 +13,7 @@ const defaultParams = {
 
 let callsSequence = [];
 
-const loadItemsMethod = jest.fn(() => {
+const loadItemsOnInitMethod = jest.fn(() => {
   callsSequence.push('loadItems');
 });
 const onInitMethod = jest.fn(() => {
@@ -31,12 +31,12 @@ const onErrorMethod = jest.fn(() => {
 
 /* eslint-disable class-methods-use-this */
 class ManualFilterlist extends Filterlist {
-  loadItems(...args) {
-    return loadItemsMethod(...args);
+  loadItemsOnInit(...args) {
+    return loadItemsOnInitMethod(...args);
   }
 
-  manualLoadItems(...args) {
-    return super.loadItems(...args);
+  manualLoadItemsOnInit(...args) {
+    return super.loadItemsOnInit(...args);
   }
 
   onInit(...args) {
@@ -76,7 +76,7 @@ class ManualFilterlist extends Filterlist {
 afterEach(() => {
   callsSequence = [];
 
-  loadItemsMethod.mockClear();
+  loadItemsOnInitMethod.mockClear();
   onInitMethod.mockClear();
   requestItemsMethod.mockClear();
   onSuccessMethod.mockClear();
@@ -179,7 +179,7 @@ test('should call loadItems on init', () => {
 
   filterlist.manualOnInit();
 
-  expect(loadItemsMethod.mock.calls.length).toBe(1);
+  expect(loadItemsOnInitMethod.mock.calls.length).toBe(1);
 });
 
 test('should not call loadItems on init if autoload is false', () => {
@@ -190,7 +190,7 @@ test('should not call loadItems on init if autoload is false', () => {
 
   filterlist.manualOnInit();
 
-  expect(loadItemsMethod.mock.calls.length).toBe(0);
+  expect(loadItemsOnInitMethod.mock.calls.length).toBe(0);
 });
 
 test('should dispatch event and request items on load items', async () => {
@@ -213,7 +213,7 @@ test('should dispatch event and request items on load items', async () => {
 
   filterlist.addListener(eventTypes.loadItems, onLoadItems);
 
-  await filterlist.manualLoadItems();
+  await filterlist.manualLoadItemsOnInit();
 
   expect(onLoadItems.mock.calls.length).toBe(1);
   expect(onLoadItems.mock.calls[0][0]).toEqual({
@@ -783,6 +783,60 @@ describe('getListStateBeforeChange', () => {
 });
 
 describe('public methods', () => {
+  test('should load items', async () => {
+    const filterlist = new ManualFilterlist({
+      ...defaultParams,
+    });
+
+    const onLoadItems = jest.fn();
+    const onChangeListState = jest.fn();
+
+    filterlist.addListener(eventTypes.loadItems, onLoadItems);
+    filterlist.addListener(eventTypes.changeListState, onChangeListState);
+
+    const prevState = filterlist.getListState();
+
+    const nextState = {
+      ...prevState,
+
+      filters: {
+        test1: 'value1_1',
+        test2: 'value2_1',
+      },
+
+      appliedFilters: {
+        test1: 'value1_2',
+        test2: 'value2_2',
+      },
+
+      items: [1, 2, 3],
+
+      additional: {
+        count: 3,
+      },
+    };
+
+    filterlist.listState = nextState;
+
+    await filterlist.loadItems();
+
+    const expectedListState = {
+      ...nextState,
+
+      loading: true,
+    };
+
+    expect(filterlist.listState).toEqual(expectedListState);
+
+    expect(onLoadItems.mock.calls.length).toBe(1);
+    expect(onLoadItems.mock.calls[0][0]).toEqual(expectedListState);
+
+    expect(onChangeListState.mock.calls.length).toBe(1);
+    expect(onChangeListState.mock.calls[0][0]).toEqual(expectedListState);
+
+    expect(requestItemsMethod.mock.calls.length).toBe(1);
+  });
+
   test('should set filter value', () => {
     const filterlist = new ManualFilterlist({
       ...defaultParams,
@@ -836,8 +890,10 @@ describe('public methods', () => {
     });
 
     const onApplyFilter = jest.fn();
+    const onChangeListState = jest.fn();
 
     filterlist.addListener(eventTypes.applyFilter, onApplyFilter);
+    filterlist.addListener(eventTypes.changeListState, onChangeListState);
 
     const prevState = filterlist.getListState();
 
@@ -881,6 +937,9 @@ describe('public methods', () => {
     expect(onApplyFilter.mock.calls.length).toBe(1);
     expect(onApplyFilter.mock.calls[0][0]).toEqual(expectedListState);
 
+    expect(onChangeListState.mock.calls.length).toBe(1);
+    expect(onChangeListState.mock.calls[0][0]).toEqual(expectedListState);
+
     expect(requestItemsMethod.mock.calls.length).toBe(1);
   });
 
@@ -890,8 +949,10 @@ describe('public methods', () => {
     });
 
     const onSetAndApplyFilter = jest.fn();
+    const onChangeListState = jest.fn();
 
     filterlist.addListener(eventTypes.setAndApplyFilter, onSetAndApplyFilter);
+    filterlist.addListener(eventTypes.changeListState, onChangeListState);
 
     const prevState = filterlist.getListState();
 
@@ -940,6 +1001,9 @@ describe('public methods', () => {
     expect(onSetAndApplyFilter.mock.calls.length).toBe(1);
     expect(onSetAndApplyFilter.mock.calls[0][0]).toEqual(expectedListState);
 
+    expect(onChangeListState.mock.calls.length).toBe(1);
+    expect(onChangeListState.mock.calls[0][0]).toEqual(expectedListState);
+
     expect(requestItemsMethod.mock.calls.length).toBe(1);
   });
 
@@ -953,8 +1017,10 @@ describe('public methods', () => {
     });
 
     const onResetFilter = jest.fn();
+    const onChangeListState = jest.fn();
 
     filterlist.addListener(eventTypes.resetFilter, onResetFilter);
+    filterlist.addListener(eventTypes.changeListState, onChangeListState);
 
     const prevState = filterlist.getListState();
 
@@ -1002,6 +1068,9 @@ describe('public methods', () => {
 
     expect(onResetFilter.mock.calls.length).toBe(1);
     expect(onResetFilter.mock.calls[0][0]).toEqual(expectedListState);
+
+    expect(onChangeListState.mock.calls.length).toBe(1);
+    expect(onChangeListState.mock.calls[0][0]).toEqual(expectedListState);
 
     expect(requestItemsMethod.mock.calls.length).toBe(1);
   });
@@ -1063,8 +1132,10 @@ describe('public methods', () => {
     });
 
     const onApplyFilters = jest.fn();
+    const onChangeListState = jest.fn();
 
     filterlist.addListener(eventTypes.applyFilters, onApplyFilters);
+    filterlist.addListener(eventTypes.changeListState, onChangeListState);
 
     const prevState = filterlist.getListState();
 
@@ -1111,6 +1182,9 @@ describe('public methods', () => {
     expect(onApplyFilters.mock.calls.length).toBe(1);
     expect(onApplyFilters.mock.calls[0][0]).toEqual(expectedListState);
 
+    expect(onChangeListState.mock.calls.length).toBe(1);
+    expect(onChangeListState.mock.calls[0][0]).toEqual(expectedListState);
+
     expect(requestItemsMethod.mock.calls.length).toBe(1);
   });
 
@@ -1120,8 +1194,10 @@ describe('public methods', () => {
     });
 
     const onSetAndApplyFilters = jest.fn();
+    const onChangeListState = jest.fn();
 
     filterlist.addListener(eventTypes.setAndApplyFilters, onSetAndApplyFilters);
+    filterlist.addListener(eventTypes.changeListState, onChangeListState);
 
     const prevState = filterlist.getListState();
 
@@ -1175,6 +1251,9 @@ describe('public methods', () => {
     expect(onSetAndApplyFilters.mock.calls.length).toBe(1);
     expect(onSetAndApplyFilters.mock.calls[0][0]).toEqual(expectedListState);
 
+    expect(onChangeListState.mock.calls.length).toBe(1);
+    expect(onChangeListState.mock.calls[0][0]).toEqual(expectedListState);
+
     expect(requestItemsMethod.mock.calls.length).toBe(1);
   });
 
@@ -1189,8 +1268,10 @@ describe('public methods', () => {
     });
 
     const onResetFilters = jest.fn();
+    const onChangeListState = jest.fn();
 
     filterlist.addListener(eventTypes.resetFilters, onResetFilters);
+    filterlist.addListener(eventTypes.changeListState, onChangeListState);
 
     const prevState = filterlist.getListState();
 
@@ -1243,6 +1324,9 @@ describe('public methods', () => {
     expect(onResetFilters.mock.calls.length).toBe(1);
     expect(onResetFilters.mock.calls[0][0]).toEqual(expectedListState);
 
+    expect(onChangeListState.mock.calls.length).toBe(1);
+    expect(onChangeListState.mock.calls[0][0]).toEqual(expectedListState);
+
     expect(requestItemsMethod.mock.calls.length).toBe(1);
   });
 
@@ -1260,8 +1344,10 @@ describe('public methods', () => {
     });
 
     const onResetAllFilters = jest.fn();
+    const onChangeListState = jest.fn();
 
     filterlist.addListener(eventTypes.resetAllFilters, onResetAllFilters);
+    filterlist.addListener(eventTypes.changeListState, onChangeListState);
 
     const prevState = filterlist.getListState();
 
@@ -1312,6 +1398,9 @@ describe('public methods', () => {
     expect(onResetAllFilters.mock.calls.length).toBe(1);
     expect(onResetAllFilters.mock.calls[0][0]).toEqual(expectedListState);
 
+    expect(onChangeListState.mock.calls.length).toBe(1);
+    expect(onChangeListState.mock.calls[0][0]).toEqual(expectedListState);
+
     expect(requestItemsMethod.mock.calls.length).toBe(1);
   });
 
@@ -1323,8 +1412,10 @@ describe('public methods', () => {
     });
 
     const onSetSorting = jest.fn();
+    const onChangeListState = jest.fn();
 
     filterlist.addListener(eventTypes.setSorting, onSetSorting);
+    filterlist.addListener(eventTypes.changeListState, onChangeListState);
 
     const prevState = filterlist.getListState();
 
@@ -1358,6 +1449,9 @@ describe('public methods', () => {
     expect(onSetSorting.mock.calls.length).toBe(1);
     expect(onSetSorting.mock.calls[0][0]).toEqual(expectedListState);
 
+    expect(onChangeListState.mock.calls.length).toBe(1);
+    expect(onChangeListState.mock.calls[0][0]).toEqual(expectedListState);
+
     expect(requestItemsMethod.mock.calls.length).toBe(1);
   });
 
@@ -1369,8 +1463,10 @@ describe('public methods', () => {
     });
 
     const onSetSorting = jest.fn();
+    const onChangeListState = jest.fn();
 
     filterlist.addListener(eventTypes.setSorting, onSetSorting);
+    filterlist.addListener(eventTypes.changeListState, onChangeListState);
 
     const prevState = filterlist.getListState();
 
@@ -1403,6 +1499,9 @@ describe('public methods', () => {
 
     expect(onSetSorting.mock.calls.length).toBe(1);
     expect(onSetSorting.mock.calls[0][0]).toEqual(expectedListState);
+
+    expect(onChangeListState.mock.calls.length).toBe(1);
+    expect(onChangeListState.mock.calls[0][0]).toEqual(expectedListState);
 
     expect(requestItemsMethod.mock.calls.length).toBe(1);
   });
@@ -1420,8 +1519,10 @@ describe('public methods', () => {
     });
 
     const onSetSorting = jest.fn();
+    const onChangeListState = jest.fn();
 
     filterlist.addListener(eventTypes.setSorting, onSetSorting);
+    filterlist.addListener(eventTypes.changeListState, onChangeListState);
 
     const prevState = filterlist.getListState();
 
@@ -1455,6 +1556,9 @@ describe('public methods', () => {
     expect(onSetSorting.mock.calls.length).toBe(1);
     expect(onSetSorting.mock.calls[0][0]).toEqual(expectedListState);
 
+    expect(onChangeListState.mock.calls.length).toBe(1);
+    expect(onChangeListState.mock.calls[0][0]).toEqual(expectedListState);
+
     expect(requestItemsMethod.mock.calls.length).toBe(1);
   });
 
@@ -1466,8 +1570,10 @@ describe('public methods', () => {
     });
 
     const onSetSorting = jest.fn();
+    const onChangeListState = jest.fn();
 
     filterlist.addListener(eventTypes.setSorting, onSetSorting);
+    filterlist.addListener(eventTypes.changeListState, onChangeListState);
 
     const prevState = filterlist.getListState();
 
@@ -1501,6 +1607,9 @@ describe('public methods', () => {
     expect(onSetSorting.mock.calls.length).toBe(1);
     expect(onSetSorting.mock.calls[0][0]).toEqual(expectedListState);
 
+    expect(onChangeListState.mock.calls.length).toBe(1);
+    expect(onChangeListState.mock.calls[0][0]).toEqual(expectedListState);
+
     expect(requestItemsMethod.mock.calls.length).toBe(1);
   });
 
@@ -1517,8 +1626,10 @@ describe('public methods', () => {
     });
 
     const onResetSorting = jest.fn();
+    const onChangeListState = jest.fn();
 
     filterlist.addListener(eventTypes.resetSorting, onResetSorting);
+    filterlist.addListener(eventTypes.changeListState, onChangeListState);
 
     const prevState = filterlist.getListState();
 
@@ -1551,6 +1662,9 @@ describe('public methods', () => {
 
     expect(onResetSorting.mock.calls.length).toBe(1);
     expect(onResetSorting.mock.calls[0][0]).toEqual(expectedListState);
+
+    expect(onChangeListState.mock.calls.length).toBe(1);
+    expect(onChangeListState.mock.calls[0][0]).toEqual(expectedListState);
 
     expect(requestItemsMethod.mock.calls.length).toBe(1);
   });
@@ -1568,8 +1682,10 @@ describe('public methods', () => {
     });
 
     const onResetSorting = jest.fn();
+    const onChangeListState = jest.fn();
 
     filterlist.addListener(eventTypes.resetSorting, onResetSorting);
+    filterlist.addListener(eventTypes.changeListState, onChangeListState);
 
     const prevState = filterlist.getListState();
 
@@ -1602,6 +1718,9 @@ describe('public methods', () => {
 
     expect(onResetSorting.mock.calls.length).toBe(1);
     expect(onResetSorting.mock.calls[0][0]).toEqual(expectedListState);
+
+    expect(onChangeListState.mock.calls.length).toBe(1);
+    expect(onChangeListState.mock.calls[0][0]).toEqual(expectedListState);
 
     expect(requestItemsMethod.mock.calls.length).toBe(1);
   });
