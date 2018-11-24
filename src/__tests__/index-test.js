@@ -1,10 +1,9 @@
 /* eslint-disable no-new */
 
-import Filterlist from '../index';
+import Filterlist, { eventTypes } from '../index';
 
 import collectListInitialState from '../collectListInitialState';
 import collectOptions from '../collectOptions';
-import * as eventTypes from '../eventTypes';
 import { LoadListError } from '../errors';
 
 const defaultParams = {

@@ -7,6 +7,8 @@ import collectOptions from './collectOptions';
 import * as eventTypes from './eventTypes';
 import { LoadListError } from './errors';
 
+export { eventTypes };
+
 class Filterlist extends EventEmitter {
   constructor(params) {
     super();
