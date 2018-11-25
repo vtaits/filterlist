@@ -95,7 +95,7 @@ const listState = filterlist.getListState();
 ### Methods
 
 | Property | Arguments | Description |
-| -------- | ---- | --------- | ----------- |
+| -------- | --------- | ----------- |
 | loadItems | | loads more items to page |
 | setFilterValue | filterName, value | sets filter intermediate value |
 | applyFilter | filterName | applies filter intermediate value, clears list and loads items |
