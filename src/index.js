@@ -81,13 +81,13 @@ class Filterlist extends EventEmitter {
   async loadItemsOnInit() {
     const prevListState = this.listState;
 
-    this.listState = {
+    this.setListState({
       ...prevListState,
 
       loading: true,
       error: null,
       shouldClean: false,
-    };
+    });
 
     this.emitEvent(eventTypes.loadItems);
 
@@ -97,13 +97,13 @@ class Filterlist extends EventEmitter {
   async loadItems() {
     const prevListState = this.listState;
 
-    this.listState = {
+    this.setListState({
       ...prevListState,
 
       loading: true,
       error: null,
       shouldClean: false,
-    };
+    });
 
     this.emitEvent(eventTypes.loadItems);
     this.emitEvent(eventTypes.changeLoadParams);
@@ -114,7 +114,7 @@ class Filterlist extends EventEmitter {
   setFilterValue(filterName, value) {
     const prevListState = this.listState;
 
-    this.listState = {
+    this.setListState({
       ...prevListState,
 
       filters: {
@@ -122,7 +122,7 @@ class Filterlist extends EventEmitter {
 
         [filterName]: value,
       },
-    };
+    });
 
     this.emitEvent(eventTypes.setFilterValue);
   }
@@ -131,14 +131,14 @@ class Filterlist extends EventEmitter {
     const prevListState = this.listState;
     const stateBeforeChange = this.getListStateBeforeChange();
 
-    this.listState = {
+    this.setListState({
       ...stateBeforeChange,
 
       appliedFilters: {
         ...stateBeforeChange.appliedFilters,
         [filterName]: prevListState.filters[filterName],
       },
-    };
+    });
 
     this.emitEvent(eventTypes.applyFilter);
     this.emitEvent(eventTypes.changeLoadParams);
@@ -150,7 +150,7 @@ class Filterlist extends EventEmitter {
     const prevListState = this.listState;
     const stateBeforeChange = this.getListStateBeforeChange();
 
-    this.listState = {
+    this.setListState({
       ...stateBeforeChange,
 
       filters: {
@@ -163,7 +163,7 @@ class Filterlist extends EventEmitter {
         ...stateBeforeChange.appliedFilters,
         [filterName]: value,
       },
-    };
+    });
 
     this.emitEvent(eventTypes.setAndApplyFilter);
     this.emitEvent(eventTypes.changeLoadParams);
@@ -177,7 +177,7 @@ class Filterlist extends EventEmitter {
 
     const initialValue = this.options.initialFilters[filterName];
 
-    this.listState = {
+    this.setListState({
       ...stateBeforeChange,
 
       filters: {
@@ -190,7 +190,7 @@ class Filterlist extends EventEmitter {
         ...stateBeforeChange.appliedFilters,
         [filterName]: initialValue,
       },
-    };
+    });
 
     this.emitEvent(eventTypes.resetFilter);
     this.emitEvent(eventTypes.changeLoadParams);
@@ -201,14 +201,14 @@ class Filterlist extends EventEmitter {
   setFiltersValues(values) {
     const prevListState = this.listState;
 
-    this.listState = {
+    this.setListState({
       ...prevListState,
 
       filters: {
         ...prevListState.filters,
         ...values,
       },
-    };
+    });
 
     this.emitEvent(eventTypes.setFiltersValues);
   }
@@ -224,14 +224,14 @@ class Filterlist extends EventEmitter {
         return res;
       }, {});
 
-    this.listState = {
+    this.setListState({
       ...stateBeforeChange,
 
       appliedFilters: {
         ...stateBeforeChange.appliedFilters,
         ...newAppliedFilters,
       },
-    };
+    });
 
     this.emitEvent(eventTypes.applyFilters);
     this.emitEvent(eventTypes.changeLoadParams);
@@ -243,7 +243,7 @@ class Filterlist extends EventEmitter {
     const prevListState = this.listState;
     const stateBeforeChange = this.getListStateBeforeChange();
 
-    this.listState = {
+    this.setListState({
       ...stateBeforeChange,
 
       filters: {
@@ -255,7 +255,7 @@ class Filterlist extends EventEmitter {
         ...stateBeforeChange.appliedFilters,
         ...values,
       },
-    };
+    });
 
     this.emitEvent(eventTypes.setAndApplyFilters);
     this.emitEvent(eventTypes.changeLoadParams);
@@ -278,7 +278,7 @@ class Filterlist extends EventEmitter {
         return res;
       }, {});
 
-    this.listState = {
+    this.setListState({
       ...stateBeforeChange,
 
       filters: {
@@ -290,7 +290,7 @@ class Filterlist extends EventEmitter {
         ...stateBeforeChange.appliedFilters,
         ...filtersForReset,
       },
-    };
+    });
 
     this.emitEvent(eventTypes.resetFilters);
     this.emitEvent(eventTypes.changeLoadParams);
@@ -321,7 +321,7 @@ class Filterlist extends EventEmitter {
         return res;
       }, {});
 
-    this.listState = {
+    this.setListState({
       ...stateBeforeChange,
 
       filters: {
@@ -335,7 +335,7 @@ class Filterlist extends EventEmitter {
         ...initialFilters,
         ...savedAppliedFilters,
       },
-    };
+    });
 
     this.emitEvent(eventTypes.resetAllFilters);
     this.emitEvent(eventTypes.changeLoadParams);
@@ -362,14 +362,14 @@ class Filterlist extends EventEmitter {
 
     const nextAsc = this.getNextAsc(param, asc);
 
-    this.listState = {
+    this.setListState({
       ...stateBeforeChange,
 
       sort: {
         param,
         asc: nextAsc,
       },
-    };
+    });
 
     this.emitEvent(eventTypes.setSorting);
     this.emitEvent(eventTypes.changeLoadParams);
@@ -384,14 +384,14 @@ class Filterlist extends EventEmitter {
       isDefaultSortAsc,
     } = this.options;
 
-    this.listState = {
+    this.setListState({
       ...stateBeforeChange,
 
       sort: {
         param: null,
         asc: isDefaultSortAsc,
       },
-    };
+    });
 
     this.emitEvent(eventTypes.resetSorting);
     this.emitEvent(eventTypes.changeLoadParams);
@@ -406,13 +406,13 @@ class Filterlist extends EventEmitter {
   }) {
     const stateBeforeChange = this.getListStateBeforeChange();
 
-    this.listState = {
+    this.setListState({
       ...stateBeforeChange,
 
       filters: filters || stateBeforeChange.filters,
       appliedFilters: appliedFilters || stateBeforeChange.appliedFilters,
       sort: sort || stateBeforeChange.sort,
-    };
+    });
 
     this.emitEvent(eventTypes.setFiltersAndSorting);
 
@@ -456,7 +456,7 @@ class Filterlist extends EventEmitter {
       saveItemsWhileLoad,
     } = this.options;
 
-    this.listState = {
+    this.setListState({
       ...prevListState,
 
       loading: false,
@@ -469,7 +469,7 @@ class Filterlist extends EventEmitter {
       additional: (typeof response.additional !== 'undefined')
         ? response.additional
         : prevListState.additional,
-    };
+    });
 
     this.emitEvent(eventTypes.loadItemsSuccess);
   }
@@ -477,7 +477,7 @@ class Filterlist extends EventEmitter {
   onError(error) {
     const prevListState = this.listState;
 
-    this.listState = {
+    this.setListState({
       ...prevListState,
 
       loading: false,
@@ -490,7 +490,7 @@ class Filterlist extends EventEmitter {
       additional: (typeof error.additional !== 'undefined')
         ? error.additional
         : prevListState.additional,
-    };
+    });
 
     this.emitEvent(eventTypes.loadItemsError);
   }
@@ -498,7 +498,7 @@ class Filterlist extends EventEmitter {
   insertItem(itemIndex, item, additional) {
     const prevListState = this.listState;
 
-    this.listState = {
+    this.setListState({
       ...prevListState,
 
       items: arrayInsert(prevListState.items, itemIndex, item),
@@ -506,7 +506,7 @@ class Filterlist extends EventEmitter {
       additional: typeof additional !== 'undefined'
         ? additional
         : prevListState.additional,
-    };
+    });
 
     this.emitEvent(eventTypes.insertItem);
   }
@@ -514,7 +514,7 @@ class Filterlist extends EventEmitter {
   deleteItem(itemIndex, additional) {
     const prevListState = this.listState;
 
-    this.listState = {
+    this.setListState({
       ...prevListState,
 
       items: prevListState.items
@@ -523,7 +523,7 @@ class Filterlist extends EventEmitter {
       additional: typeof additional !== 'undefined'
         ? additional
         : prevListState.additional,
-    };
+    });
 
     this.emitEvent(eventTypes.deleteItem);
   }
@@ -531,7 +531,7 @@ class Filterlist extends EventEmitter {
   updateItem(itemIndex, item, additional) {
     const prevListState = this.listState;
 
-    this.listState = {
+    this.setListState({
       ...prevListState,
 
       items: prevListState.items
@@ -546,9 +546,15 @@ class Filterlist extends EventEmitter {
       additional: typeof additional !== 'undefined'
         ? additional
         : prevListState.additional,
-    };
+    });
 
     this.emitEvent(eventTypes.updateItem);
+  }
+
+  setListState(nextListState) {
+    this.listState = nextListState;
+
+    this.emitEvent(eventTypes.changeListState);
   }
 
   getListState() {

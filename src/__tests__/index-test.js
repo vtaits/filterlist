@@ -27,6 +27,9 @@ const onSuccessMethod = jest.fn(() => {
 const onErrorMethod = jest.fn(() => {
   callsSequence.push('onError');
 });
+const onChangeListStateMethod = jest.fn(() => {
+  callsSequence.push('onChangeListState');
+});
 
 /* eslint-disable class-methods-use-this */
 class ManualFilterlist extends Filterlist {
@@ -69,6 +72,12 @@ class ManualFilterlist extends Filterlist {
   manualOnError(...args) {
     return super.onError(...args);
   }
+
+  setListState(...args) {
+    super.setListState(...args);
+
+    onChangeListStateMethod(...args);
+  }
 }
 /* eslint-enable class-methods-use-this */
 
@@ -80,6 +89,7 @@ afterEach(() => {
   requestItemsMethod.mockClear();
   onSuccessMethod.mockClear();
   onErrorMethod.mockClear();
+  onChangeListStateMethod.mockClear();
 });
 
 test('should throw an exception if loadItems is not defined', () => {
@@ -214,6 +224,8 @@ test('should dispatch event and request items on load items', async () => {
 
   await filterlist.manualLoadItemsOnInit();
 
+  expect(onChangeListStateMethod.mock.calls.length).toBe(1);
+
   expect(onLoadItems.mock.calls.length).toBe(1);
   expect(onLoadItems.mock.calls[0][0]).toEqual({
     ...prevState,
@@ -224,7 +236,12 @@ test('should dispatch event and request items on load items', async () => {
 
   expect(requestItemsMethod.mock.calls.length).toBe(1);
 
-  expect(callsSequence).toEqual(['onInit', 'onLoadItems', 'requestItems']);
+  expect(callsSequence).toEqual([
+    'onInit',
+    'onChangeListState',
+    'onLoadItems',
+    'requestItems',
+  ]);
 });
 
 test('should request items successfully', async () => {
@@ -476,6 +493,8 @@ describe('onSuccess', () => {
       items: [4, 5, 6],
     });
 
+    expect(onChangeListStateMethod.mock.calls.length).toBe(1);
+
     expect(filterlist.listState.loading).toBe(false);
     expect(filterlist.listState.items)
       .toEqual([1, 2, 3, 4, 5, 6]);
@@ -500,6 +519,8 @@ describe('onSuccess', () => {
     filterlist.manualOnSuccess({
       items: [4, 5, 6],
     });
+
+    expect(onChangeListStateMethod.mock.calls.length).toBe(1);
 
     expect(filterlist.listState.loading).toBe(false);
     expect(filterlist.listState.shouldClean).toBe(false);
@@ -528,6 +549,8 @@ describe('onSuccess', () => {
         test: 'value2',
       },
     });
+
+    expect(onChangeListStateMethod.mock.calls.length).toBe(1);
 
     expect(filterlist.listState.loading).toBe(false);
     expect(filterlist.listState.additional).toEqual({
@@ -578,6 +601,8 @@ describe('onSuccess', () => {
       items: [],
     });
 
+    expect(onChangeListStateMethod.mock.calls.length).toBe(1);
+
     expect(filterlist.listState.loading).toBe(false);
     expect(filterlist.listState.additional).toEqual({
       test: 'value1',
@@ -606,6 +631,8 @@ describe('onError', () => {
       additional: 'additional2',
     });
 
+    expect(onChangeListStateMethod.mock.calls.length).toBe(1);
+
     expect(filterlist.listState.loading).toBe(false);
     expect(filterlist.listState.shouldClean).toBe(false);
     expect(filterlist.listState.error).toBe('error2');
@@ -631,6 +658,8 @@ describe('onError', () => {
       error: 'error2',
     });
 
+    expect(onChangeListStateMethod.mock.calls.length).toBe(1);
+
     expect(filterlist.listState.loading).toBe(false);
     expect(filterlist.listState.shouldClean).toBe(false);
     expect(filterlist.listState.error).toBe('error2');
@@ -655,6 +684,8 @@ describe('onError', () => {
     filterlist.manualOnError({
       additional: 'additional2',
     });
+
+    expect(onChangeListStateMethod.mock.calls.length).toBe(1);
 
     expect(filterlist.listState.loading).toBe(false);
     expect(filterlist.listState.shouldClean).toBe(false);
@@ -819,6 +850,8 @@ describe('public methods', () => {
 
     await filterlist.loadItems();
 
+    expect(onChangeListStateMethod.mock.calls.length).toBe(1);
+
     const expectedListState = {
       ...nextState,
 
@@ -865,6 +898,8 @@ describe('public methods', () => {
     filterlist.listState = nextState;
 
     filterlist.setFilterValue('test2', 'value3');
+
+    expect(onChangeListStateMethod.mock.calls.length).toBe(1);
 
     const expectedListState = {
       ...nextState,
@@ -921,6 +956,8 @@ describe('public methods', () => {
     const listStateBeforeChange = filterlist.getListStateBeforeChange();
 
     await filterlist.applyFilter('test2');
+
+    expect(onChangeListStateMethod.mock.calls.length).toBe(1);
 
     const expectedListState = {
       ...listStateBeforeChange,
@@ -980,6 +1017,8 @@ describe('public methods', () => {
     const listStateBeforeChange = filterlist.getListStateBeforeChange();
 
     await filterlist.setAndApplyFilter('test2', 'value2_3');
+
+    expect(onChangeListStateMethod.mock.calls.length).toBe(1);
 
     const expectedListState = {
       ...listStateBeforeChange,
@@ -1049,6 +1088,8 @@ describe('public methods', () => {
 
     await filterlist.resetFilter('test2');
 
+    expect(onChangeListStateMethod.mock.calls.length).toBe(1);
+
     const expectedListState = {
       ...listStateBeforeChange,
 
@@ -1106,6 +1147,8 @@ describe('public methods', () => {
       test2: 'value3',
       test3: 'value4',
     });
+
+    expect(onChangeListStateMethod.mock.calls.length).toBe(1);
 
     const expectedListState = {
       ...nextState,
@@ -1165,6 +1208,8 @@ describe('public methods', () => {
     const listStateBeforeChange = filterlist.getListStateBeforeChange();
 
     await filterlist.applyFilters(['test2', 'test3']);
+
+    expect(onChangeListStateMethod.mock.calls.length).toBe(1);
 
     const expectedListState = {
       ...listStateBeforeChange,
@@ -1228,6 +1273,8 @@ describe('public methods', () => {
       test2: 'value2_3',
       test3: 'value3_3',
     });
+
+    expect(onChangeListStateMethod.mock.calls.length).toBe(1);
 
     const expectedListState = {
       ...listStateBeforeChange,
@@ -1301,6 +1348,8 @@ describe('public methods', () => {
     const listStateBeforeChange = filterlist.getListStateBeforeChange();
 
     await filterlist.resetFilters(['test2', 'test3']);
+
+    expect(onChangeListStateMethod.mock.calls.length).toBe(1);
 
     const expectedListState = {
       ...listStateBeforeChange,
@@ -1378,6 +1427,8 @@ describe('public methods', () => {
 
     await filterlist.resetAllFilters();
 
+    expect(onChangeListStateMethod.mock.calls.length).toBe(1);
+
     const expectedListState = {
       ...listStateBeforeChange,
 
@@ -1434,6 +1485,8 @@ describe('public methods', () => {
 
     await filterlist.setSorting('sortParam');
 
+    expect(onChangeListStateMethod.mock.calls.length).toBe(1);
+
     const expectedListState = {
       ...listStateBeforeChange,
 
@@ -1484,6 +1537,8 @@ describe('public methods', () => {
     const listStateBeforeChange = filterlist.getListStateBeforeChange();
 
     await filterlist.setSorting('sortParam');
+
+    expect(onChangeListStateMethod.mock.calls.length).toBe(1);
 
     const expectedListState = {
       ...listStateBeforeChange,
@@ -1541,6 +1596,8 @@ describe('public methods', () => {
 
     await filterlist.setSorting('sortParam');
 
+    expect(onChangeListStateMethod.mock.calls.length).toBe(1);
+
     const expectedListState = {
       ...listStateBeforeChange,
 
@@ -1591,6 +1648,8 @@ describe('public methods', () => {
     const listStateBeforeChange = filterlist.getListStateBeforeChange();
 
     await filterlist.setSorting('sortParam', true);
+
+    expect(onChangeListStateMethod.mock.calls.length).toBe(1);
 
     const expectedListState = {
       ...listStateBeforeChange,
@@ -1648,6 +1707,8 @@ describe('public methods', () => {
 
     await filterlist.resetSorting();
 
+    expect(onChangeListStateMethod.mock.calls.length).toBe(1);
+
     const expectedListState = {
       ...listStateBeforeChange,
 
@@ -1703,6 +1764,8 @@ describe('public methods', () => {
     const listStateBeforeChange = filterlist.getListStateBeforeChange();
 
     await filterlist.resetSorting();
+
+    expect(onChangeListStateMethod.mock.calls.length).toBe(1);
 
     const expectedListState = {
       ...listStateBeforeChange,
@@ -1783,6 +1846,8 @@ describe('public methods', () => {
       },
     });
 
+    expect(onChangeListStateMethod.mock.calls.length).toBe(1);
+
     const expectedListState = {
       ...listStateBeforeChange,
 
@@ -1858,6 +1923,8 @@ describe('public methods', () => {
       sort: null,
     });
 
+    expect(onChangeListStateMethod.mock.calls.length).toBe(1);
+
     const expectedListState = listStateBeforeChange;
 
     expect(filterlist.listState).toEqual(expectedListState);
@@ -1898,6 +1965,8 @@ describe('public methods', () => {
       label: 6,
       value: 6,
     });
+
+    expect(onChangeListStateMethod.mock.calls.length).toBe(1);
 
     const nextState = filterlist.getListState();
 
@@ -1959,6 +2028,8 @@ describe('public methods', () => {
       count: 6,
     });
 
+    expect(onChangeListStateMethod.mock.calls.length).toBe(1);
+
     const nextState = filterlist.getListState();
 
     expect(nextState.items).toEqual([{
@@ -2014,6 +2085,8 @@ describe('public methods', () => {
 
     filterlist.deleteItem(2);
 
+    expect(onChangeListStateMethod.mock.calls.length).toBe(1);
+
     const nextState = filterlist.getListState();
 
     expect(nextState.items).toEqual([{
@@ -2064,6 +2137,8 @@ describe('public methods', () => {
     filterlist.deleteItem(2, {
       count: 4,
     });
+
+    expect(onChangeListStateMethod.mock.calls.length).toBe(1);
 
     const nextState = filterlist.getListState();
 
@@ -2116,6 +2191,8 @@ describe('public methods', () => {
       label: 10,
       value: 10,
     });
+
+    expect(onChangeListStateMethod.mock.calls.length).toBe(1);
 
     const nextState = filterlist.getListState();
 
@@ -2173,6 +2250,8 @@ describe('public methods', () => {
     }, {
       count: 4,
     });
+
+    expect(onChangeListStateMethod.mock.calls.length).toBe(1);
 
     const nextState = filterlist.getListState();
 

@@ -23,3 +23,5 @@ export const requestItems = 'requestItems';
 
 export const loadItemsSuccess = 'loadItemsSuccess';
 export const loadItemsError = 'loadItemsError';
+
+export const changeListState = 'changeListState';
