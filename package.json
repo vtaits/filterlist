@@ -7,6 +7,13 @@
   "repository": "git@github.com:vtaits/filterlist.git",
   "author": "Vadim Taits <taizvadim@gmail.com>",
   "license": "MIT",
+  "keywords": [
+    "filterlist",
+    "filter",
+    "sort",
+    "pagination",
+    "vanilla"
+  ],
   "scripts": {
     "clean": "rm -rf lib es",
     "build:cjs": "cross-env BABEL_ENV=cjs babel src --out-dir lib --ignore \"src/**/__tests__\"",
