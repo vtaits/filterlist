@@ -1,5 +1,5 @@
 {
-  "name": "filterlist",
+  "name": "@vtaits/filterlist",
   "version": "0.1.0",
   "description": "Creating lists with filters, sotring, paginatinon, endless scroll etc",
   "main": "lib/index.js",

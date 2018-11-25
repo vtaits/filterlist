@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@babel/polyfill": "^7.0.0",
-    "filterlist": "link:../../",
+    "@vtaits/filterlist": "link:../../",
     "prop-types": "^15.6.2",
     "qs": "^6.6.0",
     "react": "^16.6.3",

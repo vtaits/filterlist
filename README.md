@@ -1,19 +1,19 @@
-[![NPM](https://img.shields.io/npm/v/filterlist.svg)](https://www.npmjs.com/package/filterlist)
+[![NPM](https://img.shields.io/npm/v/@vtaits/filterlist.svg)](https://www.npmjs.com/package/@vtaits/filterlist)
 
-# filterlist
+# @vtaits/filterlist
 
 Util for creating lists with filters, sotring, paginatinon, endless scroll etc.
 
 ## Installation
 
 ```
-npm install filterlist --save
+npm install @vtaits/filterlist --save
 ```
 
 or
 
 ```
-yarn add filterlist
+yarn add @vtaits/filterlist
 ```
 
 This package requiers next polyfills:
@@ -26,7 +26,7 @@ Examples are [here](https://github.com/vtaits/filterlist/tree/master/examples).
 ## Api
 
 ```
-import Filterlist from 'filterlist'
+import Filterlist from '@vtaits/filterlist';
 
 const filterlist = new Filterlist({
   ...params,
@@ -117,7 +117,7 @@ const listState = filterlist.getListState();
 `Filterlist` extends [EventEmitter](https://github.com/facebook/emitter). Every event calls calback with current list state as first argument. E.g.
 
 ```
-import { eventTypes } from 'filterlist';
+import { eventTypes } from '@vtaits/filterlist';
 
 filterlist.addListener(eventTypes.changeListState, (listState) => {
   ...

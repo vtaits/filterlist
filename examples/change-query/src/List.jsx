@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import qs from 'qs';
 
-import Filterlist, { eventTypes } from 'filterlist';
+import Filterlist, { eventTypes } from '@vtaits/filterlist';
 
 import Paginator from './Paginator';
 import Th from './Th';
