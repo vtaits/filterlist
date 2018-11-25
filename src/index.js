@@ -106,7 +106,7 @@ class Filterlist extends EventEmitter {
     };
 
     this.emitEvent(eventTypes.loadItems);
-    this.emitEvent(eventTypes.changeListState);
+    this.emitEvent(eventTypes.changeLoadParams);
 
     await this.requestItems();
   }
@@ -141,7 +141,7 @@ class Filterlist extends EventEmitter {
     };
 
     this.emitEvent(eventTypes.applyFilter);
-    this.emitEvent(eventTypes.changeListState);
+    this.emitEvent(eventTypes.changeLoadParams);
 
     await this.requestItems();
   }
@@ -166,7 +166,7 @@ class Filterlist extends EventEmitter {
     };
 
     this.emitEvent(eventTypes.setAndApplyFilter);
-    this.emitEvent(eventTypes.changeListState);
+    this.emitEvent(eventTypes.changeLoadParams);
 
     await this.requestItems();
   }
@@ -193,7 +193,7 @@ class Filterlist extends EventEmitter {
     };
 
     this.emitEvent(eventTypes.resetFilter);
-    this.emitEvent(eventTypes.changeListState);
+    this.emitEvent(eventTypes.changeLoadParams);
 
     await this.requestItems();
   }
@@ -234,7 +234,7 @@ class Filterlist extends EventEmitter {
     };
 
     this.emitEvent(eventTypes.applyFilters);
-    this.emitEvent(eventTypes.changeListState);
+    this.emitEvent(eventTypes.changeLoadParams);
 
     await this.requestItems();
   }
@@ -258,7 +258,7 @@ class Filterlist extends EventEmitter {
     };
 
     this.emitEvent(eventTypes.setAndApplyFilters);
-    this.emitEvent(eventTypes.changeListState);
+    this.emitEvent(eventTypes.changeLoadParams);
 
     await this.requestItems();
   }
@@ -293,7 +293,7 @@ class Filterlist extends EventEmitter {
     };
 
     this.emitEvent(eventTypes.resetFilters);
-    this.emitEvent(eventTypes.changeListState);
+    this.emitEvent(eventTypes.changeLoadParams);
 
     await this.requestItems();
   }
@@ -338,7 +338,7 @@ class Filterlist extends EventEmitter {
     };
 
     this.emitEvent(eventTypes.resetAllFilters);
-    this.emitEvent(eventTypes.changeListState);
+    this.emitEvent(eventTypes.changeLoadParams);
 
     await this.requestItems();
   }
@@ -372,7 +372,7 @@ class Filterlist extends EventEmitter {
     };
 
     this.emitEvent(eventTypes.setSorting);
-    this.emitEvent(eventTypes.changeListState);
+    this.emitEvent(eventTypes.changeLoadParams);
 
     await this.requestItems();
   }
@@ -394,7 +394,7 @@ class Filterlist extends EventEmitter {
     };
 
     this.emitEvent(eventTypes.resetSorting);
-    this.emitEvent(eventTypes.changeListState);
+    this.emitEvent(eventTypes.changeLoadParams);
 
     await this.requestItems();
   }

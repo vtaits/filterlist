@@ -13,7 +13,7 @@ export const setSorting = 'setSorting';
 export const resetSorting = 'resetSorting';
 export const setFiltersAndSorting = 'setFiltersAndSorting';
 
-export const changeListState = 'changeListState';
+export const changeLoadParams = 'changeLoadParams';
 
 export const insertItem = 'insertItem';
 export const deleteItem = 'deleteItem';
