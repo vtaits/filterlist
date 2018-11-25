@@ -35,7 +35,7 @@ const filterlist = new Filterlist({
 
 ### Params
 
-- **loadItems** - **required**, async Function, should return new object:
+- **loadItems** - **required**, async Function, should return next object:
   ```
   {
     items: [...],
