@@ -16,11 +16,6 @@ or
 yarn add @vtaits/filterlist
 ```
 
-This package requiers next polyfills:
-
- - Promise
- - regeneratorRuntime
-
 Examples are [here](https://github.com/vtaits/filterlist/tree/master/examples).
 
 ## Api
