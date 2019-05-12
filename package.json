@@ -22,7 +22,7 @@
     "lint": "eslint src",
     "test:unit": "jest",
     "test": "yarn lint && yarn test:unit",
-    "prepublish": "yarn build"
+    "prepare": "yarn build"
   },
   "devDependencies": {
     "@babel/cli": "^7.4.4",
