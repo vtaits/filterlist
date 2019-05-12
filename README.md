@@ -80,6 +80,7 @@ const listState = filterlist.getListState();
 | Param | Description | Type |
 | ----- | ----------- | ---- |
 | loading | is list loading in this moment | Boolean |
+| isFirstLoad | is the first load after initialization | Boolean |
 | items | loaded items | Array |
 | additional | additional info that can be recieved together with items | any |
 | error | error that can be received if list not loaded | any |
