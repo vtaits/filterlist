@@ -461,6 +461,7 @@ class Filterlist extends EventEmitter {
 
       loading: false,
       shouldClean: false,
+      isFirstLoad: false,
 
       items: (saveItemsWhileLoad && prevListState.shouldClean)
         ? response.items

@@ -496,6 +496,7 @@ describe('onSuccess', () => {
     expect(onChangeListStateMethod.mock.calls.length).toBe(1);
 
     expect(filterlist.listState.loading).toBe(false);
+    expect(filterlist.listState.isFirstLoad).toBe(false);
     expect(filterlist.listState.items)
       .toEqual([1, 2, 3, 4, 5, 6]);
   });
@@ -523,6 +524,7 @@ describe('onSuccess', () => {
     expect(onChangeListStateMethod.mock.calls.length).toBe(1);
 
     expect(filterlist.listState.loading).toBe(false);
+    expect(filterlist.listState.isFirstLoad).toBe(false);
     expect(filterlist.listState.shouldClean).toBe(false);
     expect(filterlist.listState.items)
       .toEqual([4, 5, 6]);
@@ -553,6 +555,7 @@ describe('onSuccess', () => {
     expect(onChangeListStateMethod.mock.calls.length).toBe(1);
 
     expect(filterlist.listState.loading).toBe(false);
+    expect(filterlist.listState.isFirstLoad).toBe(false);
     expect(filterlist.listState.additional).toEqual({
       test: 'value2',
     });
@@ -579,6 +582,7 @@ describe('onSuccess', () => {
     });
 
     expect(filterlist.listState.loading).toBe(false);
+    expect(filterlist.listState.isFirstLoad).toBe(false);
     expect(filterlist.listState.additional).toBe(null);
   });
 
@@ -604,6 +608,7 @@ describe('onSuccess', () => {
     expect(onChangeListStateMethod.mock.calls.length).toBe(1);
 
     expect(filterlist.listState.loading).toBe(false);
+    expect(filterlist.listState.isFirstLoad).toBe(false);
     expect(filterlist.listState.additional).toEqual({
       test: 'value1',
     });
@@ -634,6 +639,7 @@ describe('onError', () => {
     expect(onChangeListStateMethod.mock.calls.length).toBe(1);
 
     expect(filterlist.listState.loading).toBe(false);
+    expect(filterlist.listState.isFirstLoad).toBe(true);
     expect(filterlist.listState.shouldClean).toBe(false);
     expect(filterlist.listState.error).toBe('error2');
     expect(filterlist.listState.additional).toBe('additional2');
@@ -661,6 +667,7 @@ describe('onError', () => {
     expect(onChangeListStateMethod.mock.calls.length).toBe(1);
 
     expect(filterlist.listState.loading).toBe(false);
+    expect(filterlist.listState.isFirstLoad).toBe(true);
     expect(filterlist.listState.shouldClean).toBe(false);
     expect(filterlist.listState.error).toBe('error2');
     expect(filterlist.listState.additional).toBe('additional1');
@@ -688,6 +695,7 @@ describe('onError', () => {
     expect(onChangeListStateMethod.mock.calls.length).toBe(1);
 
     expect(filterlist.listState.loading).toBe(false);
+    expect(filterlist.listState.isFirstLoad).toBe(true);
     expect(filterlist.listState.shouldClean).toBe(false);
     expect(filterlist.listState.error).toBe(null);
     expect(filterlist.listState.additional).toBe('additional2');

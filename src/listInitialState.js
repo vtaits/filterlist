@@ -10,6 +10,7 @@ const listInitialState = {
   additional: null,
   error: null,
   shouldClean: false,
+  isFirstLoad: true,
 };
 
 export default listInitialState;
