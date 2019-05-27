@@ -303,6 +303,7 @@ class Filterlist extends EventEmitter {
     const {
       initialFilters,
       saveFiltersOnResetAll,
+      alwaysResetFilters,
     } = this.options;
 
     const savedFilters = saveFiltersOnResetAll
@@ -323,13 +324,13 @@ class Filterlist extends EventEmitter {
       ...stateBeforeChange,
 
       filters: {
-        ...prevListState.filters,
+        ...alwaysResetFilters,
         ...initialFilters,
         ...savedFilters,
       },
 
       appliedFilters: {
-        ...stateBeforeChange.appliedFilters,
+        ...alwaysResetFilters,
         ...initialFilters,
         ...savedAppliedFilters,
       },

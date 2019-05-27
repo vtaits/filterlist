@@ -1415,12 +1415,14 @@ describe('public methods', () => {
         test1: 'value1_1',
         test2: 'value2_1',
         test3: 'value3_1',
+        test4: 'value4_1',
       },
 
       appliedFilters: {
         test1: 'value1_2',
         test2: 'value2_2',
         test3: 'value3_2',
+        test4: 'value4_2',
       },
 
       items: [1, 2, 3],
@@ -1442,13 +1444,15 @@ describe('public methods', () => {
       ...listStateBeforeChange,
 
       filters: {
-        ...listStateBeforeChange.filters,
+        test1: 'value1_1',
         test2: 'value2_3',
+        test3: 'value3_1',
       },
 
       appliedFilters: {
-        ...listStateBeforeChange.appliedFilters,
+        test1: 'value1_2',
         test2: 'value2_3',
+        test3: 'value3_2',
       },
     };
 
