@@ -105,6 +105,7 @@ const listState = filterlist.getListState();
 | setSorting | param, asc | sets sorting column. If asc defined and Boolean, sets it. Otherwise, if this column differs from previous sorting column, asc will be setted with `isDefaultSortAsc` param from decorator. Otherwise, it will be reverse `asc` param from previous state. |
 | resetSorting | | resets sorting. Sort param will be setted with null, asc will be setted with `isDefaultSortAsc` param from decorator. |
 | deleteItem | index, additional | delete item with specified index from list. If `additional` defined, sets it. |
+| insertItem | index, item, additional | insert item by specified index. If `additional` defined, sets it. |
 | updateItem | index, item, additional | update item by specified index. If `additional` defined, sets it. |
 | setFiltersAndSorting | { filters, appliedFilters, sort } | sets filters, applied filters and sort and loads items |
 
