@@ -1,0 +1,44 @@
+{
+  "name": "@vtaits/react-filterlist",
+  "version": "0.1.5",
+  "description": "React wrapper above @vtaits/filterlist",
+  "main": "lib/index.js",
+  "module": "es/index.js",
+  "files": [
+    "/es",
+    "/lib"
+  ],
+  "repository": "git@github.com:vtaits/filterlist.git",
+  "author": "Vadim Taits <taizvadim@gmail.com>",
+  "license": "MIT",
+  "keywords": [
+    "filterlist",
+    "filter",
+    "sort",
+    "pagination",
+    "react"
+  ],
+  "scripts": {
+    "clean": "rimraf lib es",
+    "build:cjs": "cross-env BABEL_ENV=cjs babel src --out-dir lib --ignore \"src/**/__tests__\"",
+    "build:es": "cross-env BABEL_ENV=es babel src --out-dir es --ignore \"src/**/__tests__\"",
+    "build": "yarn clean && yarn build:cjs && yarn build:es",
+    "test:unit": "jest",
+    "test": "yarn test:unit",
+    "prepare": "yarn build"
+  },
+  "peerDependencies": {
+    "@vtaits/filterlist": "^0.1.0",
+    "react": "^16.0.0"
+  },
+  "devDependencies": {
+    "@vtaits/filterlist": "^0.1.5",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.4.5",
+    "is-promise": "^2.1.0",
+    "prop-types": "^15.7.2"
+  }
+}

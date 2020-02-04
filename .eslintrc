@@ -7,10 +7,11 @@
 
   "extends": [
     "eslint:recommended",
-    "airbnb-base"
+    "airbnb"
   ],
 
   "plugins": [
+    "react",
     "jest"
   ],
 
@@ -23,6 +24,24 @@
   "rules": {
     "arrow-parens": ["error", "always"],
     "import/prefer-default-export": "off",
-    "no-plusplus": "off"
+    "no-plusplus": "off",
+    "import/no-extraneous-dependencies": [
+      "error",
+      {
+        "packageDir": [
+          "./",
+          "./packages/filterlist",
+          "./packages/react-filterlist"
+        ],
+
+        "devDependencies": [
+          "**/setup-jest.js",
+          "**/__tests__/**/*",
+          "**/__stories__/**/*"
+        ]
+      }
+    ],
+
+    "react/jsx-props-no-spreading": "off"
   }
 }
