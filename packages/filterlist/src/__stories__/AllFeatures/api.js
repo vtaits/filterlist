@@ -25,15 +25,15 @@ export async function loadCars(params) {
   const desc = sort && sort[0] === '-';
   const sortParam = sort && (desc ? sort.substring(1, sort.length) : sort);
 
-  const sortedCars = sort ?
-    cars.sort((car1, car2) => {
+  const sortedCars = sort
+    ? cars.sort((car1, car2) => {
       if (car1[sortParam] > car2[sortParam]) {
         return desc ? -1 : 1;
       }
 
       return desc ? 1 : -1;
-    }) :
-    cars;
+    })
+    : cars;
 
   const filteredCars = sortedCars.filter((car) => {
     if (brand && !car.brand.toLowerCase().includes(brand)) {

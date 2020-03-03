@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 const style = {
   cursor: 'pointer',
@@ -6,13 +7,7 @@ const style = {
 };
 
 class Th extends Component {
-  constructor(props) {
-    super(props);
-
-    this.setSorting = this.setSorting.bind(this);
-  }
-
-  setSorting() {
+  setSorting = () => {
     const {
       param,
 
@@ -50,5 +45,21 @@ class Th extends Component {
     );
   }
 }
+
+Th.propTypes = {
+  param: PropTypes.string.isRequired,
+  current: PropTypes.string,
+  asc: PropTypes.bool,
+
+  setSorting: PropTypes.func.isRequired,
+
+  children: PropTypes.node,
+};
+
+Th.defaultProps = {
+  asc: null,
+  current: null,
+  children: null,
+};
 
 export default Th;

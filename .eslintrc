@@ -25,6 +25,7 @@
     "arrow-parens": ["error", "always"],
     "import/prefer-default-export": "off",
     "no-plusplus": "off",
+    "no-nested-ternary": "off",
     "import/no-extraneous-dependencies": [
       "error",
       {

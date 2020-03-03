@@ -6,20 +6,7 @@ const buttonStyle = {
 };
 
 class Page extends Component {
-  static propTypes = {
-    page: PropTypes.number.isRequired,
-    isCurrent: PropTypes.bool.isRequired,
-
-    setPage: PropTypes.func.isRequired,
-  }
-
-  constructor(props) {
-    super(props);
-
-    this.setPage = this.setPage.bind(this);
-  }
-
-  setPage() {
+  setPage = () => {
     const {
       page,
       isCurrent,
@@ -52,5 +39,12 @@ class Page extends Component {
     );
   }
 }
+
+Page.propTypes = {
+  page: PropTypes.number.isRequired,
+  isCurrent: PropTypes.bool.isRequired,
+
+  setPage: PropTypes.func.isRequired,
+};
 
 export default Page;

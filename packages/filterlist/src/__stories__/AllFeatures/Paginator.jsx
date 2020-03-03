@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import Page from './Page';
 
@@ -34,6 +35,13 @@ const Paginator = ({
       {pages}
     </div>
   );
+};
+
+Paginator.propTypes = {
+  count: PropTypes.number.isRequired,
+  perPage: PropTypes.number.isRequired,
+  current: PropTypes.number.isRequired,
+  setPage: PropTypes.func.isRequired,
 };
 
 export default Paginator;

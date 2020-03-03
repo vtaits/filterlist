@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/label-has-associated-control */
+
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import qs from 'qs';
@@ -30,9 +32,9 @@ function getStateFromSearch(search) {
     sort: {
       param: sort
         ? (
-          sort[0] === '-' ?
-            sort.substring(1, sort.length) :
-            sort
+          sort[0] === '-'
+            ? sort.substring(1, sort.length)
+            : sort
         )
         : 'id',
       asc: !!sort && sort[0] !== '-',
@@ -61,17 +63,6 @@ async function loadItems({
 }
 
 class List extends Component {
-  static propTypes = {
-    history: PropTypes.shape({
-      push: PropTypes.func.isRequired,
-      action: PropTypes.string,
-    }).isRequired,
-
-    location: PropTypes.shape({
-      search: PropTypes.string.isRequired,
-    }).isRequired,
-  }
-
   constructor(props) {
     super(props);
 
@@ -132,11 +123,6 @@ class List extends Component {
     };
   }
 
-  componentWillUnmount() {
-    this.filterlist.removeAllListeners(eventTypes.changeListState);
-    this.filterlist.removeAllListeners(eventTypes.changeLoadParams);
-  }
-
   componentDidUpdate(prevProps) {
     const {
       history,
@@ -153,22 +139,47 @@ class List extends Component {
     }
   }
 
-  syncListState() {
-    this.setState({
-      listState: this.filterlist.getListState(),
+  componentWillUnmount() {
+    this.filterlist.removeAllListeners(eventTypes.changeListState);
+    this.filterlist.removeAllListeners(eventTypes.changeLoadParams);
+  }
+
+  onChangeListState(newListState) {
+    const {
+      history,
+    } = this.props;
+
+    const newQuery = qs.stringify({
+      ...newListState.appliedFilters,
+      hideYellow: newListState.appliedFilters.hideYellow ? 1 : undefined,
+      hideRed: newListState.appliedFilters.hideRed ? 1 : undefined,
+      hideBlue: newListState.appliedFilters.hideBlue ? 1 : undefined,
+      sort: newListState.sort.param
+        ? `${newListState.sort.asc ? '' : '-'}${newListState.sort.param}`
+        : null,
     });
+
+    history.push(`/?${newQuery}`);
+  }
+
+  setPage(page) {
+    this.filterlist.setAndApplyFilter('page', page);
+  }
+
+  setPerPage({ target: { value } }) {
+    this.filterlist.setAndApplyFilter('perPage', Number(value));
   }
 
   setInputFilterValue(filterName, { target: { value } }) {
     this.filterlist.setFilterValue(filterName, value);
   }
 
-  applyFilter(filterName) {
-    this.filterlist.applyFilter(filterName);
+  setSorting(paramName, asc) {
+    this.filterlist.setSorting(paramName, asc);
   }
 
-  resetFilter(filterName) {
-    this.filterlist.resetFilter(filterName);
+  resetAllFilters() {
+    this.filterlist.resetAllFilters();
   }
 
   toggleCheckbox(filterName) {
@@ -193,38 +204,18 @@ class List extends Component {
     this.filterlist.resetFilters(['hideYellow', 'hideRed', 'hideBlue']);
   }
 
-  setPerPage({ target: { value } }) {
-    this.filterlist.setAndApplyFilter('perPage', Number(value));
+  resetFilter(filterName) {
+    this.filterlist.resetFilter(filterName);
   }
 
-  setPage(page) {
-    this.filterlist.setAndApplyFilter('page', page);
+  applyFilter(filterName) {
+    this.filterlist.applyFilter(filterName);
   }
 
-  resetAllFilters() {
-    this.filterlist.resetAllFilters();
-  }
-
-  setSorting(paramName, asc) {
-    this.filterlist.setSorting(paramName, asc);
-  }
-
-  onChangeListState(newListState) {
-    const {
-      history,
-    } = this.props;
-
-    const newQuery = qs.stringify({
-      ...newListState.appliedFilters,
-      hideYellow: newListState.appliedFilters.hideYellow ? 1 : undefined,
-      hideRed: newListState.appliedFilters.hideRed ? 1 : undefined,
-      hideBlue: newListState.appliedFilters.hideBlue ? 1 : undefined,
-      sort: newListState.sort.param
-        ? `${newListState.sort.asc ? '' : '-'}${newListState.sort.param}`
-        : null,
+  syncListState() {
+    this.setState({
+      listState: this.filterlist.getListState(),
     });
-
-    history.push(`/?${newQuery}`);
   }
 
   render() {
@@ -422,7 +413,9 @@ class List extends Component {
         {
           additional && (
             <h4>
-              Total: {additional.count}
+              Total:
+              {' '}
+              {additional.count}
             </h4>
           )
         }
@@ -435,7 +428,7 @@ class List extends Component {
 
         <p>
           Items per page:
-      {' '}
+          {' '}
           <select
             value={perPage}
             onChange={this.setPerPage}
@@ -461,5 +454,16 @@ class List extends Component {
     );
   }
 }
+
+List.propTypes = {
+  history: PropTypes.shape({
+    push: PropTypes.func.isRequired,
+    action: PropTypes.string,
+  }).isRequired,
+
+  location: PropTypes.shape({
+    search: PropTypes.string.isRequired,
+  }).isRequired,
+};
 
 export default List;
