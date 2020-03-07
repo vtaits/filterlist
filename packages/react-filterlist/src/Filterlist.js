@@ -68,6 +68,7 @@ class FilterlistWrapper extends Component {
   componentWillUnmount() {
     this.unmounted = true;
     this.filterlist.removeAllListeners(eventTypes.changeListState);
+    this.filterlist.removeAllListeners(eventTypes.changeLoadParams);
   }
 
   onChangeLoadParams = (nextListState) => {
