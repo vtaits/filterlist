@@ -21,7 +21,7 @@ export async function loadCars(params) {
   const hideRed = Boolean(params.hideRed);
   const hideBlue = Boolean(params.hideBlue);
 
-  const { sort } = params.sort;
+  const { sort } = params;
   const desc = sort && sort[0] === '-';
   const sortParam = sort && (desc ? sort.substring(1, sort.length) : sort);
 
