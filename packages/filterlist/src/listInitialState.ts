@@ -1,4 +1,6 @@
-const listInitialState = {
+import { ListState } from './types';
+
+const listInitialState: ListState = {
   sort: {
     param: null,
     asc: true,

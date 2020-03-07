@@ -115,8 +115,8 @@ class List extends Component {
       ...stateFromSearch,
     });
 
-    this.filterlist.addListener(eventTypes.changeListState, this.syncListState);
-    this.filterlist.addListener(eventTypes.changeLoadParams, this.onChangeListState);
+    this.filterlist.emitter.addListener(eventTypes.changeListState, this.syncListState);
+    this.filterlist.emitter.addListener(eventTypes.changeLoadParams, this.onChangeListState);
 
     this.state = {
       listState: this.filterlist.getListState(),
@@ -140,8 +140,8 @@ class List extends Component {
   }
 
   componentWillUnmount() {
-    this.filterlist.removeAllListeners(eventTypes.changeListState);
-    this.filterlist.removeAllListeners(eventTypes.changeLoadParams);
+    this.filterlist.emitter.removeAllListeners(eventTypes.changeListState);
+    this.filterlist.emitter.removeAllListeners(eventTypes.changeLoadParams);
   }
 
   onChangeListState(newListState) {

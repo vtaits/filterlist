@@ -221,7 +221,7 @@ test('should dispatch event and request items on load items', async () => {
     error: 'error',
   };
 
-  filterlist.addListener(eventTypes.loadItems, onLoadItems);
+  filterlist.emitter.addListener(eventTypes.loadItems, onLoadItems);
 
   await filterlist.manualLoadItemsOnInit();
 
@@ -272,7 +272,7 @@ test('should request items successfully', async () => {
 
   const prevState = filterlist.getListState();
 
-  filterlist.addListener(eventTypes.requestItems, onRequestItems);
+  filterlist.emitter.addListener(eventTypes.requestItems, onRequestItems);
   filterlist.requestId = 3;
 
   await filterlist.manualRequestItems();
@@ -317,7 +317,7 @@ test('should request items with error', async () => {
 
   const prevState = filterlist.getListState();
 
-  filterlist.addListener(eventTypes.requestItems, onRequestItems);
+  filterlist.emitter.addListener(eventTypes.requestItems, onRequestItems);
   filterlist.requestId = 3;
 
   await filterlist.manualRequestItems();
@@ -354,7 +354,7 @@ test('should throw up not LoadListError', async () => {
 
   const prevState = filterlist.getListState();
 
-  filterlist.addListener(eventTypes.requestItems, onRequestItems);
+  filterlist.emitter.addListener(eventTypes.requestItems, onRequestItems);
   filterlist.requestId = 3;
 
   let hasError = false;
@@ -410,7 +410,7 @@ test('should ingore success response if requestId increased in process of loadIt
 
   const prevState = filterlist.getListState();
 
-  filterlist.addListener(eventTypes.requestItems, onRequestItems);
+  filterlist.emitter.addListener(eventTypes.requestItems, onRequestItems);
   filterlist.requestId = 3;
 
   await filterlist.manualRequestItems();
@@ -458,7 +458,7 @@ test('should ingore LoadListError if requestId increased in process of loadItems
 
   const prevState = filterlist.getListState();
 
-  filterlist.addListener(eventTypes.requestItems, onRequestItems);
+  filterlist.emitter.addListener(eventTypes.requestItems, onRequestItems);
   filterlist.requestId = 3;
 
   await filterlist.manualRequestItems();
@@ -830,8 +830,8 @@ describe('public methods', () => {
     const onLoadItems = jest.fn();
     const onChangeLoadParams = jest.fn();
 
-    filterlist.addListener(eventTypes.loadItems, onLoadItems);
-    filterlist.addListener(eventTypes.changeLoadParams, onChangeLoadParams);
+    filterlist.emitter.addListener(eventTypes.loadItems, onLoadItems);
+    filterlist.emitter.addListener(eventTypes.changeLoadParams, onChangeLoadParams);
 
     const prevState = filterlist.getListState();
 
@@ -885,7 +885,7 @@ describe('public methods', () => {
 
     const onSetFilterValue = jest.fn();
 
-    filterlist.addListener(eventTypes.setFilterValue, onSetFilterValue);
+    filterlist.emitter.addListener(eventTypes.setFilterValue, onSetFilterValue);
 
     const prevState = filterlist.getListState();
 
@@ -935,8 +935,8 @@ describe('public methods', () => {
     const onApplyFilter = jest.fn();
     const onChangeLoadParams = jest.fn();
 
-    filterlist.addListener(eventTypes.applyFilter, onApplyFilter);
-    filterlist.addListener(eventTypes.changeLoadParams, onChangeLoadParams);
+    filterlist.emitter.addListener(eventTypes.applyFilter, onApplyFilter);
+    filterlist.emitter.addListener(eventTypes.changeLoadParams, onChangeLoadParams);
 
     const prevState = filterlist.getListState();
 
@@ -996,8 +996,8 @@ describe('public methods', () => {
     const onSetAndApplyFilter = jest.fn();
     const onChangeLoadParams = jest.fn();
 
-    filterlist.addListener(eventTypes.setAndApplyFilter, onSetAndApplyFilter);
-    filterlist.addListener(eventTypes.changeLoadParams, onChangeLoadParams);
+    filterlist.emitter.addListener(eventTypes.setAndApplyFilter, onSetAndApplyFilter);
+    filterlist.emitter.addListener(eventTypes.changeLoadParams, onChangeLoadParams);
 
     const prevState = filterlist.getListState();
 
@@ -1066,8 +1066,8 @@ describe('public methods', () => {
     const onResetFilter = jest.fn();
     const onChangeLoadParams = jest.fn();
 
-    filterlist.addListener(eventTypes.resetFilter, onResetFilter);
-    filterlist.addListener(eventTypes.changeLoadParams, onChangeLoadParams);
+    filterlist.emitter.addListener(eventTypes.resetFilter, onResetFilter);
+    filterlist.emitter.addListener(eventTypes.changeLoadParams, onChangeLoadParams);
 
     const prevState = filterlist.getListState();
 
@@ -1131,7 +1131,7 @@ describe('public methods', () => {
 
     const onSetFiltersValues = jest.fn();
 
-    filterlist.addListener(eventTypes.setFiltersValues, onSetFiltersValues);
+    filterlist.emitter.addListener(eventTypes.setFiltersValues, onSetFiltersValues);
 
     const prevState = filterlist.getListState();
 
@@ -1185,8 +1185,8 @@ describe('public methods', () => {
     const onApplyFilters = jest.fn();
     const onChangeLoadParams = jest.fn();
 
-    filterlist.addListener(eventTypes.applyFilters, onApplyFilters);
-    filterlist.addListener(eventTypes.changeLoadParams, onChangeLoadParams);
+    filterlist.emitter.addListener(eventTypes.applyFilters, onApplyFilters);
+    filterlist.emitter.addListener(eventTypes.changeLoadParams, onChangeLoadParams);
 
     const prevState = filterlist.getListState();
 
@@ -1249,8 +1249,8 @@ describe('public methods', () => {
     const onSetAndApplyFilters = jest.fn();
     const onChangeLoadParams = jest.fn();
 
-    filterlist.addListener(eventTypes.setAndApplyFilters, onSetAndApplyFilters);
-    filterlist.addListener(eventTypes.changeLoadParams, onChangeLoadParams);
+    filterlist.emitter.addListener(eventTypes.setAndApplyFilters, onSetAndApplyFilters);
+    filterlist.emitter.addListener(eventTypes.changeLoadParams, onChangeLoadParams);
 
     const prevState = filterlist.getListState();
 
@@ -1325,8 +1325,8 @@ describe('public methods', () => {
     const onResetFilters = jest.fn();
     const onChangeLoadParams = jest.fn();
 
-    filterlist.addListener(eventTypes.resetFilters, onResetFilters);
-    filterlist.addListener(eventTypes.changeLoadParams, onChangeLoadParams);
+    filterlist.emitter.addListener(eventTypes.resetFilters, onResetFilters);
+    filterlist.emitter.addListener(eventTypes.changeLoadParams, onChangeLoadParams);
 
     const prevState = filterlist.getListState();
 
@@ -1403,8 +1403,8 @@ describe('public methods', () => {
     const onResetAllFilters = jest.fn();
     const onChangeLoadParams = jest.fn();
 
-    filterlist.addListener(eventTypes.resetAllFilters, onResetAllFilters);
-    filterlist.addListener(eventTypes.changeLoadParams, onChangeLoadParams);
+    filterlist.emitter.addListener(eventTypes.resetAllFilters, onResetAllFilters);
+    filterlist.emitter.addListener(eventTypes.changeLoadParams, onChangeLoadParams);
 
     const prevState = filterlist.getListState();
 
@@ -1477,8 +1477,8 @@ describe('public methods', () => {
     const onSetSorting = jest.fn();
     const onChangeLoadParams = jest.fn();
 
-    filterlist.addListener(eventTypes.setSorting, onSetSorting);
-    filterlist.addListener(eventTypes.changeLoadParams, onChangeLoadParams);
+    filterlist.emitter.addListener(eventTypes.setSorting, onSetSorting);
+    filterlist.emitter.addListener(eventTypes.changeLoadParams, onChangeLoadParams);
 
     const prevState = filterlist.getListState();
 
@@ -1530,8 +1530,8 @@ describe('public methods', () => {
     const onSetSorting = jest.fn();
     const onChangeLoadParams = jest.fn();
 
-    filterlist.addListener(eventTypes.setSorting, onSetSorting);
-    filterlist.addListener(eventTypes.changeLoadParams, onChangeLoadParams);
+    filterlist.emitter.addListener(eventTypes.setSorting, onSetSorting);
+    filterlist.emitter.addListener(eventTypes.changeLoadParams, onChangeLoadParams);
 
     const prevState = filterlist.getListState();
 
@@ -1588,8 +1588,8 @@ describe('public methods', () => {
     const onSetSorting = jest.fn();
     const onChangeLoadParams = jest.fn();
 
-    filterlist.addListener(eventTypes.setSorting, onSetSorting);
-    filterlist.addListener(eventTypes.changeLoadParams, onChangeLoadParams);
+    filterlist.emitter.addListener(eventTypes.setSorting, onSetSorting);
+    filterlist.emitter.addListener(eventTypes.changeLoadParams, onChangeLoadParams);
 
     const prevState = filterlist.getListState();
 
@@ -1641,8 +1641,8 @@ describe('public methods', () => {
     const onSetSorting = jest.fn();
     const onChangeLoadParams = jest.fn();
 
-    filterlist.addListener(eventTypes.setSorting, onSetSorting);
-    filterlist.addListener(eventTypes.changeLoadParams, onChangeLoadParams);
+    filterlist.emitter.addListener(eventTypes.setSorting, onSetSorting);
+    filterlist.emitter.addListener(eventTypes.changeLoadParams, onChangeLoadParams);
 
     const prevState = filterlist.getListState();
 
@@ -1699,8 +1699,8 @@ describe('public methods', () => {
     const onResetSorting = jest.fn();
     const onChangeLoadParams = jest.fn();
 
-    filterlist.addListener(eventTypes.resetSorting, onResetSorting);
-    filterlist.addListener(eventTypes.changeLoadParams, onChangeLoadParams);
+    filterlist.emitter.addListener(eventTypes.resetSorting, onResetSorting);
+    filterlist.emitter.addListener(eventTypes.changeLoadParams, onChangeLoadParams);
 
     const prevState = filterlist.getListState();
 
@@ -1757,8 +1757,8 @@ describe('public methods', () => {
     const onResetSorting = jest.fn();
     const onChangeLoadParams = jest.fn();
 
-    filterlist.addListener(eventTypes.resetSorting, onResetSorting);
-    filterlist.addListener(eventTypes.changeLoadParams, onChangeLoadParams);
+    filterlist.emitter.addListener(eventTypes.resetSorting, onResetSorting);
+    filterlist.emitter.addListener(eventTypes.changeLoadParams, onChangeLoadParams);
 
     const prevState = filterlist.getListState();
 
@@ -1812,7 +1812,7 @@ describe('public methods', () => {
 
     const onSetFiltersAndSorting = jest.fn();
 
-    filterlist.addListener(eventTypes.setFiltersAndSorting, onSetFiltersAndSorting);
+    filterlist.emitter.addListener(eventTypes.setFiltersAndSorting, onSetFiltersAndSorting);
 
     const prevState = filterlist.getListState();
 
@@ -1900,7 +1900,7 @@ describe('public methods', () => {
 
     const onSetFiltersAndSorting = jest.fn();
 
-    filterlist.addListener(eventTypes.setFiltersAndSorting, onSetFiltersAndSorting);
+    filterlist.emitter.addListener(eventTypes.setFiltersAndSorting, onSetFiltersAndSorting);
 
     const prevState = filterlist.getListState();
 

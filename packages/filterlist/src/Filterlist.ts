@@ -1,4 +1,4 @@
-import EventEmitter from 'events';
+import EventEmitter from 'eventemitter3';
 import arrayInsert from 'array-insert';
 
 import collectListInitialState from './collectListInitialState';
@@ -7,9 +7,28 @@ import collectOptions from './collectOptions';
 import * as eventTypes from './eventTypes';
 import { LoadListError } from './errors';
 
-class Filterlist extends EventEmitter {
-  constructor(params) {
-    super();
+import {
+  Sort,
+  ListState,
+  Options,
+  Params,
+  ItemsLoader,
+  EventType,
+} from './types';
+
+class Filterlist<Item = any, Additional = any, Error = any> {
+  requestId: number;
+
+  listState: ListState<Item, Additional, Error>;
+
+  options: Options;
+
+  itemsLoader: ItemsLoader<Item, Additional, Error>;
+
+  emitter: EventEmitter;
+
+  constructor(params: Params<Item, Additional, Error>) {
+    this.emitter = new EventEmitter();
 
     const {
       loadItems,
@@ -32,7 +51,7 @@ class Filterlist extends EventEmitter {
     this.onInit();
   }
 
-  getListStateBeforeChange() {
+  getListStateBeforeChange(): ListState<Item, Additional, Error> {
     const prevListState = this.listState;
 
     const {
@@ -62,11 +81,11 @@ class Filterlist extends EventEmitter {
     };
   }
 
-  emitEvent(eventType) {
-    this.emit(eventType, this.listState);
+  emitEvent(eventType: EventType): void {
+    this.emitter.emit(eventType, this.listState);
   }
 
-  onInit() {
+  onInit(): void {
     const {
       autoload,
     } = this.options;
@@ -76,7 +95,7 @@ class Filterlist extends EventEmitter {
     }
   }
 
-  async loadItemsOnInit() {
+  async loadItemsOnInit(): Promise<void> {
     const prevListState = this.listState;
 
     this.setListState({
@@ -92,7 +111,7 @@ class Filterlist extends EventEmitter {
     await this.requestItems();
   }
 
-  async loadItems() {
+  async loadItems(): Promise<void> {
     const prevListState = this.listState;
 
     this.setListState({
@@ -109,7 +128,7 @@ class Filterlist extends EventEmitter {
     await this.requestItems();
   }
 
-  setFilterValue(filterName, value) {
+  setFilterValue(filterName: string, value: any): void {
     const prevListState = this.listState;
 
     this.setListState({
@@ -125,7 +144,7 @@ class Filterlist extends EventEmitter {
     this.emitEvent(eventTypes.setFilterValue);
   }
 
-  async applyFilter(filterName) {
+  async applyFilter(filterName: string): Promise<void> {
     const prevListState = this.listState;
     const stateBeforeChange = this.getListStateBeforeChange();
 
@@ -144,7 +163,7 @@ class Filterlist extends EventEmitter {
     await this.requestItems();
   }
 
-  async setAndApplyFilter(filterName, value) {
+  async setAndApplyFilter(filterName: string, value: any): Promise<void> {
     const prevListState = this.listState;
     const stateBeforeChange = this.getListStateBeforeChange();
 
@@ -169,7 +188,7 @@ class Filterlist extends EventEmitter {
     await this.requestItems();
   }
 
-  async resetFilter(filterName) {
+  async resetFilter(filterName: string): Promise<void> {
     const prevListState = this.listState;
     const stateBeforeChange = this.getListStateBeforeChange();
 
@@ -196,7 +215,7 @@ class Filterlist extends EventEmitter {
     await this.requestItems();
   }
 
-  setFiltersValues(values) {
+  setFiltersValues(values: Object): void {
     const prevListState = this.listState;
 
     this.setListState({
@@ -211,7 +230,7 @@ class Filterlist extends EventEmitter {
     this.emitEvent(eventTypes.setFiltersValues);
   }
 
-  async applyFilters(filtersNames) {
+  async applyFilters(filtersNames: string[]): Promise<void> {
     const prevListState = this.listState;
     const stateBeforeChange = this.getListStateBeforeChange();
 
@@ -237,7 +256,7 @@ class Filterlist extends EventEmitter {
     await this.requestItems();
   }
 
-  async setAndApplyFilters(values) {
+  async setAndApplyFilters(values: Object): Promise<void> {
     const prevListState = this.listState;
     const stateBeforeChange = this.getListStateBeforeChange();
 
@@ -261,7 +280,7 @@ class Filterlist extends EventEmitter {
     await this.requestItems();
   }
 
-  async resetFilters(filtersNames) {
+  async resetFilters(filtersNames: string[]): Promise<void> {
     const prevListState = this.listState;
     const stateBeforeChange = this.getListStateBeforeChange();
 
@@ -296,7 +315,7 @@ class Filterlist extends EventEmitter {
     await this.requestItems();
   }
 
-  async resetAllFilters() {
+  async resetAllFilters(): Promise<void> {
     const prevListState = this.listState;
     const stateBeforeChange = this.getListStateBeforeChange();
 
@@ -342,7 +361,7 @@ class Filterlist extends EventEmitter {
     await this.requestItems();
   }
 
-  getNextAsc(param, asc) {
+  getNextAsc(param: string, asc?: boolean): boolean {
     if (typeof asc === 'boolean') {
       return asc;
     }
@@ -356,7 +375,7 @@ class Filterlist extends EventEmitter {
     return this.options.isDefaultSortAsc;
   }
 
-  async setSorting(param, asc) {
+  async setSorting(param: string, asc?: boolean) {
     const stateBeforeChange = this.getListStateBeforeChange();
 
     const nextAsc = this.getNextAsc(param, asc);
@@ -376,7 +395,7 @@ class Filterlist extends EventEmitter {
     await this.requestItems();
   }
 
-  async resetSorting() {
+  async resetSorting(): Promise<void> {
     const stateBeforeChange = this.getListStateBeforeChange();
 
     const {
@@ -402,7 +421,11 @@ class Filterlist extends EventEmitter {
     filters,
     appliedFilters,
     sort,
-  }) {
+  }: {
+    filters: Object;
+    appliedFilters: Object;
+    sort: Sort;
+  }): Promise<void> {
     const stateBeforeChange = this.getListStateBeforeChange();
 
     this.setListState({
@@ -418,7 +441,7 @@ class Filterlist extends EventEmitter {
     await this.requestItems();
   }
 
-  async requestItems() {
+  async requestItems(): Promise<void> {
     const nextRequestId = this.requestId + 1;
     ++this.requestId;
 
@@ -448,7 +471,10 @@ class Filterlist extends EventEmitter {
     this.onSuccess(response);
   }
 
-  onSuccess(response) {
+  onSuccess(response: {
+    items: Item[],
+    additional?: Additional;
+  }): void {
     const prevListState = this.listState;
 
     const {
@@ -464,7 +490,7 @@ class Filterlist extends EventEmitter {
 
       items: (saveItemsWhileLoad && prevListState.shouldClean)
         ? response.items
-        : prevListState.items.concat(response.items),
+        : [...prevListState.items, ...response.items],
 
       additional: (typeof response.additional !== 'undefined')
         ? response.additional
@@ -474,7 +500,7 @@ class Filterlist extends EventEmitter {
     this.emitEvent(eventTypes.loadItemsSuccess);
   }
 
-  onError(error) {
+  onError(error: LoadListError<Error, Additional>): void {
     const prevListState = this.listState;
 
     this.setListState({
@@ -495,7 +521,7 @@ class Filterlist extends EventEmitter {
     this.emitEvent(eventTypes.loadItemsError);
   }
 
-  insertItem(itemIndex, item, additional) {
+  insertItem(itemIndex: number, item: Item, additional?: Additional): void {
     const prevListState = this.listState;
 
     this.setListState({
@@ -511,7 +537,7 @@ class Filterlist extends EventEmitter {
     this.emitEvent(eventTypes.insertItem);
   }
 
-  deleteItem(itemIndex, additional) {
+  deleteItem(itemIndex: number, additional?: Additional): void {
     const prevListState = this.listState;
 
     this.setListState({
@@ -528,7 +554,7 @@ class Filterlist extends EventEmitter {
     this.emitEvent(eventTypes.deleteItem);
   }
 
-  updateItem(itemIndex, item, additional) {
+  updateItem(itemIndex: number, item: Item, additional?: Additional): void {
     const prevListState = this.listState;
 
     this.setListState({
@@ -551,13 +577,13 @@ class Filterlist extends EventEmitter {
     this.emitEvent(eventTypes.updateItem);
   }
 
-  setListState(nextListState) {
+  setListState(nextListState: ListState<Item, Additional, Error>): void {
     this.listState = nextListState;
 
     this.emitEvent(eventTypes.changeListState);
   }
 
-  getListState() {
+  getListState(): ListState<Item, Additional, Error> {
     return this.listState;
   }
 }

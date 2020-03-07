@@ -43,8 +43,8 @@ const getFilterlistOptions = (params, loadItems) => {
 const createFilterlist = (options, syncListState, onChangeLoadParams) => {
   const filterlist = new Filterlist(options);
 
-  filterlist.addListener(eventTypes.changeListState, syncListState);
-  filterlist.addListener(eventTypes.changeLoadParams, onChangeLoadParams);
+  filterlist.emitter.addListener(eventTypes.changeListState, syncListState);
+  filterlist.emitter.addListener(eventTypes.changeLoadParams, onChangeLoadParams);
 
   return filterlist;
 };
@@ -155,8 +155,8 @@ const useFilterlist = (params, inputs = []) => {
 
     return () => {
       if (filterlistRef.current) {
-        filterlistRef.current.removeAllListeners(eventTypes.changeListState);
-        filterlistRef.current.removeAllListeners(eventTypes.onChangeLoadParams);
+        filterlistRef.current.emitter.removeAllListeners(eventTypes.changeListState);
+        filterlistRef.current.emitter.removeAllListeners(eventTypes.onChangeLoadParams);
       }
 
       filterlistRef.current = null;

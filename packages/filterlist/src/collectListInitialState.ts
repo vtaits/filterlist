@@ -1,7 +1,10 @@
+import { Params, ListState } from './types';
+
 import listInitialState from './listInitialState';
 
-export default function collectListInitialState(params) {
-  return {
+const collectListInitialState = <Item = any, Additional = any>(
+  params: Params<Item, Additional>,
+): ListState<Item, Additional> => ({
     ...listInitialState,
 
     items: params.items || listInitialState.items,
@@ -19,5 +22,6 @@ export default function collectListInitialState(params) {
 
     appliedFilters: params.appliedFilters
       || listInitialState.appliedFilters,
-  };
-}
+  });
+
+export default collectListInitialState;

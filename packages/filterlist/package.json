@@ -4,6 +4,7 @@
   "description": "Creating lists with filters, sotring, paginatinon, endless scroll etc",
   "main": "lib/index.js",
   "module": "es/index.js",
+  "typings": "ts/index.d.ts",
   "repository": "git@github.com:vtaits/filterlist.git",
   "author": "Vadim Taits <taizvadim@gmail.com>",
   "license": "MIT",
@@ -16,13 +17,15 @@
   ],
   "files": [
     "/es",
-    "/lib"
+    "/lib",
+    "/ts"
   ],
   "scripts": {
-    "clean": "rimraf lib es",
-    "build:cjs": "cross-env BABEL_ENV=cjs babel src --out-dir lib --ignore \"src/**/__tests__\",\"src/**/__stories__\"",
-    "build:es": "cross-env BABEL_ENV=es babel src --out-dir es --ignore \"src/**/__tests__\",\"src/**/__stories__\"",
-    "build": "yarn clean && yarn build:cjs && yarn build:es",
+    "clean": "rimraf lib es ts",
+    "build:cjs": "cross-env BABEL_ENV=cjs babel --extensions '.ts' src --out-dir lib --ignore \"src/**/__tests__\",\"src/**/__stories__\"",
+    "build:es": "cross-env BABEL_ENV=es babel --extensions '.ts' src --out-dir es --ignore \"src/**/__tests__\",\"src/**/__stories__\"",
+    "build:ts": "tsc --declaration",
+    "build": "yarn clean && yarn build:cjs && yarn build:es && yarn build:ts",
     "test:unit": "jest",
     "test": "yarn test:unit",
     "prepare": "yarn build"
@@ -31,6 +34,6 @@
     "@babel/runtime": "^7.8.4",
     "array-insert": "^2.0.0",
     "es6-error": "^4.1.1",
-    "events": "^3.1.0"
+    "eventemitter3": "^4.0.0"
   }
 }

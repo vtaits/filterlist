@@ -5,3 +5,12 @@ export { default as collectListInitialState } from './collectListInitialState';
 export { default as collectOptions } from './collectOptions';
 export { LoadListError } from './errors';
 export { eventTypes };
+
+export {
+  Sort,
+  ListState,
+  Options,
+  ItemsLoader,
+  Params,
+  EventType,
+} from './types';

@@ -67,8 +67,8 @@ class FilterlistWrapper extends Component {
 
   componentWillUnmount() {
     this.unmounted = true;
-    this.filterlist.removeAllListeners(eventTypes.changeListState);
-    this.filterlist.removeAllListeners(eventTypes.changeLoadParams);
+    this.filterlist.emitter.removeAllListeners(eventTypes.changeListState);
+    this.filterlist.emitter.removeAllListeners(eventTypes.changeLoadParams);
   }
 
   onChangeLoadParams = (nextListState) => {
@@ -156,14 +156,14 @@ class FilterlistWrapper extends Component {
   createFilterlist(options) {
     const filterlist = new Filterlist(options);
 
-    filterlist.addListener(eventTypes.changeListState, this.syncListState);
+    filterlist.emitter.addListener(eventTypes.changeListState, this.syncListState);
 
     const listActions = methodsForChild.reduce((res, methodName) => {
       res[methodName] = filterlist[methodName].bind(filterlist);
       return res;
     }, {});
 
-    filterlist.addListener(eventTypes.changeLoadParams, this.onChangeLoadParams);
+    filterlist.emitter.addListener(eventTypes.changeLoadParams, this.onChangeLoadParams);
 
     this.listActions = listActions;
 
