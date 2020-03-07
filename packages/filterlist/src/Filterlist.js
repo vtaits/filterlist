@@ -1,4 +1,4 @@
-import { EventEmitter } from 'fbemitter';
+import EventEmitter from 'events';
 import arrayInsert from 'array-insert';
 
 import collectListInitialState from './collectListInitialState';

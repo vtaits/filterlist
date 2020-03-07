@@ -1,4 +1,4 @@
-import { EventEmitter } from 'fbemitter';
+import EventEmitter from 'events';
 
 const mockedMethods = [
   'loadItems',
