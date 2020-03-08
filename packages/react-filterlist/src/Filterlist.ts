@@ -1,29 +1,58 @@
 import { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import Filterlist, { eventTypes } from '@vtaits/filterlist';
+import Filterlist, {
+  eventTypes,
+  ListState,
+} from '@vtaits/filterlist';
 
 import defaultShouldRecount from './defaultShouldRecount';
 
-export const methodsForChild = [
-  'loadItems',
-  'setFilterValue',
-  'applyFilter',
-  'setAndApplyFilter',
-  'resetFilter',
-  'setFiltersValues',
-  'applyFilters',
-  'setAndApplyFilters',
-  'resetFilters',
-  'resetAllFilters',
-  'setSorting',
-  'resetSorting',
-  'insertItem',
-  'deleteItem',
-  'updateItem',
-];
+import {
+  ComponentListActions,
+  ComponentParams,
+} from './types';
 
-class FilterlistWrapper extends Component {
+type State<Item = any, Additional = any, Error = any> = {
+  isListInited: boolean;
+  listState?: ListState<Item, Additional, Error>;
+};
+
+class FilterlistWrapper<
+  Item = any,
+  Additional = any,
+  Error = any,
+  FiltersAndSortData = any
+> extends Component<
+  ComponentParams<Item, Additional, Error, FiltersAndSortData>, State<Item, Additional, Error>
+> {
+  static propTypes = {
+    loadItems: PropTypes.func.isRequired,
+    parseFiltersAndSort: PropTypes.func,
+    // eslint-disable-next-line react/forbid-prop-types
+    filtersAndSortData: PropTypes.any,
+    shouldRecount: PropTypes.func,
+    isRecountAsync: PropTypes.bool,
+
+    children: PropTypes.func.isRequired,
+
+    onChangeLoadParams: PropTypes.func,
+  };
+
+  static defaultProps = {
+    parseFiltersAndSort: null,
+    filtersAndSortData: null,
+    shouldRecount: defaultShouldRecount,
+    isRecountAsync: false,
+    onChangeLoadParams: null,
+  };
+
+  unmounted: boolean;
+
+  filterlist?: Filterlist<Item, Additional, Error>;
+
+  listActions: ComponentListActions<Item, Additional>;
+
   constructor(props) {
     super(props);
 
@@ -158,11 +187,24 @@ class FilterlistWrapper extends Component {
 
     filterlist.emitter.addListener(eventTypes.changeListState, this.syncListState);
 
-    const listActions = methodsForChild.reduce((res, methodName) => {
-      res[methodName] = filterlist[methodName].bind(filterlist);
-      return res;
-    }, {});
-
+    const listActions: ComponentListActions<Item, Additional> = {
+      loadItems: () => filterlist.loadItems(),
+      setFilterValue: (filterName: string, value: any) => filterlist.setFilterValue(filterName, value),
+      applyFilter: (filterName: string) => filterlist.applyFilter(filterName),
+      setAndApplyFilter: (filterName: string, value: any) => filterlist.setAndApplyFilter(filterName, value),
+      resetFilter: (filterName: string) => filterlist.resetFilter(filterName),
+      setFiltersValues: (values: Object) => filterlist.setFiltersValues(values),
+      applyFilters: (filtersNames: string[]) => filterlist.applyFilters(filtersNames),
+      setAndApplyFilters: (values: Object) => filterlist.setAndApplyFilters(values),
+      resetFilters: (filtersNames: string[]) => filterlist.resetFilters(filtersNames),
+      resetAllFilters: () => filterlist.resetAllFilters(),
+      setSorting: (param: string, asc?: boolean) => filterlist.setSorting(param, asc),
+      resetSorting: () => filterlist.resetSorting(),
+      insertItem: (itemIndex: number, item: Item, additional?: Additional) => filterlist.insertItem(itemIndex, item, additional),
+      deleteItem: (itemIndex: number, additional?: Additional) => filterlist.deleteItem(itemIndex, additional),
+      updateItem: (itemIndex: number, item: Item, additional?: Additional) => filterlist.updateItem(itemIndex, item, additional),
+    };
+    
     filterlist.emitter.addListener(eventTypes.changeLoadParams, this.onChangeLoadParams);
 
     this.listActions = listActions;
@@ -187,26 +229,5 @@ class FilterlistWrapper extends Component {
     });
   }
 }
-
-FilterlistWrapper.propTypes = {
-  loadItems: PropTypes.func.isRequired,
-  parseFiltersAndSort: PropTypes.func,
-  // eslint-disable-next-line react/forbid-prop-types
-  filtersAndSortData: PropTypes.any,
-  shouldRecount: PropTypes.func,
-  isRecountAsync: PropTypes.bool,
-
-  children: PropTypes.func.isRequired,
-
-  onChangeLoadParams: PropTypes.func,
-};
-
-FilterlistWrapper.defaultProps = {
-  parseFiltersAndSort: null,
-  filtersAndSortData: null,
-  shouldRecount: defaultShouldRecount,
-  isRecountAsync: false,
-  onChangeLoadParams: null,
-};
 
 export default FilterlistWrapper;

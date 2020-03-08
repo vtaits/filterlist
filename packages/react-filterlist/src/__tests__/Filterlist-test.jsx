@@ -3,7 +3,25 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 
-import Filterlist, { methodsForChild } from '../Filterlist';
+import Filterlist from '../Filterlist';
+
+const methodsForChild = [
+  ['loadItems', 0],
+  ['setFilterValue', 2],
+  ['applyFilter', 1],
+  ['setAndApplyFilter', 2],
+  ['resetFilter', 1],
+  ['setFiltersValues', 1],
+  ['applyFilters', 1],
+  ['setAndApplyFilters', 1],
+  ['resetFilters', 1],
+  ['resetAllFilters', 0],
+  ['setSorting', 2],
+  ['resetSorting', 0],
+  ['insertItem', 3],
+  ['deleteItem', 2],
+  ['updateItem', 3],
+];
 
 class ManualFilterlist extends Filterlist {
   constructor(props) {
@@ -122,7 +140,7 @@ test('should provide list state to child', () => {
   });
 });
 
-methodsForChild.forEach((methodName) => {
+methodsForChild.forEach(([methodName, argsCount]) => {
   test(`should call "${methodName}" from rendered component`, () => {
     const page = setup({});
 
@@ -133,8 +151,8 @@ methodsForChild.forEach((methodName) => {
     const filterlist = page.getFilterlistInstance();
 
     expect(filterlist[methodName].mock.calls.length).toBe(1);
-    expect(filterlist[methodName].mock.calls[0])
-      .toEqual(['arg1', 'arg2', 'arg3', 'arg4']);
+    expect(filterlist[methodName].mock.calls[0].slice(0, argsCount))
+      .toEqual(['arg1', 'arg2', 'arg3', 'arg4'].slice(0, argsCount));
   });
 });
 
@@ -478,7 +496,7 @@ test('should call onChangeLoadParams on "changeLoadParams" event', () => {
     onChangeLoadParams,
   });
 
-  page.getFilterlistInstance().emit('changeLoadParams', 'new list state');
+  page.getFilterlistInstance().emitter.emit('changeLoadParams', 'new list state');
 
   expect(onChangeLoadParams.mock.calls.length).toBe(1);
   expect(onChangeLoadParams.mock.calls[0][0]).toBe('new list state');

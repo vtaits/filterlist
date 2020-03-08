@@ -19,9 +19,9 @@ const mockedMethods = [
   'updateItem',
 ];
 
-class Filterlist extends EventEmitter {
+class Filterlist {
   constructor(...args) {
-    super(...args);
+    this.emitter = new EventEmitter();
 
     this.constructorArgs = args;
 
