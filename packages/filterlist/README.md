@@ -16,8 +16,6 @@ or
 yarn add @vtaits/filterlist
 ```
 
-Examples are [here](https://github.com/vtaits/filterlist/tree/master/examples).
-
 ## Api
 
 ```
@@ -111,12 +109,12 @@ const listState = filterlist.getListState();
 
 ### Events
 
-`Filterlist` extends [EventEmitter](https://github.com/facebook/emitter). Every event calls calback with current list state as first argument. E.g.
+`emitter` is the instance of [eventemitter3](https://www.npmjs.com/package/eventemitter3).
 
-```
+```javascript
 import { eventTypes } from '@vtaits/filterlist';
 
-filterlist.addListener(eventTypes.changeListState, (listState) => {
+filterlist.emitter.addListener(eventTypes.changeListState, (listState) => {
   ...
 });
 ```
