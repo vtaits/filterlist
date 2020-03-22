@@ -190,7 +190,7 @@ class FilterlistWrapper<
     filterlist.emitter.addListener(eventTypes.changeListState, this.syncListState);
 
     const listActions: ComponentListActions<Item, Additional> = {
-      loadItems: () => filterlist.loadItems(),
+      loadMore: () => filterlist.loadMore(),
       setFilterValue: (
         filterName: string,
         value: any,

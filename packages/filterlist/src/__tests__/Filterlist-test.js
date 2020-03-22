@@ -14,7 +14,7 @@ const defaultParams = {
 let callsSequence = [];
 
 const loadItemsOnInitMethod = jest.fn(() => {
-  callsSequence.push('loadItems');
+  callsSequence.push('loadMore');
 });
 const onInitMethod = jest.fn(() => {
   callsSequence.push('onInit');
@@ -221,7 +221,7 @@ test('should dispatch event and request items on load items', async () => {
     error: 'error',
   };
 
-  filterlist.emitter.addListener(eventTypes.loadItems, onLoadItems);
+  filterlist.emitter.addListener(eventTypes.loadMore, onLoadItems);
 
   await filterlist.manualLoadItemsOnInit();
 
@@ -822,7 +822,7 @@ describe('getListStateBeforeChange', () => {
 });
 
 describe('public methods', () => {
-  test('should load items', async () => {
+  test('should load more items', async () => {
     const filterlist = new ManualFilterlist({
       ...defaultParams,
     });
@@ -830,7 +830,7 @@ describe('public methods', () => {
     const onLoadItems = jest.fn();
     const onChangeLoadParams = jest.fn();
 
-    filterlist.emitter.addListener(eventTypes.loadItems, onLoadItems);
+    filterlist.emitter.addListener(eventTypes.loadMore, onLoadItems);
     filterlist.emitter.addListener(eventTypes.changeLoadParams, onChangeLoadParams);
 
     const prevState = filterlist.getListState();
@@ -857,7 +857,7 @@ describe('public methods', () => {
 
     filterlist.listState = nextState;
 
-    await filterlist.loadItems();
+    await filterlist.loadMore();
 
     expect(onChangeListStateMethod.mock.calls.length).toBe(1);
 

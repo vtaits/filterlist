@@ -39,7 +39,7 @@ export function createListStateShape(listStateConfig): any {
 }
 
 export const listActionsPropTypes = {
-  loadItems: PropTypes.func.isRequired,
+  loadMore: PropTypes.func.isRequired,
 
   setFilterValue: PropTypes.func.isRequired,
   applyFilter: PropTypes.func.isRequired,

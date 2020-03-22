@@ -317,7 +317,7 @@ import { Filterlist } from '@vtaits/react-filterlist';
 
 - **listState** - object, list state of [@vtaits/filterlist](https://www.npmjs.com/package/@vtaits/filterlist)
 
-- **listAction** - object of next methods of [@vtaits/filterlist](https://www.npmjs.com/package/@vtaits/filterlist): `loadItems`, `setFilterValue`, `applyFilter`, `setAndApplyFilter`, `resetFilter`, `setFiltersValues`, `applyFilters`, `setAndApplyFilters`, `resetFilters`, `resetAllFilters`, `setSorting`, `resetSorting`, `insertItem`, `deleteItem`, `updateItem`
+- **listAction** - object of next methods of [@vtaits/filterlist](https://www.npmjs.com/package/@vtaits/filterlist): `loadMore`, `setFilterValue`, `applyFilter`, `setAndApplyFilter`, `resetFilter`, `setFiltersValues`, `applyFilters`, `setAndApplyFilters`, `resetFilters`, `resetAllFilters`, `setSorting`, `resetSorting`, `insertItem`, `deleteItem`, `updateItem`
 
 - **isListInited** - boolean, can be false on init `Filterlist` with truthy `isRecountAsync`. If false, `listState` and `listAction` are falsy
 

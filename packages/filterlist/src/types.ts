@@ -45,7 +45,7 @@ export type Params<Item = any, Additional = any, Error = any> = {
   saveItemsWhileLoad: boolean;
 };
 
-export type EventType = 'loadItems'
+export type EventType = 'loadMore'
 | 'setFilterValue'
 | 'applyFilter'
 | 'setAndApplyFilter'

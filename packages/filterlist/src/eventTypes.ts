@@ -1,6 +1,6 @@
 import { EventType } from './types';
 
-export const loadItems: EventType = 'loadItems';
+export const loadMore: EventType = 'loadMore';
 
 export const setFilterValue: EventType = 'setFilterValue';
 export const applyFilter: EventType = 'applyFilter';

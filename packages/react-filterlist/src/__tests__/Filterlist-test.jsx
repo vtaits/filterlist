@@ -6,7 +6,7 @@ import { shallow } from 'enzyme';
 import Filterlist from '../Filterlist';
 
 const methodsForChild = [
-  ['loadItems', 0],
+  ['loadMore', 0],
   ['setFilterValue', 2],
   ['applyFilter', 1],
   ['setAndApplyFilter', 2],

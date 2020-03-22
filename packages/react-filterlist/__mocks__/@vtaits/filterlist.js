@@ -1,7 +1,7 @@
 import EventEmitter from 'events';
 
 const mockedMethods = [
-  'loadItems',
+  'loadMore',
   'setFilterValue',
   'applyFilter',
   'setAndApplyFilter',
@@ -39,7 +39,7 @@ class Filterlist {
 }
 
 export const eventTypes = {
-  loadItems: 'loadItems',
+  loadMore: 'loadMore',
   setFilterValue: 'setFilterValue',
   applyFilter: 'applyFilter',
   setAndApplyFilter: 'setAndApplyFilter',

@@ -106,12 +106,12 @@ class Filterlist<Item = any, Additional = any, Error = any> {
       shouldClean: false,
     });
 
-    this.emitEvent(eventTypes.loadItems);
+    this.emitEvent(eventTypes.loadMore);
 
     await this.requestItems();
   }
 
-  async loadItems(): Promise<void> {
+  async loadMore(): Promise<void> {
     const prevListState = this.listState;
 
     this.setListState({
@@ -122,7 +122,7 @@ class Filterlist<Item = any, Additional = any, Error = any> {
       shouldClean: false,
     });
 
-    this.emitEvent(eventTypes.loadItems);
+    this.emitEvent(eventTypes.loadMore);
     this.emitEvent(eventTypes.changeLoadParams);
 
     await this.requestItems();

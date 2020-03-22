@@ -90,7 +90,7 @@ const listState = filterlist.getListState();
 
 | Property | Arguments | Description |
 | -------- | --------- | ----------- |
-| loadItems | | loads more items to page |
+| loadMore | | loads more items to page |
 | setFilterValue | filterName, value | sets filter intermediate value |
 | applyFilter | filterName | applies filter intermediate value, clears list and loads items |
 | setAndApplyFilter | filterName, value | sets filter values, applies that, clears list and loads items |
@@ -123,7 +123,7 @@ List of event types:
 
 | Name | When triggered |
 | ---- | -------------- |
-| loadItems | after load items on init or call `loadItems` method |
+| loadMore | after load items on init or call `loadMore` method |
 | setFilterValue | after call `setFilterValue` method |
 | applyFilter | after call `applyFilter` method |
 | setAndApplyFilter | after call `setAndApplyFilter` method |
@@ -136,7 +136,7 @@ List of event types:
 | setSorting | after call `setSorting` method |
 | resetSorting | after call `resetSorting` method |
 | setFiltersAndSorting | after call `setFiltersAndSorting` method |
-| changeLoadParams | after call some of next methods: `loadItems`, `applyFilter`, `setAndApplyFilter`, `resetFilter`, `applyFilters`, `setAndApplyFilters`, `resetFilters`, `resetAllFilters`, `setSorting`, `resetSorting`, `setFiltersAndSorting` |
+| changeLoadParams | after call some of next methods: `loadMore`, `applyFilter`, `setAndApplyFilter`, `resetFilter`, `applyFilters`, `setAndApplyFilters`, `resetFilters`, `resetAllFilters`, `setSorting`, `resetSorting`, `setFiltersAndSorting` |
 | insertItem | after call `insertItem` method |
 | deleteItem | after call `deleteItem` method |
 | updateItem | after call `updateItem` method |

@@ -41,7 +41,7 @@ export type Params<
 };
 
 export type ComponentListActions<Item = any, Additional = any> = {
-  loadItems: () => Promise<void>;
+  loadMore: () => Promise<void>;
   setFilterValue: (filterName: string, value: any) => void;
   applyFilter: (filterName: string) => Promise<void>;
   setAndApplyFilter: (filterName: string, value: any) => Promise<void>;
