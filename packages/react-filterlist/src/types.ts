@@ -77,7 +77,7 @@ export type ComponentParams<
   isRecountAsync?: boolean;
   onChangeLoadParams?: OnChangeLoadParams<Item, Additional, Error>;
 
-  children: (renderProps: ComponentRenderProps<Item, Additional, Error>) => ReactNode,
+  children: (renderProps: ComponentRenderProps<Item, Additional, Error>) => ReactNode;
 };
 
 export type HOCParams<

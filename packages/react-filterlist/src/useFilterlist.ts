@@ -23,7 +23,7 @@ import {
 
 type SyncListState = () => void;
 
-const getFilterlistOptions = <Item = any, Additional = any, Error = any>(
+const getFilterlistOptions = <Item, Additional, Error>(
   params: Params<Item, Additional, Error>,
   loadItems: ItemsLoader<Item, Additional, Error>,
 ): Params<Item, Additional, Error> | AsyncParams<Item, Additional, Error> => {
@@ -36,7 +36,7 @@ const getFilterlistOptions = <Item = any, Additional = any, Error = any>(
     const parseResult = parseFiltersAndSort(filtersAndSortData);
 
     if (isPromise(parseResult)) {
-      return (<AsyncParsedFiltersAndSort>parseResult)
+      return (parseResult as AsyncParsedFiltersAndSort)
         .then((parsedFiltersAndSort) => ({
           ...params,
           ...parsedFiltersAndSort,
@@ -46,7 +46,7 @@ const getFilterlistOptions = <Item = any, Additional = any, Error = any>(
 
     return {
       ...params,
-      ...(<ParsedFiltersAndSort>parseResult),
+      ...(parseResult as ParsedFiltersAndSort),
       loadItems,
     };
   }
@@ -90,7 +90,11 @@ const initFilterlist = <Item = any, Additional = any, Error = any>(
   );
 };
 
-const useFilterlist = <Item = any, Additional = any, Error = any>(
+const useFilterlist = <
+  Item = any,
+  Additional = any,
+  Error = any
+>(
   params: Params<Item, Additional, Error>,
   inputs: any[] = [],
 ): [null | ListState<Item, Additional, Error>, Filterlist<Item, Additional, Error>] => {

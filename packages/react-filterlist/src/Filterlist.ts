@@ -49,7 +49,7 @@ class FilterlistWrapper<
 
   unmounted: boolean;
 
-  filterlist?: Filterlist<Item, Additional, Error>;
+  filterlist: Filterlist<Item, Additional, Error>;
 
   listActions: ComponentListActions<Item, Additional>;
 
@@ -204,7 +204,7 @@ class FilterlistWrapper<
       deleteItem: (itemIndex: number, additional?: Additional) => filterlist.deleteItem(itemIndex, additional),
       updateItem: (itemIndex: number, item: Item, additional?: Additional) => filterlist.updateItem(itemIndex, item, additional),
     };
-    
+
     filterlist.emitter.addListener(eventTypes.changeLoadParams, this.onChangeLoadParams);
 
     this.listActions = listActions;
