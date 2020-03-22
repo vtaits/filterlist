@@ -1,9 +1,11 @@
-import { Component } from 'react';
+import { Component, ReactNode } from 'react';
 import PropTypes from 'prop-types';
 
 import Filterlist, {
   eventTypes,
   ListState,
+  Params,
+  ItemsLoader,
 } from '@vtaits/filterlist';
 
 import defaultShouldRecount from './defaultShouldRecount';
@@ -25,7 +27,7 @@ class FilterlistWrapper<
   FiltersAndSortData = any
 > extends Component<
   ComponentParams<Item, Additional, Error, FiltersAndSortData>, State<Item, Additional, Error>
-> {
+  > {
   static propTypes = {
     loadItems: PropTypes.func.isRequired,
     parseFiltersAndSort: PropTypes.func,
@@ -77,7 +79,7 @@ class FilterlistWrapper<
     };
   }
 
-  async componentDidUpdate(prevProps) {
+  async componentDidUpdate(prevProps): Promise<void> {
     const {
       parseFiltersAndSort,
       filtersAndSortData,
@@ -94,13 +96,13 @@ class FilterlistWrapper<
     }
   }
 
-  componentWillUnmount() {
+  componentWillUnmount(): void {
     this.unmounted = true;
     this.filterlist.emitter.removeAllListeners(eventTypes.changeListState);
     this.filterlist.emitter.removeAllListeners(eventTypes.changeLoadParams);
   }
 
-  onChangeLoadParams = (nextListState) => {
+  onChangeLoadParams = (nextListState): void => {
     const {
       onChangeLoadParams,
     } = this.props;
@@ -108,9 +110,9 @@ class FilterlistWrapper<
     if (onChangeLoadParams) {
       onChangeLoadParams(nextListState);
     }
-  }
+  };
 
-  getFilterlistOptions() {
+  getFilterlistOptions(): Params<Item, Additional, Error> {
     const {
       parseFiltersAndSort,
       filtersAndSortData,
@@ -132,7 +134,7 @@ class FilterlistWrapper<
     };
   }
 
-  async getFilterlistOptionsAsync() {
+  async getFilterlistOptionsAsync(): Promise<Params<Item, Additional, Error>> {
     const {
       parseFiltersAndSort,
       filtersAndSortData,
@@ -147,22 +149,22 @@ class FilterlistWrapper<
     };
   }
 
-  syncListState = () => {
+  syncListState = (): void => {
     this.setState({
       listState: this.filterlist.getListState(),
     });
-  }
+  };
 
-  loadItemsProxy = (listState) => {
+  loadItemsProxy: ItemsLoader<Item, Additional, Error> = (listState) => {
     const {
       loadItems,
     } = this.props;
 
     return loadItems(listState);
-  }
+  };
 
-  async initFilterlistAsync() {
-    const options = await this.getFilterlistOptionsAsync();
+  async initFilterlistAsync(): Promise<void> {
+    const options: Params<Item, Additional, Error> = await this.getFilterlistOptionsAsync();
 
     if (this.unmounted) {
       return;
@@ -176,33 +178,56 @@ class FilterlistWrapper<
     });
   }
 
-  initFilterlist() {
-    const options = this.getFilterlistOptions();
+  initFilterlist(): void {
+    const options: Params<Item, Additional, Error> = this.getFilterlistOptions();
 
     this.createFilterlist(options);
   }
 
-  createFilterlist(options) {
-    const filterlist = new Filterlist(options);
+  createFilterlist(options: Params<Item, Additional, Error>): void {
+    const filterlist: Filterlist<Item, Additional, Error> = new Filterlist(options);
 
     filterlist.emitter.addListener(eventTypes.changeListState, this.syncListState);
 
     const listActions: ComponentListActions<Item, Additional> = {
       loadItems: () => filterlist.loadItems(),
-      setFilterValue: (filterName: string, value: any) => filterlist.setFilterValue(filterName, value),
+      setFilterValue: (
+        filterName: string,
+        value: any,
+      ) => filterlist.setFilterValue(
+        filterName,
+        value,
+      ),
       applyFilter: (filterName: string) => filterlist.applyFilter(filterName),
-      setAndApplyFilter: (filterName: string, value: any) => filterlist.setAndApplyFilter(filterName, value),
+      setAndApplyFilter: (
+        filterName: string,
+        value: any,
+      ) => filterlist.setAndApplyFilter(
+        filterName,
+        value,
+      ),
       resetFilter: (filterName: string) => filterlist.resetFilter(filterName),
-      setFiltersValues: (values: Object) => filterlist.setFiltersValues(values),
+      setFiltersValues: (values: Record<string, any>) => filterlist.setFiltersValues(values),
       applyFilters: (filtersNames: string[]) => filterlist.applyFilters(filtersNames),
-      setAndApplyFilters: (values: Object) => filterlist.setAndApplyFilters(values),
+      setAndApplyFilters: (values: Record<string, any>) => filterlist.setAndApplyFilters(values),
       resetFilters: (filtersNames: string[]) => filterlist.resetFilters(filtersNames),
       resetAllFilters: () => filterlist.resetAllFilters(),
       setSorting: (param: string, asc?: boolean) => filterlist.setSorting(param, asc),
       resetSorting: () => filterlist.resetSorting(),
-      insertItem: (itemIndex: number, item: Item, additional?: Additional) => filterlist.insertItem(itemIndex, item, additional),
-      deleteItem: (itemIndex: number, additional?: Additional) => filterlist.deleteItem(itemIndex, additional),
-      updateItem: (itemIndex: number, item: Item, additional?: Additional) => filterlist.updateItem(itemIndex, item, additional),
+      insertItem: (
+        itemIndex: number,
+        item: Item,
+        additional?: Additional,
+      ) => filterlist.insertItem(itemIndex, item, additional),
+      deleteItem: (
+        itemIndex: number,
+        additional?: Additional,
+      ) => filterlist.deleteItem(itemIndex, additional),
+      updateItem: (
+        itemIndex: number,
+        item: Item,
+        additional?: Additional,
+      ) => filterlist.updateItem(itemIndex, item, additional),
     };
 
     filterlist.emitter.addListener(eventTypes.changeLoadParams, this.onChangeLoadParams);
@@ -212,7 +237,7 @@ class FilterlistWrapper<
     this.filterlist = filterlist;
   }
 
-  render() {
+  render(): ReactNode {
     const {
       children,
     } = this.props;

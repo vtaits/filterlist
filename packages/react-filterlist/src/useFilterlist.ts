@@ -79,12 +79,12 @@ const initFilterlist = <Item = any, Additional = any, Error = any>(
   const optionsResult = getFilterlistOptions(params, loadItems);
 
   if (isPromise(optionsResult)) {
-    return (<AsyncParams<Item, Additional, Error>>optionsResult)
+    return (optionsResult as AsyncParams<Item, Additional, Error>)
       .then((options) => createFilterlist(options, syncListState, onChangeLoadParams));
   }
 
   return createFilterlist(
-    (<Params<Item, Additional, Error>>optionsResult),
+    (optionsResult as Params<Item, Additional, Error>),
     syncListState,
     onChangeLoadParams,
   );
@@ -95,9 +95,9 @@ const useFilterlist = <
   Additional = any,
   Error = any
 >(
-  params: Params<Item, Additional, Error>,
-  inputs: any[] = [],
-): [null | ListState<Item, Additional, Error>, Filterlist<Item, Additional, Error>] => {
+    params: Params<Item, Additional, Error>,
+    inputs: any[] = [],
+  ): [null | ListState<Item, Additional, Error>, Filterlist<Item, Additional, Error>] => {
   const {
     parseFiltersAndSort = null,
     filtersAndSortData = null,
@@ -109,14 +109,16 @@ const useFilterlist = <
 
   const loadItemsRef = useRef<ItemsLoader<Item, Additional, Error>>(null);
   loadItemsRef.current = loadItems;
-  const loadItemsProxy = (nextListState) => loadItemsRef.current(nextListState);
+  const loadItemsProxy: ItemsLoader<Item, Additional, Error> = (
+    nextListState,
+  ) => loadItemsRef.current(nextListState);
 
   const onChangeLoadParamsRef = useRef<OnChangeLoadParams<Item, Additional, Error>>(
-    <OnChangeLoadParams<Item, Additional, Error>>Function.prototype,
+    (Function.prototype as OnChangeLoadParams<Item, Additional, Error>),
   );
   onChangeLoadParamsRef.current = onChangeLoadParams;
 
-  const onChangeLoadParamsProxy = (nextListState) => {
+  const onChangeLoadParamsProxy = (nextListState): void => {
     if (onChangeLoadParams) {
       onChangeLoadParamsRef.current(nextListState);
     }
@@ -147,7 +149,7 @@ const useFilterlist = <
       if (isPromise(filterlistResult)) {
         isInitInProgressRef.current = true;
 
-        (<Promise<Filterlist<Item, Additional, Error>>>filterlistResult)
+        (filterlistResult as Promise<Filterlist<Item, Additional, Error>>)
           .then((filterlist) => {
             filterlistRef.current = filterlist;
             isInitInProgressRef.current = false;
@@ -155,7 +157,7 @@ const useFilterlist = <
             setListState(filterlist.getListState());
           });
       } else {
-        filterlistRef.current = (<Filterlist<Item, Additional, Error>>filterlistResult);
+        filterlistRef.current = (filterlistResult as Filterlist<Item, Additional, Error>);
       }
     }
 
@@ -178,7 +180,7 @@ const useFilterlist = <
     parseFiltersAndSort
     && shouldRecount(filtersAndSortData, filtersAndSortDataRef.current)
   ) {
-    (async () => {
+    (async (): Promise<void> => {
       const parsedFiltersAndSort = await parseFiltersAndSort(filtersAndSortData);
 
       filterlistRef.current.setFiltersAndSorting(parsedFiltersAndSort);
@@ -188,12 +190,12 @@ const useFilterlist = <
 
   useEffect(() => {
     if (!canInit) {
-      return <() => void>Function.prototype;
+      return (Function.prototype as () => void);
     }
 
     initFilterlistInComponent(true);
 
-    return () => {
+    return (): void => {
       if (filterlistRef.current) {
         filterlistRef.current.emitter.removeAllListeners(eventTypes.changeListState);
         filterlistRef.current.emitter.removeAllListeners(eventTypes.changeLoadParams);

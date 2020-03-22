@@ -5,8 +5,8 @@ export type Sort = {
 
 export type ListState<Item = any, Additional = any, Error = any> = {
   sort: Sort;
-  filters: Object;
-  appliedFilters: Object;
+  filters: Record<string, any>;
+  appliedFilters: Record<string, any>;
   loading: boolean;
   items: Item[];
   additional: Additional;
@@ -18,8 +18,8 @@ export type ListState<Item = any, Additional = any, Error = any> = {
 export type Options = {
   autoload: boolean;
   isDefaultSortAsc: boolean;
-  alwaysResetFilters: Object;
-  initialFilters: Object;
+  alwaysResetFilters: Record<string, any>;
+  initialFilters: Record<string, any>;
   saveFiltersOnResetAll: string[];
   saveItemsWhileLoad: boolean;
 };
@@ -36,33 +36,33 @@ export type Params<Item = any, Additional = any, Error = any> = {
   items: Item[];
   sort: Sort;
   additional: Additional;
-  appliedFilters: Object;
+  appliedFilters: Record<string, any>;
   autoload?: boolean;
   isDefaultSortAsc?: boolean;
-  alwaysResetFilters?: boolean;
-  initialFilters: Object;
+  alwaysResetFilters?: Record<string, any>;
+  initialFilters: Record<string, any>;
   saveFiltersOnResetAll: string[];
   saveItemsWhileLoad: boolean;
 };
 
 export type EventType = 'loadItems'
-  | 'setFilterValue'
-  | 'applyFilter'
-  | 'setAndApplyFilter'
-  | 'resetFilter'
-  | 'setFiltersValues'
-  | 'applyFilters'
-  | 'setAndApplyFilters'
-  | 'resetFilters'
-  | 'resetAllFilters'
-  | 'setSorting'
-  | 'resetSorting'
-  | 'setFiltersAndSorting'
-  | 'changeLoadParams'
-  | 'insertItem'
-  | 'deleteItem'
-  | 'updateItem'
-  | 'requestItems'
-  | 'loadItemsSuccess'
-  | 'loadItemsError'
-  | 'changeListState';
+| 'setFilterValue'
+| 'applyFilter'
+| 'setAndApplyFilter'
+| 'resetFilter'
+| 'setFiltersValues'
+| 'applyFilters'
+| 'setAndApplyFilters'
+| 'resetFilters'
+| 'resetAllFilters'
+| 'setSorting'
+| 'resetSorting'
+| 'setFiltersAndSorting'
+| 'changeLoadParams'
+| 'insertItem'
+| 'deleteItem'
+| 'updateItem'
+| 'requestItems'
+| 'loadItemsSuccess'
+| 'loadItemsError'
+| 'changeListState';

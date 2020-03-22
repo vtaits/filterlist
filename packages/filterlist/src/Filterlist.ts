@@ -215,7 +215,7 @@ class Filterlist<Item = any, Additional = any, Error = any> {
     await this.requestItems();
   }
 
-  setFiltersValues(values: Object): void {
+  setFiltersValues(values: Record<string, any>): void {
     const prevListState = this.listState;
 
     this.setListState({
@@ -256,7 +256,7 @@ class Filterlist<Item = any, Additional = any, Error = any> {
     await this.requestItems();
   }
 
-  async setAndApplyFilters(values: Object): Promise<void> {
+  async setAndApplyFilters(values: Record<string, any>): Promise<void> {
     const prevListState = this.listState;
     const stateBeforeChange = this.getListStateBeforeChange();
 
@@ -375,7 +375,7 @@ class Filterlist<Item = any, Additional = any, Error = any> {
     return this.options.isDefaultSortAsc;
   }
 
-  async setSorting(param: string, asc?: boolean) {
+  async setSorting(param: string, asc?: boolean): Promise<void> {
     const stateBeforeChange = this.getListStateBeforeChange();
 
     const nextAsc = this.getNextAsc(param, asc);
@@ -422,8 +422,8 @@ class Filterlist<Item = any, Additional = any, Error = any> {
     appliedFilters,
     sort,
   }: {
-    filters: Object;
-    appliedFilters: Object;
+    filters: Record<string, any>;
+    appliedFilters: Record<string, any>;
     sort: Sort;
   }): Promise<void> {
     const stateBeforeChange = this.getListStateBeforeChange();
@@ -472,7 +472,7 @@ class Filterlist<Item = any, Additional = any, Error = any> {
   }
 
   onSuccess(response: {
-    items: Item[],
+    items: Item[];
     additional?: Additional;
   }): void {
     const prevListState = this.listState;

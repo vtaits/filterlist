@@ -25,6 +25,7 @@
     "build:es": "cross-env BABEL_ENV=es babel --extensions '.ts' src --out-dir es --ignore \"src/**/__tests__\",\"src/**/__stories__\"",
     "build:ts": "tsc --declaration",
     "build": "yarn clean && yarn build:cjs && yarn build:es && yarn build:ts",
+    "lint": "eslint src --ext .ts,.tsx --ignore-path ../../.gitignore",
     "test:unit": "jest",
     "test": "yarn test:unit",
     "prepare": "yarn build"
@@ -39,7 +40,7 @@
     "react-dom": "^16.8.6"
   },
   "dependencies": {
-    "@babel/runtime": "^7.4.5",
+    "@babel/runtime": "^7.9.2",
     "is-promise": "^2.1.0",
     "prop-types": "^15.7.2"
   }

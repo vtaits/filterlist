@@ -9,8 +9,8 @@ import {
 } from '@vtaits/filterlist';
 
 export type ParsedFiltersAndSort = {
-  filters: Object;
-  appliedFilters: Object;
+  filters: Record<string, any>;
+  appliedFilters: Record<string, any>;
   sort: Sort;
 };
 
@@ -34,7 +34,7 @@ export type Params<
 > = BaseParams<Item, Additional, Error> & {
   filtersAndSortData?: FiltersAndSortData;
   parseFiltersAndSort?: (data: FiltersAndSortData) => ParsedFiltersAndSort
-    | AsyncParsedFiltersAndSort;
+  | AsyncParsedFiltersAndSort;
   shouldRecount?: ShouldRecount<FiltersAndSortData>;
   canInit?: boolean;
   onChangeLoadParams?: OnChangeLoadParams<Item, Additional, Error>;
@@ -46,9 +46,9 @@ export type ComponentListActions<Item = any, Additional = any> = {
   applyFilter: (filterName: string) => Promise<void>;
   setAndApplyFilter: (filterName: string, value: any) => Promise<void>;
   resetFilter: (filterName: string) => Promise<void>;
-  setFiltersValues: (values: Object) => void;
+  setFiltersValues: (values: Record<string, any>) => void;
   applyFilters: (filtersNames: string[]) => Promise<void>;
-  setAndApplyFilters: (values: Object) => Promise<void>;
+  setAndApplyFilters: (values: Record<string, any>) => Promise<void>;
   resetFilters: (filtersNames: string[]) => Promise<void>;
   resetAllFilters: () => Promise<void>;
   setSorting: (param: string, asc?: boolean) => Promise<void>;
@@ -72,7 +72,7 @@ export type ComponentParams<
 > = BaseParams<Item, Additional, Error> & {
   filtersAndSortData?: FiltersAndSortData;
   parseFiltersAndSort?: (data: FiltersAndSortData) => ParsedFiltersAndSort
-    | AsyncParsedFiltersAndSort;
+  | AsyncParsedFiltersAndSort;
   shouldRecount?: ShouldRecount<FiltersAndSortData>;
   isRecountAsync?: boolean;
   onChangeLoadParams?: OnChangeLoadParams<Item, Additional, Error>;

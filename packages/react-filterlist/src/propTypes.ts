@@ -5,7 +5,7 @@ const sortShape = PropTypes.shape({
   asc: PropTypes.bool.isRequired,
 });
 
-export function createListStatePropTypes(listStateConfig) {
+export function createListStatePropTypes(listStateConfig): any {
   if (typeof listStateConfig !== 'object') {
     throw new Error('List state config should be an object');
   }
@@ -32,7 +32,7 @@ export function createListStatePropTypes(listStateConfig) {
   };
 }
 
-export function createListStateShape(listStateConfig) {
+export function createListStateShape(listStateConfig): any {
   const listStatePropTypes = createListStatePropTypes(listStateConfig);
 
   return PropTypes.shape(listStatePropTypes);

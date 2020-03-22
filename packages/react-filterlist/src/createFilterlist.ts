@@ -2,6 +2,7 @@ import React, {
   useCallback,
   ElementType,
   ReactNode,
+  SFC,
 } from 'react';
 
 import {
@@ -16,18 +17,20 @@ import {
   ComponentRenderProps,
 } from './types';
 
+type HOC = (WrappedComponent: ElementType) => ElementType;
+
 const createFilterlist = <
   Item = any,
   Additional = any,
   Error = any
->(options: HOCParams<Item, Additional, Error>) => {
+>(options: HOCParams<Item, Additional, Error>): HOC => {
   const {
     loadItems: loadItemsOption,
     onChangeLoadParams: onChangeLoadParamsOption,
   } = options;
 
   return (WrappedComponent: ElementType): ElementType => {
-    const WithFilterlist = (props) => {
+    const WithFilterlist: SFC = (props) => {
       const onChangeLoadParams = useCallback((
         nextListState: ListState<Item, Additional, Error>,
       ): void => {

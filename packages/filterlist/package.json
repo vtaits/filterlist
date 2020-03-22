@@ -26,12 +26,13 @@
     "build:es": "cross-env BABEL_ENV=es babel --extensions '.ts' src --out-dir es --ignore \"src/**/__tests__\",\"src/**/__stories__\"",
     "build:ts": "tsc --declaration",
     "build": "yarn clean && yarn build:cjs && yarn build:es && yarn build:ts",
+    "lint": "eslint src --ext .ts,.tsx --ignore-path ../../.gitignore",
     "test:unit": "jest",
     "test": "yarn test:unit",
     "prepare": "yarn build"
   },
   "dependencies": {
-    "@babel/runtime": "^7.8.4",
+    "@babel/runtime": "^7.9.2",
     "array-insert": "^2.0.0",
     "es6-error": "^4.1.1",
     "eventemitter3": "^4.0.0"
