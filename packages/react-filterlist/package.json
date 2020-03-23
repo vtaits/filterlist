@@ -1,6 +1,6 @@
 {
   "name": "@vtaits/react-filterlist",
-  "version": "0.1.5",
+  "version": "0.2.0",
   "description": "React wrapper above @vtaits/filterlist",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -31,11 +31,11 @@
     "prepare": "yarn build"
   },
   "peerDependencies": {
-    "@vtaits/filterlist": "^0.1.0",
+    "@vtaits/filterlist": "^0.2.0",
     "react": "^16.0.0"
   },
   "devDependencies": {
-    "@vtaits/filterlist": "^0.1.5",
+    "@vtaits/filterlist": "^0.2.0",
     "react": "^16.8.6",
     "react-dom": "^16.8.6"
   },
