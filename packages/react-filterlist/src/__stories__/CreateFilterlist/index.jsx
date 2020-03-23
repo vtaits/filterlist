@@ -424,7 +424,7 @@ export default createFilterlist({
     page: 1,
   },
 
-  initialFilters: {
+  resetFiltersTo: {
     perPage: 10,
   },
 

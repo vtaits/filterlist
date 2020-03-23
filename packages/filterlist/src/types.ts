@@ -19,7 +19,7 @@ export type Options = {
   autoload: boolean;
   isDefaultSortAsc: boolean;
   alwaysResetFilters: Record<string, any>;
-  initialFilters: Record<string, any>;
+  resetFiltersTo: Record<string, any>;
   saveFiltersOnResetAll: string[];
   saveItemsWhileLoad: boolean;
 };
@@ -40,7 +40,7 @@ export type Params<Item = any, Additional = any, Error = any> = {
   autoload?: boolean;
   isDefaultSortAsc?: boolean;
   alwaysResetFilters?: Record<string, any>;
-  initialFilters: Record<string, any>;
+  resetFiltersTo: Record<string, any>;
   saveFiltersOnResetAll: string[];
   saveItemsWhileLoad: boolean;
 };

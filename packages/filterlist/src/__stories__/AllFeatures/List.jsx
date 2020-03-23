@@ -104,7 +104,7 @@ class List extends Component {
         page: 1,
       },
 
-      initialFilters: {
+      resetFiltersTo: {
         perPage: 10,
       },
 

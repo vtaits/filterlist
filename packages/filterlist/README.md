@@ -59,7 +59,7 @@ const filterlist = new Filterlist({
 
 - **appliedFilters** - Object, filters and their values that applied by default. Should be { filterName1: filterValue, filter2Name: filter2Value, ... }
 
-- **initialFilters** - Object, filters and their values that sets after filter reset. Should be { filterName1: filterValue, filter2Name: filter2Value, ... }
+- **resetFiltersTo** - Object, filters and their values that sets after filter reset. Should be { filterName1: filterValue, filter2Name: filter2Value, ... }
 
 - **alwaysResetFilters** - Object, filters and their values that sets after every filters or sorting change. Should be { filterName1: filterValue, filter2Name: filter2Value, ... }
 

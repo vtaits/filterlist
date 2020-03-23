@@ -192,7 +192,7 @@ class Filterlist<Item = any, Additional = any, Error = any> {
     const prevListState = this.listState;
     const stateBeforeChange = this.getListStateBeforeChange();
 
-    const initialValue = this.options.initialFilters[filterName];
+    const initialValue = this.options.resetFiltersTo[filterName];
 
     this.setListState({
       ...stateBeforeChange,
@@ -285,12 +285,12 @@ class Filterlist<Item = any, Additional = any, Error = any> {
     const stateBeforeChange = this.getListStateBeforeChange();
 
     const {
-      initialFilters,
+      resetFiltersTo,
     } = this.options;
 
     const filtersForReset = filtersNames
       .reduce((res, filterName) => {
-        res[filterName] = initialFilters[filterName];
+        res[filterName] = resetFiltersTo[filterName];
 
         return res;
       }, {});
@@ -320,7 +320,7 @@ class Filterlist<Item = any, Additional = any, Error = any> {
     const stateBeforeChange = this.getListStateBeforeChange();
 
     const {
-      initialFilters,
+      resetFiltersTo,
       saveFiltersOnResetAll,
       alwaysResetFilters,
     } = this.options;
@@ -344,13 +344,13 @@ class Filterlist<Item = any, Additional = any, Error = any> {
 
       filters: {
         ...alwaysResetFilters,
-        ...initialFilters,
+        ...resetFiltersTo,
         ...savedFilters,
       },
 
       appliedFilters: {
         ...alwaysResetFilters,
-        ...initialFilters,
+        ...resetFiltersTo,
         ...savedAppliedFilters,
       },
     });

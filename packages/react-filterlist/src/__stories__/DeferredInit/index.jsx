@@ -59,7 +59,7 @@ const List = (props) => {
       page: 1,
     },
 
-    initialFilters: {
+    resetFiltersTo: {
       perPage: 10,
     },
 

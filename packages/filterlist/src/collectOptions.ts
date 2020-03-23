@@ -4,7 +4,7 @@ export const defaultOptions: Options = {
   autoload: true,
   isDefaultSortAsc: true,
   alwaysResetFilters: {},
-  initialFilters: {},
+  resetFiltersTo: {},
   saveFiltersOnResetAll: [],
   saveItemsWhileLoad: false,
 };
@@ -26,8 +26,8 @@ const collectOptions = (params: Params): Options => ({
   alwaysResetFilters: params.alwaysResetFilters
     || defaultOptions.alwaysResetFilters,
 
-  initialFilters: params.initialFilters
-    || defaultOptions.initialFilters,
+  resetFiltersTo: params.resetFiltersTo
+    || defaultOptions.resetFiltersTo,
 
   saveFiltersOnResetAll: params.saveFiltersOnResetAll
     || defaultOptions.saveFiltersOnResetAll,

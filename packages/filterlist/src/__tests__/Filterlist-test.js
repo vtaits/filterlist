@@ -1058,7 +1058,7 @@ describe('public methods', () => {
     const filterlist = new ManualFilterlist({
       ...defaultParams,
 
-      initialFilters: {
+      resetFiltersTo: {
         test2: 'value2_3',
       },
     });
@@ -1316,7 +1316,7 @@ describe('public methods', () => {
     const filterlist = new ManualFilterlist({
       ...defaultParams,
 
-      initialFilters: {
+      resetFiltersTo: {
         test2: 'value2_3',
         test3: 'value3_3',
       },
@@ -1391,7 +1391,7 @@ describe('public methods', () => {
     const filterlist = new ManualFilterlist({
       ...defaultParams,
 
-      initialFilters: {
+      resetFiltersTo: {
         test1: 'value1_3',
         test2: 'value2_3',
         test3: 'value3_3',

@@ -479,7 +479,7 @@ class WithFilterlist extends Component {
         alwaysResetFilters={{
           page: 1,
         }}
-        initialFilters={{
+        resetFiltersTo={{
           perPage: 10,
         }}
         saveFiltersOnResetAll={['perPage']}
