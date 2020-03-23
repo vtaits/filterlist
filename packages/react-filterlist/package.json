@@ -4,6 +4,7 @@
   "description": "React wrapper above @vtaits/filterlist",
   "main": "lib/index.js",
   "module": "es/index.js",
+  "typings": "ts/index.d.ts",
   "files": [
     "/es",
     "/lib",
