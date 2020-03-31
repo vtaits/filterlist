@@ -98,8 +98,11 @@ class FilterlistWrapper<
 
   componentWillUnmount(): void {
     this.unmounted = true;
-    this.filterlist.emitter.removeAllListeners(eventTypes.changeListState);
-    this.filterlist.emitter.removeAllListeners(eventTypes.changeLoadParams);
+
+    if (this.filterlist) {
+      this.filterlist.emitter.removeAllListeners(eventTypes.changeListState);
+      this.filterlist.emitter.removeAllListeners(eventTypes.changeLoadParams);
+    }
   }
 
   onChangeLoadParams = (nextListState): void => {
