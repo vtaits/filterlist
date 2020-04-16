@@ -37,8 +37,8 @@
   },
   "devDependencies": {
     "@vtaits/filterlist": "^0.2.0",
-    "react": "^16.8.6",
-    "react-dom": "^16.8.6"
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1"
   },
   "dependencies": {
     "@babel/runtime": "^7.9.2",
