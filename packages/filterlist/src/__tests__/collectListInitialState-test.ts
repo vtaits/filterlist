@@ -1,12 +1,24 @@
 import collectListInitialState from '../collectListInitialState';
 import listInitialState from '../listInitialState';
 
+import type {
+  ItemsLoaderResponse,
+} from '../types';
+
+const defaultParams = {
+  loadItems: (): ItemsLoaderResponse => ({
+    items: [],
+  }),
+};
+
 test('should return listInitialState', () => {
-  expect(collectListInitialState({})).toEqual(listInitialState);
+  expect(collectListInitialState(defaultParams)).toEqual(listInitialState);
 });
 
 test('should set initial sort', () => {
   const state = collectListInitialState({
+    ...defaultParams,
+
     sort: {
       param: 'param',
       asc: false,
@@ -27,6 +39,8 @@ test('should set initial filters', () => {
   };
 
   const state = collectListInitialState({
+    ...defaultParams,
+
     appliedFilters: filters,
   });
 
@@ -36,6 +50,8 @@ test('should set initial filters', () => {
 
 test('should set additional', () => {
   const state = collectListInitialState({
+    ...defaultParams,
+
     additional: {
       count: 0,
     },
@@ -48,6 +64,7 @@ test('should set additional', () => {
 
 test('should no set additional (null by default)', () => {
   const state = collectListInitialState({
+    ...defaultParams,
   });
 
   expect(state.additional).toEqual(null);
@@ -57,6 +74,7 @@ test('should set items', () => {
   const items = [1, 2, 3];
 
   const state = collectListInitialState({
+    ...defaultParams,
     items,
   });
 

@@ -1,4 +1,6 @@
-import { EventType } from './types';
+import type {
+  EventType,
+} from './types';
 
 export const loadMore: EventType = 'loadMore';
 

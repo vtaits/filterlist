@@ -1,16 +1,35 @@
 import React from 'react';
-import { shallow } from 'enzyme';
+import type {
+  FC,
+  ReactNode,
+} from 'react';
+import {
+  shallow,
+} from 'enzyme';
+import type {
+  ShallowWrapper,
+} from 'enzyme';
+
+import listActions from '../../__fixtures__/listActions';
 
 import Filterlist from '../Filterlist';
 import createFilterlist from '../createFilterlist';
 
-const TestComponent = () => <div />;
+import type {
+  ComponentRenderProps,
+} from '../types';
+
+const TestComponent: FC = () => <div />;
 
 const defaultOptions = {
   loadItems: Function.prototype,
 };
 
+type RenderChildren = (renderProps: ComponentRenderProps) => ReactNode;
+
 class PageObject {
+  wrapper: ShallowWrapper;
+
   constructor(options, props) {
     const WithFilterlist = createFilterlist({
       ...defaultOptions,
@@ -24,20 +43,20 @@ class PageObject {
     );
   }
 
-  getFilterlistNode() {
+  getFilterlistNode(): ShallowWrapper {
     return this.wrapper.find(Filterlist);
   }
 
-  getFilterlistProp(propName) {
+  getFilterlistProp(propName): any {
     return this.getFilterlistNode().prop(propName);
   }
 
-  renderTestComponentNode(filterlistProps) {
-    const renderContent = this.getFilterlistNode().prop('children');
+  renderTestComponentNode(filterlistProps: ComponentRenderProps): ShallowWrapper {
+    const renderContent: RenderChildren = this.getFilterlistNode().prop('children');
 
-    const renderedContent = renderContent(filterlistProps);
+    const renderedContent: ReactNode = renderContent(filterlistProps);
 
-    const wrapper = shallow(
+    const wrapper: ShallowWrapper = shallow(
       <div>
         {renderedContent}
       </div>,
@@ -46,22 +65,23 @@ class PageObject {
     return wrapper.find(TestComponent);
   }
 
-  getChildProps(filterlistProps) {
-    const testComponentNode = this.renderTestComponentNode(filterlistProps);
+  getChildProps(filterlistProps: ComponentRenderProps): Record<string, any> {
+    const testComponentNode: ShallowWrapper = this.renderTestComponentNode(filterlistProps);
 
     return testComponentNode.props();
   }
 }
 
-function setup(options, props) {
-  return new PageObject(options, props);
-}
+const setup = (options, props): PageObject => new PageObject(options, props);
 
 test('should provide options from decorator', () => {
-  const page = setup({
-    param1: 'value1',
-    param2: 'value2',
-  });
+  const page = setup(
+    {
+      param1: 'value1',
+      param2: 'value2',
+    },
+    {},
+  );
 
   expect(page.getFilterlistProp('param1')).toBe('value1');
   expect(page.getFilterlistProp('param2')).toBe('value2');
@@ -132,13 +152,14 @@ test('should add filterlist props to child component', () => {
   });
 
   const childProps = page.getChildProps({
-    param2: 'value4',
-    param3: 'value3',
+    isListInited: true,
+    listActions,
   });
 
   expect(childProps).toEqual({
     param1: 'value1',
-    param2: 'value4',
-    param3: 'value3',
+    param2: 'value2',
+    isListInited: true,
+    listActions,
   });
 });

@@ -1,9 +1,24 @@
 /* eslint-disable max-classes-per-file */
 
 import React from 'react';
+import type {
+  FC,
+  ReactNode,
+} from 'react';
 import { shallow } from 'enzyme';
+import type {
+  ShallowWrapper,
+} from 'enzyme';
+import type {
+  ListState,
+  Params,
+} from '@vtaits/filterlist';
 
 import Filterlist from '../Filterlist';
+import type {
+  ComponentParams,
+  ParseFiltersAndSort,
+} from '../types';
 
 const methodsForChild = [
   ['loadMore', 0],
@@ -23,6 +38,11 @@ const methodsForChild = [
   ['updateItem', 3],
 ];
 
+type State = {
+  isListInited: boolean;
+  listState?: ListState;
+};
+
 class ManualFilterlist extends Filterlist {
   constructor(props) {
     super(props);
@@ -30,37 +50,39 @@ class ManualFilterlist extends Filterlist {
     this.initFilterlistAsync = jest.fn();
   }
 
-  manualInitFilterlistAsync(...args) {
-    return super.initFilterlistAsync(...args);
+  manualInitFilterlistAsync(): Promise<void> {
+    return super.initFilterlistAsync();
   }
 
-  componentDidUpdate() {}
+  componentDidUpdate(): Promise<void> {
+    return Promise.resolve();
+  }
 
-  manualComponentDidUpdate(...args) {
-    return super.componentDidUpdate(...args);
+  manualComponentDidUpdate(prevProps: Record<string, any>): Promise<void> {
+    return super.componentDidUpdate(prevProps);
   }
 }
 
-const TestComponent = () => null;
+const TestComponent: FC = () => null;
 
 const defaultProps = {
   loadItems: Function.prototype,
-  children: (props) => <TestComponent {...props} />,
+  children: (props): ReactNode => <TestComponent {...props} />,
 };
 
-function parseFiltersAndSort({
+const parseFiltersAndSort: ParseFiltersAndSort = ({
   filtersRaw,
   appliedFiltersRaw,
   sortRaw,
-}) {
-  return {
-    filters: filtersRaw,
-    appliedFilters: appliedFiltersRaw,
-    sort: sortRaw,
-  };
-}
+}) => ({
+  filters: filtersRaw,
+  appliedFilters: appliedFiltersRaw,
+  sort: sortRaw,
+});
 
 class PageObject {
+  wrapper: ShallowWrapper<State, ComponentParams, ManualFilterlist>;
+
   constructor(props) {
     this.wrapper = shallow(
       <ManualFilterlist
@@ -70,7 +92,7 @@ class PageObject {
     );
   }
 
-  async setProps(newProps) {
+  async setProps(newProps): Promise<void> {
     const oldProps = this.instance().props;
 
     this.wrapper.setProps(newProps);
@@ -78,27 +100,29 @@ class PageObject {
     await this.instance().manualComponentDidUpdate(oldProps);
   }
 
-  update() {
+  update(): void {
     this.wrapper.update();
   }
 
-  instance() {
+  instance(): ManualFilterlist {
     return this.wrapper.instance();
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(): Promise<void> {
     return this.instance().manualComponentDidUpdate(this.wrapper.props());
   }
 
-  callLoadItems(...args) {
+  callLoadItems(...args): Promise<void> {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+    // @ts-ignore
     return this.instance().filterlist.constructorArgs[0].loadItems(...args);
   }
 
-  getTestComponentNode() {
+  getTestComponentNode(): ShallowWrapper {
     return this.wrapper.find(TestComponent);
   }
 
-  getListAction(actionName) {
+  getListAction(actionName): Function {
     const testComponentNode = this.getTestComponentNode();
 
     const listActions = testComponentNode.prop('listActions');
@@ -106,30 +130,30 @@ class PageObject {
     return listActions[actionName];
   }
 
-  checkListInitied() {
+  checkListInitied(): boolean {
     const testComponentNode = this.getTestComponentNode();
 
     return testComponentNode.prop('isListInited');
   }
 
-  getListState() {
+  getListState(): ListState {
     const testComponentNode = this.getTestComponentNode();
 
     return testComponentNode.prop('listState');
   }
 
-  getFilterlistInstance() {
+  getFilterlistInstance(): any {
     return this.instance().filterlist;
   }
 
-  getFilterlistOptions() {
+  getFilterlistOptions(): Params {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+    // @ts-ignore
     return this.getFilterlistInstance().constructorArgs[0];
   }
 }
 
-function setup(props) {
-  return new PageObject(props);
-}
+const setup = (props): PageObject => new PageObject(props);
 
 test('should provide list state to child', () => {
   const page = setup({});
@@ -140,7 +164,7 @@ test('should provide list state to child', () => {
   });
 });
 
-methodsForChild.forEach(([methodName, argsCount]) => {
+methodsForChild.forEach(([methodName, argsCount]: [string, number]) => {
   test(`should call "${methodName}" from rendered component`, () => {
     const page = setup({});
 
@@ -177,14 +201,6 @@ test('should init with parsed filters and sort', () => {
   });
 
   const options = page.getFilterlistOptions();
-
-  expect(options.filters).toEqual({
-    filter1: 'value1',
-  });
-
-  expect(options.filters).toEqual({
-    filter1: 'value1',
-  });
 
   expect(options.appliedFilters).toEqual({
     filter1: 'value2',
@@ -307,6 +323,8 @@ test('should not call setFiltersAndSorting if shouldRecount returns false', asyn
 
   const filterlist = page.getFilterlistInstance();
 
+  // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+  // @ts-ignore
   expect(filterlist.setFiltersAndSorting.mock.calls.length).toBe(0);
 });
 
@@ -350,7 +368,11 @@ test('should call setFiltersAndSorting if shouldRecount returns true', async () 
 
   const filterlist = page.getFilterlistInstance();
 
+  // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+  // @ts-ignore
   expect(filterlist.setFiltersAndSorting.mock.calls.length).toBe(1);
+  // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+  // @ts-ignore
   expect(filterlist.setFiltersAndSorting.mock.calls[0][0]).toEqual({
     filters: {
       filter1: 'value3',
@@ -404,14 +426,6 @@ test('should init asynchronously with parsed filters and sort', async () => {
   await page.instance().manualInitFilterlistAsync();
 
   const options = page.getFilterlistOptions();
-
-  expect(options.filters).toEqual({
-    filter1: 'value1',
-  });
-
-  expect(options.filters).toEqual({
-    filter1: 'value1',
-  });
 
   expect(options.appliedFilters).toEqual({
     filter1: 'value2',
@@ -472,7 +486,11 @@ test('should call asynchronously setFiltersAndSorting if shouldRecount returns t
 
   const filterlist = page.getFilterlistInstance();
 
+  // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+  // @ts-ignore
   expect(filterlist.setFiltersAndSorting.mock.calls.length).toBe(1);
+  // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+  // @ts-ignore
   expect(filterlist.setFiltersAndSorting.mock.calls[0][0]).toEqual({
     filters: {
       filter1: 'value3',

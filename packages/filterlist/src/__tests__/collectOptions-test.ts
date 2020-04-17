@@ -1,7 +1,17 @@
 import collectOptions, { defaultOptions } from '../collectOptions';
 
+import type {
+  ItemsLoaderResponse,
+} from '../types';
+
+const defaultParams = {
+  loadItems: (): ItemsLoaderResponse => ({
+    items: [],
+  }),
+};
+
 test('should return defaultOptions', () => {
-  expect(collectOptions({})).toEqual(defaultOptions);
+  expect(collectOptions(defaultParams)).toEqual(defaultOptions);
 });
 
 test('should set filters for resetting', () => {
@@ -11,6 +21,7 @@ test('should set filters for resetting', () => {
   };
 
   const options = collectOptions({
+    ...defaultParams,
     alwaysResetFilters,
   });
 
@@ -19,6 +30,7 @@ test('should set filters for resetting', () => {
 
 test('should set isDefaultSortAsc true', () => {
   const options = collectOptions({
+    ...defaultParams,
     isDefaultSortAsc: true,
   });
 
@@ -27,6 +39,7 @@ test('should set isDefaultSortAsc true', () => {
 
 test('should set isDefaultSortAsc false', () => {
   const options = collectOptions({
+    ...defaultParams,
     isDefaultSortAsc: true,
   });
 
@@ -34,14 +47,14 @@ test('should set isDefaultSortAsc false', () => {
 });
 
 test('should no set isDefaultSortAsc (true by default)', () => {
-  const options = collectOptions({
-  });
+  const options = collectOptions(defaultParams);
 
   expect(options.isDefaultSortAsc).toEqual(true);
 });
 
 test('should set saveFiltersOnResetAll', () => {
   const options = collectOptions({
+    ...defaultParams,
     saveFiltersOnResetAll: ['filter1', 'filter2'],
   });
 
@@ -50,6 +63,7 @@ test('should set saveFiltersOnResetAll', () => {
 
 test('should set saveItemsWhileLoad', () => {
   const options = collectOptions({
+    ...defaultParams,
     saveItemsWhileLoad: true,
   });
 
@@ -57,14 +71,14 @@ test('should set saveItemsWhileLoad', () => {
 });
 
 test('should no set saveItemsWhileLoad (false by default)', () => {
-  const options = collectOptions({
-  });
+  const options = collectOptions(defaultParams);
 
   expect(options.saveItemsWhileLoad).toEqual(false);
 });
 
 test('should set autoload', () => {
   const options = collectOptions({
+    ...defaultParams,
     autoload: false,
   });
 
@@ -72,8 +86,7 @@ test('should set autoload', () => {
 });
 
 test('should no set autoload (true by default)', () => {
-  const options = collectOptions({
-  });
+  const options = collectOptions(defaultParams);
 
   expect(options.autoload).toEqual(true);
 });

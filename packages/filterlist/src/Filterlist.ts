@@ -7,11 +7,12 @@ import collectOptions from './collectOptions';
 import * as eventTypes from './eventTypes';
 import { LoadListError } from './errors';
 
-import {
+import type {
   Sort,
   ListState,
   Options,
   Params,
+  ItemsLoaderResponse,
   ItemsLoader,
   EventType,
 } from './types';
@@ -471,10 +472,7 @@ class Filterlist<Item = any, Additional = any, Error = any> {
     this.onSuccess(response);
   }
 
-  onSuccess(response: {
-    items: Item[];
-    additional?: Additional;
-  }): void {
+  onSuccess(response: ItemsLoaderResponse<Item, Additional>): void {
     const prevListState = this.listState;
 
     const {

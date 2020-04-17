@@ -6,78 +6,86 @@ import * as eventTypes from '../eventTypes';
 import collectListInitialState from '../collectListInitialState';
 import collectOptions from '../collectOptions';
 import { LoadListError } from '../errors';
+import type {
+  ListState,
+  ItemsLoaderResponse,
+} from '../types';
 
 const defaultParams = {
-  loadItems: Function.prototype,
+  loadItems: (): ItemsLoaderResponse => ({
+    items: [],
+  }),
 };
 
 let callsSequence = [];
 
-const loadItemsOnInitMethod = jest.fn(() => {
+const loadItemsOnInitMethod = jest.fn<Promise<void>, []>(() => {
   callsSequence.push('loadMore');
+  return Promise.resolve();
 });
 const onInitMethod = jest.fn(() => {
   callsSequence.push('onInit');
 });
-const requestItemsMethod = jest.fn(() => {
+const requestItemsMethod = jest.fn<Promise<void>, []>(() => {
   callsSequence.push('requestItems');
+  return Promise.resolve();
 });
-const onSuccessMethod = jest.fn(() => {
+const onSuccessMethod = jest.fn<void, [ItemsLoaderResponse]>(() => {
   callsSequence.push('onSuccess');
 });
-const onErrorMethod = jest.fn(() => {
+const onErrorMethod = jest.fn<any, [LoadListError]>(() => {
   callsSequence.push('onError');
 });
-const onChangeListStateMethod = jest.fn(() => {
+const onChangeListStateMethod = jest.fn<any, [ListState]>(() => {
   callsSequence.push('onChangeListState');
 });
 
 /* eslint-disable class-methods-use-this */
 class ManualFilterlist extends Filterlist {
-  loadItemsOnInit(...args) {
-    return loadItemsOnInitMethod(...args);
+  loadItemsOnInit(): Promise<void> {
+    return loadItemsOnInitMethod();
   }
 
-  manualLoadItemsOnInit(...args) {
-    return super.loadItemsOnInit(...args);
+  manualLoadItemsOnInit(): Promise<void> {
+    return super.loadItemsOnInit();
   }
 
-  onInit(...args) {
-    return onInitMethod(...args);
+  onInit(): void {
+    return onInitMethod();
   }
 
-  manualOnInit(...args) {
-    return super.onInit(...args);
+  manualOnInit(): void {
+    return super.onInit();
   }
 
-  requestItems(...args) {
-    return requestItemsMethod(...args);
+  requestItems(): Promise<void> {
+    return requestItemsMethod();
   }
 
-  manualRequestItems(...args) {
-    return super.requestItems(...args);
+  manualRequestItems(): Promise<void> {
+    return super.requestItems();
   }
 
-  onSuccess(...args) {
-    return onSuccessMethod(...args);
+  onSuccess(response: ItemsLoaderResponse): void {
+    return onSuccessMethod(response);
   }
 
-  manualOnSuccess(...args) {
-    return super.onSuccess(...args);
+  manualOnSuccess(response: ItemsLoaderResponse): void {
+    return super.onSuccess(response);
   }
 
-  onError(...args) {
-    return onErrorMethod(...args);
+  onError(error: LoadListError): void {
+    return onErrorMethod(error);
   }
 
-  manualOnError(...args) {
-    return super.onError(...args);
+  manualOnError(error: LoadListError): void {
+    return super.onError(error);
   }
 
-  setListState(...args) {
-    super.setListState(...args);
+  setListState(nextListState: ListState): void {
+    super.setListState(nextListState);
 
-    onChangeListStateMethod(...args);
+    onChangeListStateMethod(nextListState);
   }
 }
 /* eslint-enable class-methods-use-this */
@@ -95,6 +103,8 @@ afterEach(() => {
 
 test('should throw an exception if loadItems is not defined', () => {
   expect(() => {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+    // @ts-ignore
     new ManualFilterlist({});
   })
     .toThrowError('loadItems is required');
@@ -103,6 +113,8 @@ test('should throw an exception if loadItems is not defined', () => {
 test('should throw an exception if loadItems is not a function', () => {
   expect(() => {
     new ManualFilterlist({
+      // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+      // @ts-ignore
       loadItems: 123,
     });
   })
@@ -208,7 +220,7 @@ test('should dispatch event and request items on load items', async () => {
     ...defaultParams,
   });
 
-  const onLoadItems = jest.fn(() => {
+  const onLoadItems = jest.fn<any, [ListState]>(() => {
     callsSequence.push('onLoadItems');
   });
 
@@ -266,7 +278,7 @@ test('should request items successfully', async () => {
     loadItems,
   });
 
-  const onRequestItems = jest.fn(() => {
+  const onRequestItems = jest.fn<any, [ListState]>(() => {
     callsSequence.push('onRequestItems');
   });
 
@@ -311,7 +323,7 @@ test('should request items with error', async () => {
     loadItems,
   });
 
-  const onRequestItems = jest.fn(() => {
+  const onRequestItems = jest.fn<any, [ListState]>(() => {
     callsSequence.push('onRequestItems');
   });
 
@@ -348,7 +360,7 @@ test('should throw up not LoadListError', async () => {
     loadItems,
   });
 
-  const onRequestItems = jest.fn(() => {
+  const onRequestItems = jest.fn<any, [ListState]>(() => {
     callsSequence.push('onRequestItems');
   });
 
@@ -404,7 +416,7 @@ test('should ingore success response if requestId increased in process of loadIt
     loadItems,
   });
 
-  const onRequestItems = jest.fn(() => {
+  const onRequestItems = jest.fn<any, [ListState]>(() => {
     callsSequence.push('onRequestItems');
   });
 
@@ -452,7 +464,7 @@ test('should ingore LoadListError if requestId increased in process of loadItems
     loadItems,
   });
 
-  const onRequestItems = jest.fn(() => {
+  const onRequestItems = jest.fn<any, [ListState]>(() => {
     callsSequence.push('onRequestItems');
   });
 
@@ -632,10 +644,10 @@ describe('onError', () => {
       additional: 'additional1',
     };
 
-    filterlist.manualOnError({
+    filterlist.manualOnError(new LoadListError({
       error: 'error2',
       additional: 'additional2',
-    });
+    }));
 
     expect(onChangeListStateMethod.mock.calls.length).toBe(1);
 
@@ -661,9 +673,9 @@ describe('onError', () => {
       additional: 'additional1',
     };
 
-    filterlist.manualOnError({
+    filterlist.manualOnError(new LoadListError({
       error: 'error2',
-    });
+    }));
 
     expect(onChangeListStateMethod.mock.calls.length).toBe(1);
 
@@ -689,9 +701,9 @@ describe('onError', () => {
       additional: 'additional1',
     };
 
-    filterlist.manualOnError({
+    filterlist.manualOnError(new LoadListError({
       additional: 'additional2',
-    });
+    }));
 
     expect(onChangeListStateMethod.mock.calls.length).toBe(1);
 

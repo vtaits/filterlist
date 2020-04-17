@@ -1,8 +1,8 @@
-import {
+import type {
   ReactNode,
 } from 'react';
 
-import {
+import type {
   ListState,
   Sort,
   Params as BaseParams,
@@ -26,6 +26,10 @@ export type ShouldRecount<
   FiltersAndSortData = any
 > = (nextData: FiltersAndSortData, prevData: FiltersAndSortData) => boolean;
 
+export type ParseFiltersAndSort<
+  FiltersAndSortData = any
+> = (data: FiltersAndSortData) => ParsedFiltersAndSort | AsyncParsedFiltersAndSort;
+
 export type Params<
   Item = any,
   Additional = any,
@@ -33,8 +37,7 @@ export type Params<
   FiltersAndSortData = any
 > = BaseParams<Item, Additional, Error> & {
   filtersAndSortData?: FiltersAndSortData;
-  parseFiltersAndSort?: (data: FiltersAndSortData) => ParsedFiltersAndSort
-  | AsyncParsedFiltersAndSort;
+  parseFiltersAndSort?: ParseFiltersAndSort<FiltersAndSortData>;
   shouldRecount?: ShouldRecount<FiltersAndSortData>;
   canInit?: boolean;
   onChangeLoadParams?: OnChangeLoadParams<Item, Additional, Error>;

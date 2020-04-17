@@ -1,8 +1,13 @@
-import { Component, ReactNode } from 'react';
+import { Component } from 'react';
+import type {
+  ReactNode,
+} from 'react';
 import PropTypes from 'prop-types';
 
 import Filterlist, {
   eventTypes,
+} from '@vtaits/filterlist';
+import type {
   ListState,
   Params,
   ItemsLoader,
@@ -10,7 +15,7 @@ import Filterlist, {
 
 import defaultShouldRecount from './defaultShouldRecount';
 
-import {
+import type {
   ComponentListActions,
   ComponentParams,
 } from './types';

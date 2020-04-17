@@ -1,18 +1,20 @@
 import React, {
   useCallback,
+} from 'react';
+import type {
   ElementType,
   ReactNode,
   SFC,
 } from 'react';
 
-import {
+import type {
   ItemsLoader,
   ListState,
 } from '@vtaits/filterlist';
 
 import Filterlist from './Filterlist';
 
-import {
+import type {
   HOCParams,
   ComponentRenderProps,
 } from './types';

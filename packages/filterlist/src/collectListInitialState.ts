@@ -1,4 +1,7 @@
-import { Params, ListState } from './types';
+import type {
+  Params,
+  ListState,
+} from './types';
 
 import listInitialState from './listInitialState';
 

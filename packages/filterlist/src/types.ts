@@ -24,25 +24,27 @@ export type Options = {
   saveItemsWhileLoad: boolean;
 };
 
+export type ItemsLoaderResponse<Item = any, Additional = any> = {
+  items: Item[];
+  additional?: Additional;
+};
+
 export type ItemsLoader<Item = any, Additional = any, Error = any> = (
   prevListState: ListState<Item, Additional, Error>,
-) => Promise<{
-  items: Item[];
-  additional: Additional;
-}>;
+) => ItemsLoaderResponse<Item, Additional> | Promise<ItemsLoaderResponse<Item, Additional>>;
 
 export type Params<Item = any, Additional = any, Error = any> = {
   loadItems: ItemsLoader<Item, Additional, Error>;
-  items: Item[];
-  sort: Sort;
-  additional: Additional;
-  appliedFilters: Record<string, any>;
+  items?: Item[];
+  sort?: Sort;
+  additional?: Additional;
+  appliedFilters?: Record<string, any>;
   autoload?: boolean;
   isDefaultSortAsc?: boolean;
   alwaysResetFilters?: Record<string, any>;
-  resetFiltersTo: Record<string, any>;
-  saveFiltersOnResetAll: string[];
-  saveItemsWhileLoad: boolean;
+  resetFiltersTo?: Record<string, any>;
+  saveFiltersOnResetAll?: string[];
+  saveItemsWhileLoad?: boolean;
 };
 
 export type EventType = 'loadMore'

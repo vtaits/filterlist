@@ -1,4 +1,6 @@
-import { ListState } from './types';
+import type {
+  ListState,
+} from './types';
 
 const listInitialState: ListState = {
   sort: {

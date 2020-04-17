@@ -2,15 +2,12 @@
   "compilerOptions": {
     "outDir": "ts",
     "emitDeclarationOnly": true,
-    "esModuleInterop": true,
-    "jsx": "react"
+    "esModuleInterop": true
   },
   "include": [
     "src/**/*"
   ],
   "exclude": [
-    "node_modules",
-    "src/__tests__",
-    "src/__stories__"
+    "node_modules"
   ]
 }

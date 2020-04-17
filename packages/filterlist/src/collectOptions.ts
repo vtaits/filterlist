@@ -1,4 +1,7 @@
-import { Options, Params } from './types';
+import type {
+  Options,
+  Params,
+} from './types';
 
 export const defaultOptions: Options = {
   autoload: true,

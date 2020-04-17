@@ -9,8 +9,8 @@ export class LoadListError<Error = any, Additional = any> extends ExtendableErro
     error,
     additional,
   }: {
-    error: Error;
-    additional: Additional;
+    error?: Error;
+    additional?: Additional;
   }) {
     super('List loading failed');
 

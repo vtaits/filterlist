@@ -6,10 +6,11 @@ export { default as collectOptions } from './collectOptions';
 export { LoadListError } from './errors';
 export { eventTypes };
 
-export {
+export type {
   Sort,
   ListState,
   Options,
+  ItemsLoaderResponse,
   ItemsLoader,
   Params,
   EventType,
