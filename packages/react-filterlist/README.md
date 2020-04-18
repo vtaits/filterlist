@@ -1,8 +1,13 @@
 [![NPM](https://img.shields.io/npm/v/@vtaits/react-filterlist.svg)](https://www.npmjs.com/package/@vtaits/react-filterlist)
+[![Types](https://img.shields.io/npm/types/@vtaits/react-filterlist.svg)](https://www.npmjs.com/package/@vtaits/react-filterlist.svg)
 
 # @vtaits/react-filterlist
 
 React wrapper above [@vtaits/filterlist](https://www.npmjs.com/package/@vtaits/filterlist).
+
+## Sandbox examples
+
+- Table with filters: [demo](https://kto5e.csb.app/), [source](https://codesandbox.io/s/example-kto5e)
 
 ## Installation
 
