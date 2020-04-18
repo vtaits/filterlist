@@ -61,5 +61,7 @@ module.exports = {
     '@typescript-eslint/no-explicit-any': 'off',
 
     'react/static-property-placement': 'off',
+
+    'react/prop-types': 'off',
   }
 };

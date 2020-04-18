@@ -4,7 +4,7 @@ import React, {
 import type {
   ElementType,
   ReactNode,
-  SFC,
+  FC,
 } from 'react';
 
 import type {
@@ -19,7 +19,7 @@ import type {
   ComponentRenderProps,
 } from './types';
 
-type HOC = (WrappedComponent: ElementType) => ElementType;
+type HOC = (WrappedComponent: ElementType) => FC;
 
 const createFilterlist = <
   Item = any,
@@ -31,8 +31,8 @@ const createFilterlist = <
     onChangeLoadParams: onChangeLoadParamsOption,
   } = options;
 
-  return (WrappedComponent: ElementType): ElementType => {
-    const WithFilterlist: SFC = (props) => {
+  return (WrappedComponent: ElementType): FC => {
+    const WithFilterlist: FC = (props) => {
       const onChangeLoadParams = useCallback((
         nextListState: ListState<Item, Additional, Error>,
       ): void => {

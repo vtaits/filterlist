@@ -7,7 +7,7 @@ import CreateFilterlist from './CreateFilterlist';
 import UseFilterlist from './UseFilterlist';
 import DeferredInit from './DeferredInit';
 
-storiesOf('react-filterlist')
+storiesOf('react-filterlist', module)
   .addDecorator((storyFn) => (
     <MemoryRouter>
       {storyFn()}
