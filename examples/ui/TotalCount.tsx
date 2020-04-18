@@ -2,6 +2,12 @@ import React from 'react';
 import type {
   FC,
 } from 'react';
+import styled from 'styled-components';
+
+const StyledWrapper = styled.div({
+  fontSize: 18,
+  lineHeight: 1.2,
+});
 
 type Props = {
   count: number;
@@ -10,11 +16,11 @@ type Props = {
 const TotalCount: FC<Props> = ({
   count,
 }) => (
-  <h4>
+  <StyledWrapper>
     Total:
     {' '}
     {count}
-  </h4>
+  </StyledWrapper>
 );
 
 export default TotalCount;

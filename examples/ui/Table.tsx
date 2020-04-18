@@ -1,6 +1,7 @@
 import React, {
   memo,
 } from 'react';
+import styled from 'styled-components';
 import type {
   FC,
 } from 'react';
@@ -21,12 +22,27 @@ type Props = {
   setSorting: (param: string) => void;
 };
 
+const StyledTable = styled.table({
+  width: '100%',
+  borderCollapse: 'collapse',
+});
+
+const StyledTd = styled.td({
+  borderBottom: '2px solid #ccc',
+  padding: '5px 10px',
+  textAlign: 'left',
+
+  '& + &': {
+    borderLeft: '1px solid #ccc',
+  },
+});
+
 const Table: FC<Props> = memo(({
   sort,
   items,
   setSorting,
 }) => (
-  <table>
+  <StyledTable>
     <thead>
       <tr>
         <Th
@@ -76,15 +92,15 @@ const Table: FC<Props> = memo(({
           city,
         }: User) => (
           <tr key={id}>
-            <td>{id}</td>
-            <td>{name}</td>
-            <td>{email}</td>
-            <td>{city}</td>
+            <StyledTd>{id}</StyledTd>
+            <StyledTd>{name}</StyledTd>
+            <StyledTd>{email}</StyledTd>
+            <StyledTd>{city}</StyledTd>
           </tr>
         ))
       }
     </tbody>
-  </table>
+  </StyledTable>
 ));
 
 export default Table;

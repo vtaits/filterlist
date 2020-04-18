@@ -147,6 +147,7 @@ const WithFilterlist: FC<Props> = (props) => {
 
         return (
           <Page
+            listState={listState}
             filters={filters}
             sort={sort}
             items={items}

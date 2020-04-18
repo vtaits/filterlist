@@ -198,6 +198,7 @@ const List: FC<Props> = ({
 
   return (
     <Page
+      listState={listState}
       filters={filters}
       sort={sort}
       items={items}
