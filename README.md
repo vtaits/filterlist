@@ -1,4 +1,4 @@
-## filterlist
+# filterlist
 
 Util for creating lists with filters, sotring, paginatinon, endless scroll etc.
 
