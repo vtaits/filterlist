@@ -1,5 +1,5 @@
 [![NPM](https://img.shields.io/npm/v/@vtaits/react-filterlist.svg)](https://www.npmjs.com/package/@vtaits/react-filterlist)
-[![Types](https://img.shields.io/npm/types/@vtaits/react-filterlist.svg)](https://www.npmjs.com/package/@vtaits/react-filterlist.svg)
+[![Types](https://img.shields.io/npm/types/@vtaits/react-filterlist.svg)](https://www.npmjs.com/package/@vtaits/react-filterlist)
 
 # @vtaits/react-filterlist
 

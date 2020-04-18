@@ -1,5 +1,5 @@
 [![NPM](https://img.shields.io/npm/v/@vtaits/filterlist.svg)](https://www.npmjs.com/package/@vtaits/filterlist)
-[![Types](https://img.shields.io/npm/types/@vtaits/filterlist.svg)](https://www.npmjs.com/package/@vtaits/filterlist.svg)
+[![Types](https://img.shields.io/npm/types/@vtaits/filterlist.svg)](https://www.npmjs.com/package/@vtaits/filterlist)
 
 # @vtaits/filterlist
 
