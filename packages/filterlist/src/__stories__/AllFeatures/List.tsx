@@ -42,7 +42,7 @@ const getStateFromSearch = (search: string): {
     name: parsed.name || '',
     email: parsed.email || '',
     city: parsed.city || '',
-    page: parsed.page || 1,
+    page: parsed.page ? Number(parsed.page) : 1,
     perPage: parsed.perPage || 10,
   };
 
