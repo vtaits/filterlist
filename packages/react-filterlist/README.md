@@ -21,8 +21,6 @@ or
 yarn add @vtaits/filterlist @vtaits/react-filterlist
 ```
 
-Examples are [here](https://github.com/vtaits/react-filterlist/tree/master/examples).
-
 ## Simple examples
 
 ### With render prop
