@@ -10,8 +10,9 @@
     "start": "start-storybook",
     "build": "yarn workspaces run build",
     "lint": "yarn workspaces run lint",
+    "test:ts": "yarn workspaces run test:ts",
     "test:unit": "yarn workspaces run test:unit",
-    "test": "yarn lint && yarn test:unit",
+    "test": "yarn lint && yarn test:ts && yarn test:unit",
     "validate": "yarn test && yarn build"
   },
   "devDependencies": {

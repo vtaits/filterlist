@@ -19,7 +19,7 @@ module.exports = {
   ],
 
   parserOptions: {
-    project: './tsconfig.eslint.json',
+    project: './tsconfig.validate.json',
   },
 
   settings: {

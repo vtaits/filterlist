@@ -1,13 +1,15 @@
 import React from 'react';
 import type {
-  ReactNode,
+  FC,
 } from 'react';
 import { MemoryRouter, Route } from 'react-router-dom';
 
 import List from './List';
 
-export default (): ReactNode => (
+const AllFeatures: FC = () => (
   <MemoryRouter>
     <Route component={List} />
   </MemoryRouter>
 );
+
+export default AllFeatures;
