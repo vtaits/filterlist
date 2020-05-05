@@ -1,3 +1,5 @@
+[![devDependencies status](https://david-dm.org/vtaits/filterlist/dev-status.svg)](https://david-dm.org/vtaits/filterlist?type=dev)
+
 # filterlist
 
 Util for creating lists with filters, sotring, paginatinon, endless scroll etc.

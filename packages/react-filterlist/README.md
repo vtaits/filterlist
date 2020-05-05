@@ -1,4 +1,6 @@
 [![NPM](https://img.shields.io/npm/v/@vtaits/react-filterlist.svg)](https://www.npmjs.com/package/@vtaits/react-filterlist)
+[![dependencies status](https://david-dm.org/vtaits/filterlist/status.svg?path=packages/react-filterlist)](https://david-dm.org/vtaits/filterlist?path=packages/react-filterlist)
+[![devDependencies status](https://david-dm.org/vtaits/filterlist/dev-status.svg?path=packages/react-filterlist)](https://david-dm.org/vtaits/filterlist?path=packages/react-filterlist&type=dev)
 [![Types](https://img.shields.io/npm/types/@vtaits/react-filterlist.svg)](https://www.npmjs.com/package/@vtaits/react-filterlist)
 
 # @vtaits/react-filterlist
