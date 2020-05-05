@@ -32,14 +32,14 @@
     "prepare": "yarn build"
   },
   "dependencies": {
-    "@babel/runtime": "^7.9.2",
+    "@babel/runtime": "^7.9.6",
     "array-insert": "^2.0.0",
     "es6-error": "^4.1.1",
     "eventemitter3": "^4.0.0"
   },
   "devDependencies": {
     "@storybook/react": "^5.3.18",
-    "qs": "^6.9.3",
+    "qs": "^6.9.4",
     "react": "^16.13.1",
     "react-router-dom": "^5.1.2"
   }
