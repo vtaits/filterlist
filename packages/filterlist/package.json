@@ -32,9 +32,9 @@
     "prepare": "yarn build"
   },
   "dependencies": {
-    "@babel/runtime": "^7.9.2",
+    "@babel/runtime": "^7.10.2",
     "array-insert": "^2.0.0",
     "es6-error": "^4.1.1",
-    "eventemitter3": "^4.0.0"
+    "eventemitter3": "^4.0.4"
   }
 }

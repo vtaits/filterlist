@@ -55,7 +55,7 @@ class FilterlistWrapper<
 
   listActions: ComponentListActions<Item, Additional>;
 
-  constructor(props) {
+  constructor(props: ComponentParams<Item, Additional, Error, FiltersAndSortData>) {
     super(props);
 
     const {
@@ -79,7 +79,9 @@ class FilterlistWrapper<
     };
   }
 
-  async componentDidUpdate(prevProps): Promise<void> {
+  async componentDidUpdate(
+    prevProps: ComponentParams<Item, Additional, Error, FiltersAndSortData>,
+  ): Promise<void> {
     const {
       parseFiltersAndSort,
       filtersAndSortData,
@@ -102,7 +104,7 @@ class FilterlistWrapper<
     this.filterlist.emitter.removeAllListeners(eventTypes.changeLoadParams);
   }
 
-  onChangeLoadParams = (nextListState): void => {
+  onChangeLoadParams = (nextListState: ListState<Item, Additional, Error>): void => {
     const {
       onChangeLoadParams,
     } = this.props;

@@ -128,6 +128,7 @@ class Filterlist<Item = any, Additional = any, Error = any> {
     await this.requestItems();
   }
 
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   setFilterValue(filterName: string, value: any): void {
     const prevListState = this.listState;
 
@@ -163,6 +164,7 @@ class Filterlist<Item = any, Additional = any, Error = any> {
     await this.requestItems();
   }
 
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   async setAndApplyFilter(filterName: string, value: any): Promise<void> {
     const prevListState = this.listState;
     const stateBeforeChange = this.getListStateBeforeChange();
