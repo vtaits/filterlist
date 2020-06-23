@@ -1,3 +1,9 @@
+## 0.2.4 (23 jun 2020)
+
+### Bugfix
+
+- Improve typings
+
 ## 0.2.1 (31 mar 2020)
 
 ### Bugfix
