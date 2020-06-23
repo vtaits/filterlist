@@ -64,7 +64,7 @@ export type ComponentListActions<Item = any, Additional = any> = {
 export type ComponentRenderProps<Item = any, Additional = any, Error = any> = {
   isListInited: boolean;
   listState?: ListState<Item, Additional, Error>;
-  listActions: ComponentListActions<Item, Additional>;
+  listActions?: ComponentListActions<Item, Additional>;
 };
 
 export type ComponentParams<

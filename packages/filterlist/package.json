@@ -33,15 +33,16 @@
     "prepare": "yarn build"
   },
   "dependencies": {
-    "@babel/runtime": "^7.9.6",
+    "@babel/runtime": "^7.10.2",
     "array-insert": "^2.0.0",
     "es6-error": "^4.1.1",
-    "eventemitter3": "^4.0.0"
+    "eventemitter3": "^4.0.4"
   },
   "devDependencies": {
-    "@storybook/react": "^5.3.18",
+    "@storybook/react": "^5.3.19",
+    "history": "^5.0.0",
     "qs": "^6.9.4",
     "react": "^16.13.1",
-    "react-router-dom": "^5.1.2"
+    "react-router-dom": "^5.2.0"
   }
 }

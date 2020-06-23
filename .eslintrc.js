@@ -38,9 +38,11 @@ module.exports = {
       {
         'devDependencies': [
           '**/setup-jest.js',
-          '**/__tests__/**/*',
-          '**/__stories__/**/*'
+          '**/__tests__/**',
+          '**/__stories__/**'
         ],
+
+        'peerDependencies': true,
       },
     ],
 

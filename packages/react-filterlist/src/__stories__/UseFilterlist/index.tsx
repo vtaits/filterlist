@@ -16,10 +16,7 @@ import type {
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { useFilterlist } from '@vtaits/react-filterlist';
 // eslint-disable-next-line import/no-extraneous-dependencies
-import type {
-  ParsedFiltersAndSort,
-} from '@vtaits/react-filterlist';
-// eslint-disable-next-line import/no-extraneous-dependencies
+import type { ParsedFiltersAndSort } from '@vtaits/react-filterlist';
 import type {
   ListState,
 } from '@vtaits/filterlist';

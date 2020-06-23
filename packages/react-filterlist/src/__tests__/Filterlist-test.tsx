@@ -58,7 +58,7 @@ class ManualFilterlist extends Filterlist {
     return Promise.resolve();
   }
 
-  manualComponentDidUpdate(prevProps: Record<string, any>): Promise<void> {
+  manualComponentDidUpdate(prevProps: ComponentParams): Promise<void> {
     return super.componentDidUpdate(prevProps);
   }
 }
@@ -81,7 +81,7 @@ const parseFiltersAndSort: ParseFiltersAndSort = ({
 });
 
 class PageObject {
-  wrapper: ShallowWrapper<State, ComponentParams, ManualFilterlist>;
+  wrapper: ShallowWrapper<ComponentParams, State, ManualFilterlist>;
 
   constructor(props) {
     this.wrapper = shallow(
@@ -113,7 +113,7 @@ class PageObject {
   }
 
   callLoadItems(...args): Promise<void> {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     return this.instance().filterlist.constructorArgs[0].loadItems(...args);
   }
@@ -122,6 +122,7 @@ class PageObject {
     return this.wrapper.find(TestComponent);
   }
 
+  // eslint-disable-next-line @typescript-eslint/ban-types
   getListAction(actionName): Function {
     const testComponentNode = this.getTestComponentNode();
 
@@ -147,7 +148,7 @@ class PageObject {
   }
 
   getFilterlistOptions(): Params {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     return this.getFilterlistInstance().constructorArgs[0];
   }
@@ -323,7 +324,7 @@ test('should not call setFiltersAndSorting if shouldRecount returns false', asyn
 
   const filterlist = page.getFilterlistInstance();
 
-  // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   expect(filterlist.setFiltersAndSorting.mock.calls.length).toBe(0);
 });
@@ -368,10 +369,10 @@ test('should call setFiltersAndSorting if shouldRecount returns true', async () 
 
   const filterlist = page.getFilterlistInstance();
 
-  // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   expect(filterlist.setFiltersAndSorting.mock.calls.length).toBe(1);
-  // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   expect(filterlist.setFiltersAndSorting.mock.calls[0][0]).toEqual({
     filters: {
@@ -486,10 +487,10 @@ test('should call asynchronously setFiltersAndSorting if shouldRecount returns t
 
   const filterlist = page.getFilterlistInstance();
 
-  // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   expect(filterlist.setFiltersAndSorting.mock.calls.length).toBe(1);
-  // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   expect(filterlist.setFiltersAndSorting.mock.calls[0][0]).toEqual({
     filters: {

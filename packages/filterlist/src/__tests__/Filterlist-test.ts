@@ -103,7 +103,7 @@ afterEach(() => {
 
 test('should throw an exception if loadItems is not defined', () => {
   expect(() => {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     new ManualFilterlist({});
   })
@@ -113,7 +113,7 @@ test('should throw an exception if loadItems is not defined', () => {
 test('should throw an exception if loadItems is not a function', () => {
   expect(() => {
     new ManualFilterlist({
-      // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       loadItems: 123,
     });

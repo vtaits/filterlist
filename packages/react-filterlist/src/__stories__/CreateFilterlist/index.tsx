@@ -12,10 +12,7 @@ import type {
 } from 'history';
 
 // eslint-disable-next-line import/no-extraneous-dependencies
-import {
-  createFilterlist,
-} from '@vtaits/react-filterlist';
-// eslint-disable-next-line import/no-extraneous-dependencies
+import { createFilterlist } from '@vtaits/react-filterlist';
 import type {
   ListState,
 } from '@vtaits/filterlist';

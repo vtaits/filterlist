@@ -2,7 +2,7 @@ import React, {
   useCallback,
 } from 'react';
 import type {
-  ElementType,
+  ComponentType,
   ReactNode,
   FC,
 } from 'react';
@@ -19,20 +19,40 @@ import type {
   ComponentRenderProps,
 } from './types';
 
-type HOC = (WrappedComponent: ElementType) => FC;
+type HOCProps<
+PermanentProps = Record<string, any>,
+Item = any,
+Additional = any,
+Error = any
+> =
+  & Omit<PermanentProps, 'isListInited' | 'listState' | 'listActions'>
+  & ComponentRenderProps<Item, Additional, Error>;
+
+type HOC<
+PermanentProps = Record<string, any>,
+Item = any,
+Additional = any,
+Error = any
+> = (
+  WrappedComponent: ComponentType<HOCProps<PermanentProps, Item, Additional, Error>>
+) => FC;
 
 const createFilterlist = <
+  PermanentProps = Record<string, any>,
   Item = any,
   Additional = any,
   Error = any
->(options: HOCParams<Item, Additional, Error>): HOC => {
+>(options: HOCParams<Item, Additional, Error>): HOC<PermanentProps, Item, Additional, Error> => {
   const {
     loadItems: loadItemsOption,
     onChangeLoadParams: onChangeLoadParamsOption,
   } = options;
 
-  return (WrappedComponent: ElementType): FC => {
-    const WithFilterlist: FC = (props) => {
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  return (
+    WrappedComponent: ComponentType<HOCProps<PermanentProps, Item, Additional, Error>>,
+  ): FC<PermanentProps> => {
+    const WithFilterlist: FC<PermanentProps> = (props) => {
       const onChangeLoadParams = useCallback((
         nextListState: ListState<Item, Additional, Error>,
       ): void => {
@@ -44,24 +64,26 @@ const createFilterlist = <
       ) => loadItemsOption(listState, props);
 
       const renderContent = (
-        filterlistProps: ComponentRenderProps<Item, Additional, Error>,
+        filterlistRenderProps: ComponentRenderProps<Item, Additional, Error>,
       ): ReactNode => React.createElement(
         WrappedComponent,
         {
           ...props,
-          ...filterlistProps,
+          ...filterlistRenderProps,
         },
       );
 
+      const filterlistProps = {
+        ...options,
+        loadItems,
+        filtersAndSortData: props,
+        onChangeLoadParams: options.onChangeLoadParams && onChangeLoadParams,
+        children: renderContent,
+      };
+
       return React.createElement(
         Filterlist,
-        {
-          ...options,
-          loadItems,
-          filtersAndSortData: props,
-          onChangeLoadParams: options.onChangeLoadParams && onChangeLoadParams,
-        },
-        renderContent,
+        filterlistProps,
       );
     };
 

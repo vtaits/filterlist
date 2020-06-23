@@ -13,9 +13,7 @@ import type {
 } from 'history';
 
 // eslint-disable-next-line import/no-extraneous-dependencies
-import {
-  Filterlist,
-} from '@vtaits/react-filterlist';
+import { Filterlist } from '@vtaits/react-filterlist';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import type {
   ItemsLoader,
