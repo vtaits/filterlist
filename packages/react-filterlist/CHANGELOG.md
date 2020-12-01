@@ -1,3 +1,17 @@
+## 0.3.0 (01 dec 2020)
+
+### Improvement
+
+* Make `typescript` typings more strict
+
+### Internal changes
+
+- Migrate to [new JSX transform](https://reactjs.org/blog/2020/09/22/introducing-the-new-jsx-transform.html)
+
+### Breaking changes
+
+- Drop `react` less than `16.14.0`
+
 ## 0.2.4 (23 jun 2020)
 
 ### Bugfix
