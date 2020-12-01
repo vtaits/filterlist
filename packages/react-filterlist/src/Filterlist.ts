@@ -2,7 +2,6 @@ import { Component } from 'react';
 import type {
   ReactNode,
 } from 'react';
-import PropTypes from 'prop-types';
 
 import Filterlist, {
   eventTypes,
@@ -20,32 +19,14 @@ import type {
   ComponentParams,
 } from './types';
 
-type State<Item = any, Additional = any, Error = any> = {
+export type State<Item, Additional, Error> = {
   isListInited: boolean;
   listState?: ListState<Item, Additional, Error>;
 };
 
-class FilterlistWrapper<
-  Item = any,
-  Additional = any,
-  Error = any,
-  FiltersAndSortData = any
-> extends Component<
-  ComponentParams<Item, Additional, Error, FiltersAndSortData>, State<Item, Additional, Error>
-  > {
-  static propTypes = {
-    loadItems: PropTypes.func.isRequired,
-    parseFiltersAndSort: PropTypes.func,
-    // eslint-disable-next-line react/forbid-prop-types
-    filtersAndSortData: PropTypes.any,
-    shouldRecount: PropTypes.func,
-    isRecountAsync: PropTypes.bool,
-
-    children: PropTypes.func.isRequired,
-
-    onChangeLoadParams: PropTypes.func,
-  };
-
+class FilterlistWrapper<Item, Additional, Error, FiltersAndSortData> extends Component<
+ComponentParams<Item, Additional, Error, FiltersAndSortData>, State<Item, Additional, Error>
+> {
   static defaultProps = {
     parseFiltersAndSort: null,
     filtersAndSortData: null,

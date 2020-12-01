@@ -22,11 +22,22 @@ import type {
 
 import Page from '../../../../../examples/ui/Page';
 import * as api from '../../../../../examples/api';
+
+import type {
+  User,
+  Additional,
+} from '../../../../../examples/types';
+
 import {
   ParseFiltersAndSort,
 } from '../../types';
 
-const getStateFromProps: ParseFiltersAndSort = async ({
+type Props = {
+  history: History;
+  location: Location;
+};
+
+const getStateFromProps: ParseFiltersAndSort<Props> = async ({
   location: {
     search,
   },
@@ -70,7 +81,7 @@ const shouldRecount = ({
 }, prevProps): boolean => history.action === 'POP'
   && location.search !== prevProps.location.search;
 
-const loadItems: ItemsLoader = async ({
+const loadItems: ItemsLoader<User, Additional, unknown> = async ({
   sort,
   appliedFilters,
 }) => {
@@ -87,17 +98,14 @@ const loadItems: ItemsLoader = async ({
   };
 };
 
-type Props = {
-  history: History;
-  location: Location;
-};
-
 const WithFilterlist: FC<Props> = (props) => {
   const {
     history,
   } = props;
 
-  const onChangeLoadParams = useCallback((newListState: ListState): void => {
+  const onChangeLoadParams = useCallback((
+    newListState: ListState<User, Additional, unknown>,
+  ): void => {
     const newQuery = qs.stringify({
       ...newListState.appliedFilters,
       sort: newListState.sort.param

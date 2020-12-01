@@ -3,12 +3,17 @@ import type {
   ListState,
 } from './types';
 
-import listInitialState from './listInitialState';
+import {
+  listInitialState as defaultListInitialState,
+} from './listInitialState';
 
-const collectListInitialState = <Item = any, Additional = any>(
-  params: Params<Item, Additional>,
-): ListState<Item, Additional> => ({
-    ...listInitialState,
+export const collectListInitialState = <Item, Additional, Error>(
+  params: Params<Item, Additional, Error>,
+): ListState<Item, Additional, Error> => {
+  const listInitialState = defaultListInitialState as ListState<Item, Additional, Error>;
+
+  return {
+    ...listInitialState as ListState<Item, Additional, Error>,
 
     items: params.items || listInitialState.items,
 
@@ -25,6 +30,5 @@ const collectListInitialState = <Item = any, Additional = any>(
 
     appliedFilters: params.appliedFilters
       || listInitialState.appliedFilters,
-  });
-
-export default collectListInitialState;
+  };
+};

@@ -12,31 +12,31 @@ export const defaultOptions: Options = {
   saveItemsWhileLoad: false,
 };
 
-const collectOptions = (params: Params): Options => ({
-  ...defaultOptions,
+export const collectOptions = <Item, Additional, Error>(
+  params: Params<Item, Additional, Error>,
+): Options => ({
+    ...defaultOptions,
 
-  /* eslint-disable no-prototype-builtins */
-  autoload: params.hasOwnProperty('autoload')
-    ? params.autoload
-    : defaultOptions.autoload,
+    /* eslint-disable no-prototype-builtins */
+    autoload: params.hasOwnProperty('autoload')
+      ? params.autoload
+      : defaultOptions.autoload,
 
-  /* eslint-disable no-prototype-builtins */
-  isDefaultSortAsc: params.hasOwnProperty('isDefaultSortAsc')
-    ? params.isDefaultSortAsc
-    : defaultOptions.isDefaultSortAsc,
-  /* eslint-enable no-prototype-builtins */
+    /* eslint-disable no-prototype-builtins */
+    isDefaultSortAsc: params.hasOwnProperty('isDefaultSortAsc')
+      ? params.isDefaultSortAsc
+      : defaultOptions.isDefaultSortAsc,
+    /* eslint-enable no-prototype-builtins */
 
-  alwaysResetFilters: params.alwaysResetFilters
-    || defaultOptions.alwaysResetFilters,
+    alwaysResetFilters: params.alwaysResetFilters
+      || defaultOptions.alwaysResetFilters,
 
-  resetFiltersTo: params.resetFiltersTo
-    || defaultOptions.resetFiltersTo,
+    resetFiltersTo: params.resetFiltersTo
+      || defaultOptions.resetFiltersTo,
 
-  saveFiltersOnResetAll: params.saveFiltersOnResetAll
-    || defaultOptions.saveFiltersOnResetAll,
+    saveFiltersOnResetAll: params.saveFiltersOnResetAll
+      || defaultOptions.saveFiltersOnResetAll,
 
-  saveItemsWhileLoad: params.saveItemsWhileLoad
-    || defaultOptions.saveItemsWhileLoad,
-});
-
-export default collectOptions;
+    saveItemsWhileLoad: params.saveItemsWhileLoad
+      || defaultOptions.saveItemsWhileLoad,
+  });

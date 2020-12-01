@@ -1,12 +1,12 @@
-import collectListInitialState from '../collectListInitialState';
-import listInitialState from '../listInitialState';
+import { collectListInitialState } from '../collectListInitialState';
+import { listInitialState } from '../listInitialState';
 
 import type {
   ItemsLoaderResponse,
 } from '../types';
 
 const defaultParams = {
-  loadItems: (): ItemsLoaderResponse => ({
+  loadItems: (): ItemsLoaderResponse<any, any> => ({
     items: [],
   }),
 };

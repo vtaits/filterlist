@@ -1,10 +1,10 @@
 /* eslint-disable no-new */
 
-import Filterlist from '../Filterlist';
+import { Filterlist } from '../Filterlist';
 
 import * as eventTypes from '../eventTypes';
-import collectListInitialState from '../collectListInitialState';
-import collectOptions from '../collectOptions';
+import { collectListInitialState } from '../collectListInitialState';
+import { collectOptions } from '../collectOptions';
 import { LoadListError } from '../errors';
 import type {
   ListState,
@@ -12,7 +12,7 @@ import type {
 } from '../types';
 
 const defaultParams = {
-  loadItems: (): ItemsLoaderResponse => ({
+  loadItems: (): ItemsLoaderResponse<any, any> => ({
     items: [],
   }),
 };
@@ -30,18 +30,18 @@ const requestItemsMethod = jest.fn<Promise<void>, []>(() => {
   callsSequence.push('requestItems');
   return Promise.resolve();
 });
-const onSuccessMethod = jest.fn<void, [ItemsLoaderResponse]>(() => {
+const onSuccessMethod = jest.fn<void, [ItemsLoaderResponse<any, any>]>(() => {
   callsSequence.push('onSuccess');
 });
 const onErrorMethod = jest.fn<any, [LoadListError]>(() => {
   callsSequence.push('onError');
 });
-const onChangeListStateMethod = jest.fn<any, [ListState]>(() => {
+const onChangeListStateMethod = jest.fn<any, [ListState<any, any, any>]>(() => {
   callsSequence.push('onChangeListState');
 });
 
 /* eslint-disable class-methods-use-this */
-class ManualFilterlist extends Filterlist {
+class ManualFilterlist<Item, Additional, Error> extends Filterlist<Item, Additional, Error> {
   loadItemsOnInit(): Promise<void> {
     return loadItemsOnInitMethod();
   }
@@ -66,11 +66,11 @@ class ManualFilterlist extends Filterlist {
     return super.requestItems();
   }
 
-  onSuccess(response: ItemsLoaderResponse): void {
+  onSuccess(response: ItemsLoaderResponse<Item, Additional>): void {
     return onSuccessMethod(response);
   }
 
-  manualOnSuccess(response: ItemsLoaderResponse): void {
+  manualOnSuccess(response: ItemsLoaderResponse<Item, Additional>): void {
     return super.onSuccess(response);
   }
 
@@ -82,7 +82,7 @@ class ManualFilterlist extends Filterlist {
     return super.onError(error);
   }
 
-  setListState(nextListState: ListState): void {
+  setListState(nextListState: ListState<Item, Additional, Error>): void {
     super.setListState(nextListState);
 
     onChangeListStateMethod(nextListState);
@@ -220,7 +220,7 @@ test('should dispatch event and request items on load items', async () => {
     ...defaultParams,
   });
 
-  const onLoadItems = jest.fn<any, [ListState]>(() => {
+  const onLoadItems = jest.fn<any, [ListState<any, any, any>]>(() => {
     callsSequence.push('onLoadItems');
   });
 
@@ -278,7 +278,7 @@ test('should request items successfully', async () => {
     loadItems,
   });
 
-  const onRequestItems = jest.fn<any, [ListState]>(() => {
+  const onRequestItems = jest.fn<any, [ListState<any, any, any>]>(() => {
     callsSequence.push('onRequestItems');
   });
 
@@ -323,7 +323,7 @@ test('should request items with error', async () => {
     loadItems,
   });
 
-  const onRequestItems = jest.fn<any, [ListState]>(() => {
+  const onRequestItems = jest.fn<any, [ListState<any, any, any>]>(() => {
     callsSequence.push('onRequestItems');
   });
 
@@ -360,7 +360,7 @@ test('should throw up not LoadListError', async () => {
     loadItems,
   });
 
-  const onRequestItems = jest.fn<any, [ListState]>(() => {
+  const onRequestItems = jest.fn<any, [ListState<any, any, any>]>(() => {
     callsSequence.push('onRequestItems');
   });
 
@@ -416,7 +416,7 @@ test('should ingore success response if requestId increased in process of loadIt
     loadItems,
   });
 
-  const onRequestItems = jest.fn<any, [ListState]>(() => {
+  const onRequestItems = jest.fn<any, [ListState<any, any, any>]>(() => {
     callsSequence.push('onRequestItems');
   });
 
@@ -464,7 +464,7 @@ test('should ingore LoadListError if requestId increased in process of loadItems
     loadItems,
   });
 
-  const onRequestItems = jest.fn<any, [ListState]>(() => {
+  const onRequestItems = jest.fn<any, [ListState<any, any, any>]>(() => {
     callsSequence.push('onRequestItems');
   });
 

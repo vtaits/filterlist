@@ -16,6 +16,9 @@ import type {
 
 import Filterlist from '../Filterlist';
 import type {
+  State,
+} from '../Filterlist';
+import type {
   ComponentParams,
   ParseFiltersAndSort,
 } from '../types';
@@ -38,12 +41,12 @@ const methodsForChild = [
   ['updateItem', 3],
 ];
 
-type State = {
-  isListInited: boolean;
-  listState?: ListState;
-};
-
-class ManualFilterlist extends Filterlist {
+class ManualFilterlist<
+Item,
+Additional,
+Error,
+FiltersAndSortData,
+> extends Filterlist<Item, Additional, Error, FiltersAndSortData> {
   constructor(props) {
     super(props);
 
@@ -58,7 +61,9 @@ class ManualFilterlist extends Filterlist {
     return Promise.resolve();
   }
 
-  manualComponentDidUpdate(prevProps: ComponentParams): Promise<void> {
+  manualComponentDidUpdate(
+    prevProps: ComponentParams<Item, Additional, Error, FiltersAndSortData>,
+  ): Promise<void> {
     return super.componentDidUpdate(prevProps);
   }
 }
@@ -70,7 +75,7 @@ const defaultProps = {
   children: (props): ReactNode => <TestComponent {...props} />,
 };
 
-const parseFiltersAndSort: ParseFiltersAndSort = ({
+const parseFiltersAndSort: ParseFiltersAndSort<any> = ({
   filtersRaw,
   appliedFiltersRaw,
   sortRaw,
@@ -81,7 +86,10 @@ const parseFiltersAndSort: ParseFiltersAndSort = ({
 });
 
 class PageObject {
-  wrapper: ShallowWrapper<ComponentParams, State, ManualFilterlist>;
+  wrapper: ShallowWrapper<
+  ComponentParams<any, any, any, any>,
+  State<any, any, any>,
+  ManualFilterlist<any, any, any, any>>;
 
   constructor(props) {
     this.wrapper = shallow(
@@ -104,7 +112,7 @@ class PageObject {
     this.wrapper.update();
   }
 
-  instance(): ManualFilterlist {
+  instance(): ManualFilterlist<any, any, any, any> {
     return this.wrapper.instance();
   }
 
@@ -137,7 +145,7 @@ class PageObject {
     return testComponentNode.prop('isListInited');
   }
 
-  getListState(): ListState {
+  getListState(): ListState<any, any, any> {
     const testComponentNode = this.getTestComponentNode();
 
     return testComponentNode.prop('listState');
@@ -147,7 +155,7 @@ class PageObject {
     return this.instance().filterlist;
   }
 
-  getFilterlistOptions(): Params {
+  getFilterlistOptions(): Params<any, any, any> {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     return this.getFilterlistInstance().constructorArgs[0];

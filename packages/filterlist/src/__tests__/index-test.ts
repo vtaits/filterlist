@@ -1,7 +1,7 @@
-import Filterlist from '../Filterlist';
+import { Filterlist } from '../Filterlist';
 import * as eventTypes from '../eventTypes';
-import collectListInitialState from '../collectListInitialState';
-import collectOptions from '../collectOptions';
+import { collectListInitialState } from '../collectListInitialState';
+import { collectOptions } from '../collectOptions';
 import { LoadListError } from '../errors';
 
 import * as lib from '../index';

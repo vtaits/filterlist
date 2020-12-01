@@ -15,6 +15,7 @@ import TotalCount from './TotalCount';
 
 import type {
   User,
+  Additional,
 } from '../types';
 
 import type {
@@ -23,13 +24,11 @@ import type {
 } from '../../packages/filterlist/src/types';
 
 type Props = {
-  listState: ListState,
+  listState: ListState<User, Additional, unknown>,
   filters: Record<string, any>;
   sort: Sort;
   items: User[];
-  additional?: {
-    count: number;
-  };
+  additional?: Additional;
   loading: boolean;
   setFilterValue: (filterName: string, value: any) => void;
   resetFilter: (filterName: string) => Promise<void>;

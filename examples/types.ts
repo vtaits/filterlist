@@ -4,3 +4,7 @@ export type User = {
   email: string;
   city: string;
 };
+
+export type Additional = {
+  count: number;
+};

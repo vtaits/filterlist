@@ -21,14 +21,19 @@ import Page from '../../../../../examples/ui/Page';
 import * as api from '../../../../../examples/api';
 
 import type {
+  User,
+  Additional,
+} from '../../../../../examples/types';
+
+import type {
   ComponentListActions,
   ParsedFiltersAndSort,
 } from '../../types';
 
 type Props = {
   isListInited: boolean;
-  listState?: ListState;
-  listActions?: ComponentListActions;
+  listState?: ListState<User, Additional, unknown>;
+  listActions?: ComponentListActions<User, Additional>;
 };
 
 const List: FC<Props> = ({

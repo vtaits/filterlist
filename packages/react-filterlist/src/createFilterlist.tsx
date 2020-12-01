@@ -1,4 +1,4 @@
-import React, {
+import {
   useCallback,
 } from 'react';
 import type {
@@ -19,30 +19,17 @@ import type {
   ComponentRenderProps,
 } from './types';
 
-type HOCProps<
-PermanentProps = Record<string, any>,
-Item = any,
-Additional = any,
-Error = any
-> =
+type HOCProps<PermanentProps, Item, Additional, Error> =
   & Omit<PermanentProps, 'isListInited' | 'listState' | 'listActions'>
   & ComponentRenderProps<Item, Additional, Error>;
 
-type HOC<
-PermanentProps = Record<string, any>,
-Item = any,
-Additional = any,
-Error = any
-> = (
+type HOC<PermanentProps, Item, Additional, Error> = (
   WrappedComponent: ComponentType<HOCProps<PermanentProps, Item, Additional, Error>>
-) => FC;
+) => FC<PermanentProps>;
 
-const createFilterlist = <
-  PermanentProps = Record<string, any>,
-  Item = any,
-  Additional = any,
-  Error = any
->(options: HOCParams<Item, Additional, Error>): HOC<PermanentProps, Item, Additional, Error> => {
+function createFilterlist<PermanentProps, Item, Additional, Error>(
+  options: HOCParams<Item, Additional, Error>,
+): HOC<PermanentProps, Item, Additional, Error> {
   const {
     loadItems: loadItemsOption,
     onChangeLoadParams: onChangeLoadParamsOption,
@@ -65,30 +52,27 @@ const createFilterlist = <
 
       const renderContent = (
         filterlistRenderProps: ComponentRenderProps<Item, Additional, Error>,
-      ): ReactNode => React.createElement(
-        WrappedComponent,
-        {
-          ...props,
-          ...filterlistRenderProps,
-        },
+      ): ReactNode => (
+        <WrappedComponent
+          {...props}
+          {...filterlistRenderProps}
+        />
       );
 
-      const filterlistProps = {
-        ...options,
-        loadItems,
-        filtersAndSortData: props,
-        onChangeLoadParams: options.onChangeLoadParams && onChangeLoadParams,
-        children: renderContent,
-      };
-
-      return React.createElement(
-        Filterlist,
-        filterlistProps,
+      return (
+        <Filterlist
+          {...options}
+          loadItems={loadItems}
+          filtersAndSortData={props}
+          onChangeLoadParams={options.onChangeLoadParams && onChangeLoadParams}
+        >
+          {renderContent}
+        </Filterlist>
       );
     };
 
     return WithFilterlist;
   };
-};
+}
 
 export default createFilterlist;

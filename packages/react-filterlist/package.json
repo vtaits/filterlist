@@ -22,8 +22,8 @@
   ],
   "scripts": {
     "clean": "rimraf lib es ts",
-    "build:cjs": "cross-env BABEL_ENV=cjs babel --extensions '.ts' src --out-dir lib --ignore \"src/**/__tests__\",\"src/**/__stories__\"",
-    "build:es": "cross-env BABEL_ENV=es babel --extensions '.ts' src --out-dir es --ignore \"src/**/__tests__\",\"src/**/__stories__\"",
+    "build:cjs": "cross-env BABEL_ENV=cjs babel --extensions '.ts,.tsx' src --out-dir lib --ignore \"src/**/__tests__\",\"src/**/__stories__\"",
+    "build:es": "cross-env BABEL_ENV=es babel --extensions '.ts,.tsx' src --out-dir es --ignore \"src/**/__tests__\",\"src/**/__stories__\"",
     "build:ts": "tsc --declaration --emitDeclarationOnly",
     "build": "yarn clean && yarn build:cjs && yarn build:es && yarn build:ts",
     "lint": "eslint src --ext .ts,.tsx --ignore-path ../../.gitignore",
@@ -34,22 +34,22 @@
   },
   "peerDependencies": {
     "@vtaits/filterlist": "^0.2.0",
-    "react": "^16.0.0"
+    "react": "^16.14.0 || ^17.0.0"
   },
   "devDependencies": {
-    "@storybook/react": "^5.3.19",
+    "@storybook/react": "^6.1.9",
     "@types/enzyme": "^3.10.5",
     "@vtaits/filterlist": "^0.2.0",
+    "@wojtekmaj/enzyme-adapter-react-17": "^0.3.2",
     "enzyme": "^3.11.0",
-    "enzyme-adapter-react-16": "^1.15.2",
     "history": "^5.0.0",
     "qs": "^6.9.4",
-    "react": "^16.13.1",
-    "react-dom": "^16.13.1",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1",
     "react-router-dom": "^5.2.0"
   },
   "dependencies": {
-    "@babel/runtime": "^7.10.2",
+    "@babel/runtime": "^7.12.5",
     "is-promise": "^4.0.0",
     "prop-types": "^15.7.2"
   }

@@ -2,7 +2,7 @@ import type {
   ListState,
 } from './types';
 
-const listInitialState: ListState = {
+export const listInitialState: ListState<any, any, any> = {
   sort: {
     param: null,
     asc: true,
@@ -16,5 +16,3 @@ const listInitialState: ListState = {
   shouldClean: false,
   isFirstLoad: true,
 };
-
-export default listInitialState;

@@ -1,11 +1,11 @@
-import collectOptions, { defaultOptions } from '../collectOptions';
+import { collectOptions, defaultOptions } from '../collectOptions';
 
 import type {
   ItemsLoaderResponse,
 } from '../types';
 
 const defaultParams = {
-  loadItems: (): ItemsLoaderResponse => ({
+  loadItems: (): ItemsLoaderResponse<any, any> => ({
     items: [],
   }),
 };

@@ -25,7 +25,7 @@ const defaultOptions = {
   loadItems: Function.prototype,
 };
 
-type RenderChildren = (renderProps: ComponentRenderProps) => ReactNode;
+type RenderChildren = (renderProps: ComponentRenderProps<any, any, any>) => ReactNode;
 
 class PageObject {
   wrapper: ShallowWrapper;
@@ -51,7 +51,7 @@ class PageObject {
     return this.getFilterlistNode().prop(propName);
   }
 
-  renderTestComponentNode(filterlistProps: ComponentRenderProps): ShallowWrapper {
+  renderTestComponentNode(filterlistProps: ComponentRenderProps<any, any, any>): ShallowWrapper {
     const renderContent: RenderChildren = this.getFilterlistNode().prop('children');
 
     const renderedContent: ReactNode = renderContent(filterlistProps);
@@ -65,7 +65,7 @@ class PageObject {
     return wrapper.find(TestComponent);
   }
 
-  getChildProps(filterlistProps: ComponentRenderProps): Record<string, any> {
+  getChildProps(filterlistProps: ComponentRenderProps<any, any, any>): Record<string, any> {
     const testComponentNode: ShallowWrapper = this.renderTestComponentNode(filterlistProps);
 
     return testComponentNode.props();

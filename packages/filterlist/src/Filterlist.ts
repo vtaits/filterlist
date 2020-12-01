@@ -1,8 +1,8 @@
 import EventEmitter from 'eventemitter3';
 import arrayInsert from 'array-insert';
 
-import collectListInitialState from './collectListInitialState';
-import collectOptions from './collectOptions';
+import { collectListInitialState } from './collectListInitialState';
+import { collectOptions } from './collectOptions';
 
 import * as eventTypes from './eventTypes';
 import { LoadListError } from './errors';
@@ -17,7 +17,7 @@ import type {
   EventType,
 } from './types';
 
-class Filterlist<Item = any, Additional = any, Error = any> {
+export class Filterlist<Item, Additional, Error> {
   requestId: number;
 
   listState: ListState<Item, Additional, Error>;
@@ -587,5 +587,3 @@ class Filterlist<Item = any, Additional = any, Error = any> {
     return this.listState;
   }
 }
-
-export default Filterlist;

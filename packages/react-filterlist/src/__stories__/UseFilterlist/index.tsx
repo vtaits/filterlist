@@ -24,6 +24,11 @@ import type {
 import Page from '../../../../../examples/ui/Page';
 import * as api from '../../../../../examples/api';
 
+import type {
+  User,
+  Additional,
+} from '../../../../../examples/types';
+
 type Props = {
   history: History;
   location: Location;
@@ -57,7 +62,7 @@ const List: FC<Props> = (props) => {
       };
     },
 
-    onChangeLoadParams: (newListState: ListState): void => {
+    onChangeLoadParams: (newListState: ListState<User, Additional, unknown>): void => {
       const newQuery = qs.stringify({
         ...newListState.appliedFilters,
         sort: newListState.sort.param

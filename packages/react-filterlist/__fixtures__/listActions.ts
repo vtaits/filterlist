@@ -2,7 +2,7 @@ import type {
   ComponentListActions,
 } from '../src/types';
 
-const listActions: ComponentListActions = {
+const listActions: ComponentListActions<any, any> = {
   loadMore: async () => {},
   setFilterValue: () => {},
   applyFilter: async () => {},

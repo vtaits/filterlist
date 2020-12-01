@@ -16,34 +16,30 @@ export type ParsedFiltersAndSort = {
 
 export type AsyncParsedFiltersAndSort = Promise<ParsedFiltersAndSort>;
 
-export type OnChangeLoadParams<
-  Item = any,
-  Additional = any,
-  Error = any
-> = (listState: ListState<Item, Additional, Error>) => void;
+export type OnChangeLoadParams<Item, Additional, Error> = (
+  listState: ListState<Item, Additional, Error>,
+) => void;
 
-export type ShouldRecount<
-  FiltersAndSortData = any
-> = (nextData: FiltersAndSortData, prevData: FiltersAndSortData) => boolean;
+export type ShouldRecount<FiltersAndSortData> = (
+  nextData: FiltersAndSortData,
+  prevData: FiltersAndSortData,
+) => boolean;
 
-export type ParseFiltersAndSort<
-  FiltersAndSortData = any
-> = (data: FiltersAndSortData) => ParsedFiltersAndSort | AsyncParsedFiltersAndSort;
+export type ParseFiltersAndSort<FiltersAndSortData> = (
+  data: FiltersAndSortData,
+) => ParsedFiltersAndSort | AsyncParsedFiltersAndSort;
 
-export type Params<
-  Item = any,
-  Additional = any,
-  Error = any,
-  FiltersAndSortData = any
-> = BaseParams<Item, Additional, Error> & {
-  filtersAndSortData?: FiltersAndSortData;
-  parseFiltersAndSort?: ParseFiltersAndSort<FiltersAndSortData>;
-  shouldRecount?: ShouldRecount<FiltersAndSortData>;
-  canInit?: boolean;
-  onChangeLoadParams?: OnChangeLoadParams<Item, Additional, Error>;
-};
+export type Params<Item, Additional, Error, FiltersAndSortData> =
+  & BaseParams<Item, Additional, Error>
+  & {
+    filtersAndSortData?: FiltersAndSortData;
+    parseFiltersAndSort?: ParseFiltersAndSort<FiltersAndSortData>;
+    shouldRecount?: ShouldRecount<FiltersAndSortData>;
+    canInit?: boolean;
+    onChangeLoadParams?: OnChangeLoadParams<Item, Additional, Error>;
+  };
 
-export type ComponentListActions<Item = any, Additional = any> = {
+export type ComponentListActions<Item, Additional> = {
   loadMore: () => Promise<void>;
   setFilterValue: (filterName: string, value: any) => void;
   applyFilter: (filterName: string) => Promise<void>;
@@ -61,48 +57,44 @@ export type ComponentListActions<Item = any, Additional = any> = {
   updateItem: (itemIndex: number, item: Item, additional?: Additional) => void;
 };
 
-export type ComponentRenderProps<Item = any, Additional = any, Error = any> = {
+export type ComponentRenderProps<Item, Additional, Error> = {
   isListInited: boolean;
   listState?: ListState<Item, Additional, Error>;
   listActions?: ComponentListActions<Item, Additional>;
 };
 
-export type ComponentParams<
-  Item = any,
-  Additional = any,
-  Error = any,
-  FiltersAndSortData = any
-> = BaseParams<Item, Additional, Error> & {
-  filtersAndSortData?: FiltersAndSortData;
-  parseFiltersAndSort?: (data: FiltersAndSortData) => ParsedFiltersAndSort
-  | AsyncParsedFiltersAndSort;
-  shouldRecount?: ShouldRecount<FiltersAndSortData>;
-  isRecountAsync?: boolean;
-  onChangeLoadParams?: OnChangeLoadParams<Item, Additional, Error>;
+export type ComponentParams<Item, Additional, Error, FiltersAndSortData> =
+  & BaseParams<Item, Additional, Error>
+  & {
+    filtersAndSortData?: FiltersAndSortData;
+    parseFiltersAndSort?: (data: FiltersAndSortData) => ParsedFiltersAndSort
+    | AsyncParsedFiltersAndSort;
+    shouldRecount?: ShouldRecount<FiltersAndSortData>;
+    isRecountAsync?: boolean;
+    onChangeLoadParams?: OnChangeLoadParams<Item, Additional, Error>;
 
-  children: (renderProps: ComponentRenderProps<Item, Additional, Error>) => ReactNode;
-};
+    children: (renderProps: ComponentRenderProps<Item, Additional, Error>) => ReactNode;
+  };
 
-export type HOCParams<
-  Item = any,
-  Additional = any,
-  Error = any
-> = BaseParams<Item, Additional, Error> & {
-  parseFiltersAndSort?: (data: any) => ParsedFiltersAndSort | AsyncParsedFiltersAndSort;
-  shouldRecount?: ShouldRecount<any>;
-  isRecountAsync?: boolean;
-  onChangeLoadParams?: (listState: ListState<Item, Additional, Error>, props: any) => void;
-  loadItems: (
-    prevListState: ListState<Item, Additional, Error>,
-    props: any,
-  ) => Promise<{
-    items: Item[];
-    additional: Additional;
-  }>;
-};
+export type HOCParams<Item, Additional, Error> =
+  & Omit<BaseParams<Item, Additional, Error>, 'loadItems'>
+  & {
+    parseFiltersAndSort?: (data: any) => ParsedFiltersAndSort | AsyncParsedFiltersAndSort;
+    shouldRecount?: ShouldRecount<any>;
+    isRecountAsync?: boolean;
+    onChangeLoadParams?: (listState: ListState<Item, Additional, Error>, props: any) => void;
+    loadItems: (
+      prevListState: ListState<Item, Additional, Error>,
+      props: any,
+    ) => Promise<{
+      items: Item[];
+      additional: Additional;
+    }>;
+  };
 
 export type AsyncParams<
-  Item = any,
-  Additional = any,
-  Error = any
-> = Promise<Params<Item, Additional, Error>>;
+Item,
+Additional,
+Error,
+FiltersAndSortData,
+> = Promise<Params<Item, Additional, Error, FiltersAndSortData>>;

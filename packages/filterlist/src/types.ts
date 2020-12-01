@@ -3,7 +3,7 @@ export type Sort = {
   asc: boolean;
 };
 
-export type ListState<Item = any, Additional = any, Error = any> = {
+export type ListState<Item, Additional, Error> = {
   sort: Sort;
   filters: Record<string, any>;
   appliedFilters: Record<string, any>;
@@ -24,16 +24,16 @@ export type Options = {
   saveItemsWhileLoad: boolean;
 };
 
-export type ItemsLoaderResponse<Item = any, Additional = any> = {
+export type ItemsLoaderResponse<Item, Additional> = {
   items: Item[];
   additional?: Additional;
 };
 
-export type ItemsLoader<Item = any, Additional = any, Error = any> = (
+export type ItemsLoader<Item, Additional, Error> = (
   prevListState: ListState<Item, Additional, Error>,
 ) => ItemsLoaderResponse<Item, Additional> | Promise<ItemsLoaderResponse<Item, Additional>>;
 
-export type Params<Item = any, Additional = any, Error = any> = {
+export type Params<Item, Additional, Error> = {
   loadItems: ItemsLoader<Item, Additional, Error>;
   items?: Item[];
   sort?: Sort;

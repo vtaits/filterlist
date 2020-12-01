@@ -21,6 +21,11 @@ import Page from '../../../../../examples/ui/Page';
 import * as api from '../../../../../examples/api';
 
 import type {
+  User,
+  Additional,
+} from '../../../../../examples/types';
+
+import type {
   ItemsLoader,
   Sort,
 } from '../../types';
@@ -63,7 +68,7 @@ const getStateFromSearch = (search: string): {
   };
 };
 
-const loadItems: ItemsLoader = async ({
+const loadItems: ItemsLoader<User, Additional, unknown> = async ({
   sort,
   appliedFilters,
 }) => {

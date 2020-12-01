@@ -25,10 +25,14 @@ import type {
 
 type SyncListState = () => void;
 
-const getFilterlistOptions = <Item, Additional, Error>(
-  params: Params<Item, Additional, Error>,
+type GetFilterlistOptionsRestul<Item, Additional, Error, FiltersAndSortData> =
+  | Params<Item, Additional, Error, FiltersAndSortData>
+  | AsyncParams<Item, Additional, Error, FiltersAndSortData>;
+
+const getFilterlistOptions = <Item, Additional, Error, FiltersAndSortData>(
+  params: Params<Item, Additional, Error, FiltersAndSortData>,
   loadItems: ItemsLoader<Item, Additional, Error>,
-): Params<Item, Additional, Error> | AsyncParams<Item, Additional, Error> => {
+): GetFilterlistOptionsRestul<Item, Additional, Error, FiltersAndSortData> => {
   const {
     parseFiltersAndSort = null,
     filtersAndSortData = null,
@@ -59,8 +63,8 @@ const getFilterlistOptions = <Item, Additional, Error>(
   };
 };
 
-const createFilterlist = <Item, Additional, Error>(
-  options: Params<Item, Additional, Error>,
+const createFilterlist = <Item, Additional, Error, FiltersAndSortData>(
+  options: Params<Item, Additional, Error, FiltersAndSortData>,
   syncListState: SyncListState,
   onChangeLoadParams: OnChangeLoadParams<Item, Additional, Error>,
 ): Filterlist<Item, Additional, Error> => {
@@ -72,8 +76,8 @@ const createFilterlist = <Item, Additional, Error>(
   return filterlist;
 };
 
-const initFilterlist = <Item = any, Additional = any, Error = any>(
-  params: Params<Item, Additional, Error>,
+const initFilterlist = <Item, Additional, Error, FiltersAndSortData>(
+  params: Params<Item, Additional, Error, FiltersAndSortData>,
   loadItems: ItemsLoader<Item, Additional, Error>,
   syncListState: SyncListState,
   onChangeLoadParams: OnChangeLoadParams<Item, Additional, Error>,
@@ -81,25 +85,21 @@ const initFilterlist = <Item = any, Additional = any, Error = any>(
   const optionsResult = getFilterlistOptions(params, loadItems);
 
   if (isPromise(optionsResult)) {
-    return (optionsResult as AsyncParams<Item, Additional, Error>)
+    return (optionsResult as AsyncParams<Item, Additional, Error, FiltersAndSortData>)
       .then((options) => createFilterlist(options, syncListState, onChangeLoadParams));
   }
 
   return createFilterlist(
-    (optionsResult as Params<Item, Additional, Error>),
+    (optionsResult as Params<Item, Additional, Error, FiltersAndSortData>),
     syncListState,
     onChangeLoadParams,
   );
 };
 
-const useFilterlist = <
-  Item = any,
-  Additional = any,
-  Error = any
->(
-    params: Params<Item, Additional, Error>,
-    inputs: any[] = [],
-  ): [null | ListState<Item, Additional, Error>, Filterlist<Item, Additional, Error>] => {
+const useFilterlist = <Item, Additional, Error, FiltersAndSortData>(
+  params: Params<Item, Additional, Error, FiltersAndSortData>,
+  inputs: any[] = [],
+): [null | ListState<Item, Additional, Error>, Filterlist<Item, Additional, Error>] => {
   const {
     parseFiltersAndSort = null,
     filtersAndSortData = null,

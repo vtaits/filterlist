@@ -3,12 +3,19 @@ module.exports = {
     es: {
       presets: [
         '@babel/preset-typescript',
+
         [
           '@babel/env', {
             modules: false,
           },
         ],
-        '@babel/preset-react',
+
+        [
+          '@babel/preset-react',
+          {
+            runtime: 'automatic',
+          },
+        ],
       ],
     },
 
@@ -16,7 +23,13 @@ module.exports = {
       presets: [
         '@babel/preset-typescript',
         '@babel/env',
-        '@babel/preset-react',
+
+        [
+          '@babel/preset-react',
+          {
+            runtime: 'automatic',
+          },
+        ],
       ],
     },
 
@@ -24,7 +37,13 @@ module.exports = {
       presets: [
         '@babel/preset-typescript',
         '@babel/env',
-        '@babel/preset-react',
+
+        [
+          '@babel/preset-react',
+          {
+            runtime: 'automatic',
+          },
+        ],
       ],
     },
   },

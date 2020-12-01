@@ -65,5 +65,6 @@ module.exports = {
     'react/static-property-placement': 'off',
 
     'react/prop-types': 'off',
+    'react/react-in-jsx-scope': 'off',
   }
 };
