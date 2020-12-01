@@ -1,3 +1,9 @@
+## 0.2.2 (01 dec 2020)
+
+### Improvement
+
+* Make `typescript` typings more strict
+
 ## 0.2.0 (23 mar 2020)
 
 ### Breaking changes
