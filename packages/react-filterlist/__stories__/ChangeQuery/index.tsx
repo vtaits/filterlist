@@ -18,17 +18,17 @@ import type {
   ListState,
 } from '@vtaits/filterlist';
 
-import Page from '../../../../../examples/ui/Page';
-import * as api from '../../../../../examples/api';
+import Page from '../../../../examples/ui/Page';
+import * as api from '../../../../examples/api';
 
 import type {
   User,
   Additional,
-} from '../../../../../examples/types';
+} from '../../../../examples/types';
 
 import {
   ParseFiltersAndSort,
-} from '../../types';
+} from '../../src/types';
 
 const getStateFromProps: ParseFiltersAndSort<RouteComponentProps> = async ({
   location: {

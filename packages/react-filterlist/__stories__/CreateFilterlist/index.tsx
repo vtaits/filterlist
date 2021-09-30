@@ -15,18 +15,18 @@ import type {
   ListState,
 } from '@vtaits/filterlist';
 
-import Page from '../../../../../examples/ui/Page';
-import * as api from '../../../../../examples/api';
+import Page from '../../../../examples/ui/Page';
+import * as api from '../../../../examples/api';
 
 import type {
   User,
   Additional,
-} from '../../../../../examples/types';
+} from '../../../../examples/types';
 
 import type {
   ComponentListActions,
   ParsedFiltersAndSort,
-} from '../../types';
+} from '../../src/types';
 
 type Props = {
   isListInited: boolean;

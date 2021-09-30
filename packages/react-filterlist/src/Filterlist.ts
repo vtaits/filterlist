@@ -238,7 +238,7 @@ ComponentParams<Item, Additional, Error, FiltersAndSortData>, State<Item, Additi
       listState,
     } = this.state;
 
-    return children({
+    return (children as ComponentParams<Item, Additional, Error, FiltersAndSortData>['children'])({
       isListInited,
       listState,
       listActions: this.listActions,

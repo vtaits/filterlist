@@ -13,3 +13,17 @@ Util for creating lists with filters, sotring, paginatinon, endless scroll etc.
 - [Core package](https://github.com/vtaits/filterlist/tree/master/packages/filterlist)
 
 - [Integration with react](https://github.com/vtaits/filterlist/tree/master/packages/react-filterlist)
+
+## Local development
+
+Repository is using [yarn berry](https://yarnpkg.com/getting-started).
+
+### Commands
+
+- `yarn build` - build all packages;
+
+- `yarn clean` - clean all prebuilded files;
+
+- `yarn test` - run code validators and unit tests;
+
+- `yarn start` - start [storybook](https://storybook.js.org/) with examples.

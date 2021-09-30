@@ -8,10 +8,10 @@
   "license": "MIT",
   "scripts": {
     "start": "start-storybook",
-    "build": "yarn workspaces run build",
-    "lint": "yarn workspaces run lint",
-    "test:ts": "yarn workspaces run test:ts",
-    "test:unit": "yarn workspaces run test:unit",
+    "build": "yarn workspaces foreach -pt run build",
+    "test:ts": "yarn workspaces foreach -p run test:ts",
+    "lint": "yarn workspaces foreach -p run lint",
+    "test:unit": "yarn workspaces foreach -p run test:unit",
     "test": "yarn lint && yarn test:ts && yarn test:unit",
     "validate": "yarn test && yarn build"
   },
@@ -29,6 +29,7 @@
     "@storybook/react": "^6.3.8",
     "@types/faker": "^5.5.8",
     "@types/jest": "^27.0.2",
+    "@types/react": "^17.0.26",
     "@types/react-router-dom": "^5.3.0",
     "@types/styled-components": "^5.1.14",
     "@typescript-eslint/eslint-plugin": "^4.32.0",

@@ -9,7 +9,6 @@
   ],
   "exclude": [
     "node_modules",
-    "src/__tests__",
-    "src/__stories__"
+    "src/__tests__"
   ]
 }

@@ -10,25 +10,24 @@ import type {
 } from 'react';
 import qs from 'qs';
 import type {
-  History,
-  Location,
-} from 'history';
+  RouteComponentProps,
+} from 'react-router-dom';
 
 // eslint-disable-next-line import/no-extraneous-dependencies
 import Filterlist, { eventTypes } from '@vtaits/filterlist';
 
-import Page from '../../../../../examples/ui/Page';
-import * as api from '../../../../../examples/api';
+import Page from '../../../../examples/ui/Page';
+import * as api from '../../../../examples/api';
 
 import type {
   User,
   Additional,
-} from '../../../../../examples/types';
+} from '../../../../examples/types';
 
 import type {
   ItemsLoader,
   Sort,
-} from '../../types';
+} from '../../src/types';
 
 const getStateFromSearch = (search: string): {
   sort: Sort;
@@ -85,12 +84,7 @@ const loadItems: ItemsLoader<User, Additional, unknown> = async ({
   };
 };
 
-type Props = {
-  history: History;
-  location: Location;
-};
-
-const List: FC<Props> = ({
+const List: FC<RouteComponentProps> = ({
   location,
   history,
 }) => {
