@@ -77,6 +77,7 @@ export class Filterlist<Item, Additional, Error> {
       error: null,
 
       items: saveItemsWhileLoad ? prevListState.items : [],
+      loadedPages: saveItemsWhileLoad ? prevListState.loadedPages : 0,
 
       shouldClean: true,
     };
@@ -481,6 +482,8 @@ export class Filterlist<Item, Additional, Error> {
       saveItemsWhileLoad,
     } = this.options;
 
+    const isClean = saveItemsWhileLoad && prevListState.shouldClean;
+
     this.setListState({
       ...prevListState,
 
@@ -488,9 +491,13 @@ export class Filterlist<Item, Additional, Error> {
       shouldClean: false,
       isFirstLoad: false,
 
-      items: (saveItemsWhileLoad && prevListState.shouldClean)
+      items: isClean
         ? response.items
         : [...prevListState.items, ...response.items],
+
+      loadedPages: isClean
+        ? 1
+        : prevListState.loadedPages + 1,
 
       additional: (typeof response.additional !== 'undefined')
         ? response.additional

@@ -11,6 +11,7 @@ export const listInitialState: ListState<any, any, any> = {
   appliedFilters: {},
   loading: false,
   items: [],
+  loadedPages: 0,
   additional: null,
   error: null,
   shouldClean: false,

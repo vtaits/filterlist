@@ -1,3 +1,9 @@
+## 0.2.3
+
+### New features
+
+* Added param `loadedPages` to state of list
+
 ## 0.2.2 (01 dec 2020)
 
 ### Improvement

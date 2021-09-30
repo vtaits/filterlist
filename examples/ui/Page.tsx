@@ -7,6 +7,7 @@ import type {
 import styled from 'styled-components';
 import { Paginator } from '@vtaits/react-paginator';
 
+import Button from './Button';
 import Filters from './Filters';
 import Table from './Table';
 import ItemsPerPage from './ItemsPerPage';
@@ -23,7 +24,7 @@ import type {
   ListState,
 } from '../../packages/filterlist/src/types';
 
-type Props = {
+type PageProps = {
   listState: ListState<User, Additional, unknown>,
   filters: Record<string, any>;
   sort: Sort;
@@ -36,6 +37,8 @@ type Props = {
   setAndApplyFilter: (filterName: string, value: any) => Promise<void>;
   resetAllFilters: () => Promise<void>;
   setSorting: (param: string) => void;
+  isInfinity?: boolean;
+  loadMore?: () => void;
 };
 
 const StyledWrapper = styled.div({
@@ -77,7 +80,7 @@ const StyledBottomBlock = styled.div({
   marginTop: 30,
 });
 
-const Page: FC<Props> = ({
+const Page: FC<PageProps> = ({
   listState,
   filters,
   sort,
@@ -90,10 +93,16 @@ const Page: FC<Props> = ({
   applyFilter,
   setAndApplyFilter,
   setSorting,
+  isInfinity,
+  loadMore,
 }) => {
   const onPageChange = useCallback((page: number): void => {
     setAndApplyFilter('page', page);
   }, [setAndApplyFilter]);
+
+  const {
+    loadedPages,
+  } = listState;
 
   const perPage = filters.perPage || 10;
 
@@ -131,23 +140,37 @@ const Page: FC<Props> = ({
         }
 
         <StyledBottomBlock>
-          <div>
-            {
-              additional && additional.count > 0 && (
-                <Paginator
-                  page={filters.page || 1}
-                  pageCount={Math.ceil(additional.count / perPage)}
-                  onPageChange={onPageChange}
-                />
-              )
-            }
-          </div>
+          {
+            isInfinity ? (
+              <Button
+                type="button"
+                onClick={loadMore}
+                disabled={!additional || Math.ceil(additional.count / perPage) === loadedPages}
+              >
+                Load more
+              </Button>
+            ) : (
+              <>
+                <div>
+                  {
+                    additional && additional.count > 0 && (
+                      <Paginator
+                        page={filters.page || 1}
+                        pageCount={Math.ceil(additional.count / perPage)}
+                        onPageChange={onPageChange}
+                      />
+                    )
+                  }
+                </div>
 
-          <ItemsPerPage
-            name="perPage"
-            value={filters.perPage}
-            setAndApplyFilter={setAndApplyFilter}
-          />
+                <ItemsPerPage
+                  name="perPage"
+                  value={filters.perPage}
+                  setAndApplyFilter={setAndApplyFilter}
+                />
+              </>
+            )
+          }
         </StyledBottomBlock>
       </StyledView>
 
@@ -166,6 +189,8 @@ const Page: FC<Props> = ({
 
 Page.defaultProps = {
   additional: null,
+  isInfinity: false,
+  loadMore: undefined,
 };
 
 export default Page;

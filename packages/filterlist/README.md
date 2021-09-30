@@ -83,6 +83,7 @@ const listState = filterlist.getListState();
 | loading | is list loading in this moment | Boolean |
 | isFirstLoad | is the first load after initialization | Boolean |
 | items | loaded items | Array |
+| loadedPages | number of pages that loaded without changing filters or sorting | Number |
 | additional | additional info that can be recieved together with items | any |
 | error | error that can be received if list not loaded | any |
 | sort | sorting state of the list | Object { param, asc } |

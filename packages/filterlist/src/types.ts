@@ -9,6 +9,7 @@ export type ListState<Item, Additional, Error> = {
   appliedFilters: Record<string, any>;
   loading: boolean;
   items: Item[];
+  loadedPages: number;
   additional: Additional;
   error: Error;
   shouldClean: boolean;

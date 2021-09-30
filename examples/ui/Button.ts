@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 type ButtonType = 'default' | 'danger';
 
-type Props = {
+type ButtonProps = {
   buttonType?: ButtonType;
 };
 
@@ -11,13 +11,14 @@ const mapTypeToColor: Record<ButtonType, string> = {
   danger: '#f44336',
 };
 
-const Button = styled.button(({
+const Button = styled.button<ButtonProps>(({
   buttonType = 'default',
-}: Props) => {
+  disabled,
+}) => {
   const baseColor = mapTypeToColor[buttonType];
 
   return {
-    cursor: 'pointer',
+    cursor: disabled ? 'default' : 'pointer',
     height: 30,
     borderRadius: 15,
     backgroundColor: 'transparent',
@@ -30,13 +31,14 @@ const Button = styled.button(({
     transition: 'all 0.15s',
     paddingLeft: 20,
     paddingRight: 20,
+    opacity: disabled ? 0.5 : 1,
 
-    '&:hover': {
+    '&:hover': disabled ? undefined : {
       backgroundColor: baseColor,
       color: '#fff',
     },
 
-    '&:active': {
+    '&:active': disabled ? undefined : {
       opacity: 0.75,
     },
   };

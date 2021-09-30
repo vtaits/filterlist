@@ -5,6 +5,7 @@ import ChangeQuery from './ChangeQuery';
 import CreateFilterlist from './CreateFilterlist';
 import UseFilterlist from './UseFilterlist';
 import DeferredInit from './DeferredInit';
+import InfinityList from './InfinityList';
 
 storiesOf('react-filterlist', module)
   .addDecorator((storyFn) => (
@@ -27,8 +28,8 @@ storiesOf('react-filterlist', module)
       component={UseFilterlist}
     />
   ))
-  .add('deferred init', () => (
+  .add('infinity init', () => (
     <Route
-      component={DeferredInit}
+      component={InfinityList}
     />
   ));
