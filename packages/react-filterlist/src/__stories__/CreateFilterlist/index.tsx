@@ -5,11 +5,9 @@ import type {
   FC,
 } from 'react';
 import qs from 'qs';
-
 import type {
-  History,
-  Location,
-} from 'history';
+  RouteComponentProps,
+} from 'react-router-dom';
 
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { createFilterlist } from '@vtaits/react-filterlist';
@@ -78,11 +76,6 @@ List.defaultProps = {
   listActions: null,
 };
 
-type HistoryAndLocation = {
-  history: History;
-  location: Location;
-};
-
 export default createFilterlist({
   loadItems: async ({
     sort,
@@ -126,7 +119,7 @@ export default createFilterlist({
     location: {
       search,
     },
-  }: HistoryAndLocation): ParsedFiltersAndSort => {
+  }: RouteComponentProps): ParsedFiltersAndSort => {
     const parsed: Record<string, any> = qs.parse(search, {
       ignoreQueryPrefix: true,
     });
@@ -163,7 +156,7 @@ export default createFilterlist({
   shouldRecount: ({
     history,
     location,
-  }: HistoryAndLocation, prevProps: HistoryAndLocation): boolean => history.action === 'POP'
+  }: RouteComponentProps, prevProps: RouteComponentProps): boolean => history.action === 'POP'
     && location.search !== prevProps.location.search,
 
   isRecountAsync: true,

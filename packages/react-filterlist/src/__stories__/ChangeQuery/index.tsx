@@ -6,11 +6,9 @@ import type {
   ReactNode,
 } from 'react';
 import qs from 'qs';
-
 import type {
-  History,
-  Location,
-} from 'history';
+  RouteComponentProps,
+} from 'react-router-dom';
 
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { Filterlist } from '@vtaits/react-filterlist';
@@ -32,12 +30,7 @@ import {
   ParseFiltersAndSort,
 } from '../../types';
 
-type Props = {
-  history: History;
-  location: Location;
-};
-
-const getStateFromProps: ParseFiltersAndSort<Props> = async ({
+const getStateFromProps: ParseFiltersAndSort<RouteComponentProps> = async ({
   location: {
     search,
   },
@@ -98,7 +91,7 @@ const loadItems: ItemsLoader<User, Additional, unknown> = async ({
   };
 };
 
-const WithFilterlist: FC<Props> = (props) => {
+const WithFilterlist: FC<RouteComponentProps> = (props) => {
   const {
     history,
   } = props;

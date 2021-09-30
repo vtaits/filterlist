@@ -7,11 +7,9 @@ import type {
   FC,
 } from 'react';
 import qs from 'qs';
-
 import type {
-  History,
-  Location,
-} from 'history';
+  RouteComponentProps,
+} from 'react-router-dom';
 
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { useFilterlist } from '@vtaits/react-filterlist';
@@ -29,16 +27,7 @@ import type {
   Additional,
 } from '../../../../../examples/types';
 
-type Props = {
-  history: History;
-  location: Location;
-
-  match: {
-    path: string;
-  };
-};
-
-const List: FC<Props> = (props) => {
+const List: FC<RouteComponentProps> = (props) => {
   const {
     history,
     match,
@@ -87,7 +76,7 @@ const List: FC<Props> = (props) => {
       location: {
         search,
       },
-    }: Props): Promise<ParsedFiltersAndSort> => {
+    }: RouteComponentProps): Promise<ParsedFiltersAndSort> => {
       const parsed: Record<string, any> = qs.parse(search, {
         ignoreQueryPrefix: true,
       });
@@ -127,7 +116,7 @@ const List: FC<Props> = (props) => {
     shouldRecount: ({
       history: historyParam,
       location,
-    }: Props, prevProps: Props) => historyParam.action === 'POP'
+    }: RouteComponentProps, prevProps: RouteComponentProps) => historyParam.action === 'POP'
       && location.search !== prevProps.location.search,
   });
 
