@@ -79,4 +79,5 @@ test('should set items', () => {
   });
 
   expect(state.items).toBe(items);
+  expect(state.loadedPages).toBe(1);
 });

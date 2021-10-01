@@ -1,3 +1,9 @@
+## 0.2.4 (01 oct 2021)
+
+### Bugfix
+
+* Set initial `loadedPages` = 1 if `items` defined in params
+
 ## 0.2.3 (01 oct 2021)
 
 ### New features

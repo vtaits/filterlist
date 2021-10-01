@@ -16,6 +16,9 @@ export const collectListInitialState = <Item, Additional, Error>(
     ...listInitialState as ListState<Item, Additional, Error>,
 
     items: params.items || listInitialState.items,
+    loadedPages: (params.items && params.items.length > 0)
+      ? 1
+      : listInitialState.loadedPages,
 
     sort: params.sort || listInitialState.sort,
 
