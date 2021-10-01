@@ -104,6 +104,7 @@ const listState = filterlist.getListState();
 | setAndApplyFilters | Object { filterName1: filterValue, filter2Name: filter2Value, ... } | sets multiple filters values, applies them, clears list and loads items |
 | resetFilters | Array [filterName1, filter2Name, ...] | resets filters values to them initial values, applies them, clears list and loads items |
 | resetAllFilters | | resets all filters (without `saveFiltersOnResetAll`) values to them initial values, applies them, clears list and loads items |
+| reload | | reload list without changing filters and sorting |
 | setSorting | param, asc | sets sorting column. If asc defined and Boolean, sets it. Otherwise, if this column differs from previous sorting column, asc will be setted with `isDefaultSortAsc` param from decorator. Otherwise, it will be reverse `asc` param from previous state. |
 | resetSorting | | resets sorting. Sort param will be setted with null, asc will be setted with `isDefaultSortAsc` param from decorator. |
 | deleteItem | index, additional | delete item with specified index from list. If `additional` defined, sets it. |
@@ -139,6 +140,7 @@ List of event types:
 | resetAllFilters | after call `resetAllFilters` method |
 | setSorting | after call `setSorting` method |
 | resetSorting | after call `resetSorting` method |
+| reload | after call `reload` method |
 | setFiltersAndSorting | after call `setFiltersAndSorting` method |
 | changeLoadParams | after call some of next methods: `loadMore`, `applyFilter`, `setAndApplyFilter`, `resetFilter`, `applyFilters`, `setAndApplyFilters`, `resetFilters`, `resetAllFilters`, `setSorting`, `resetSorting`, `setFiltersAndSorting` |
 | insertItem | after call `insertItem` method |

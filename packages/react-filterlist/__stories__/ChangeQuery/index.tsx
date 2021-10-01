@@ -157,6 +157,7 @@ const WithFilterlist: FC<RouteComponentProps> = (props) => {
             applyFilter={listActions.applyFilter}
             setAndApplyFilter={listActions.setAndApplyFilter}
             resetAllFilters={listActions.resetAllFilters}
+            reload={listActions.reload}
             setSorting={listActions.setSorting}
           />
         );

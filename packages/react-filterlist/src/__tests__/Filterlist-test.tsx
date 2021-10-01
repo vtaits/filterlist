@@ -10,6 +10,7 @@ import type {
   ShallowWrapper,
 } from 'enzyme';
 import type {
+  EventType,
   ListState,
   Params,
 } from '@vtaits/filterlist';
@@ -23,7 +24,7 @@ import type {
   ParseFiltersAndSort,
 } from '../types';
 
-const methodsForChild = [
+const methodsForChild: [EventType, number][] = [
   ['loadMore', 0],
   ['setFilterValue', 2],
   ['applyFilter', 1],
@@ -34,6 +35,7 @@ const methodsForChild = [
   ['setAndApplyFilters', 1],
   ['resetFilters', 1],
   ['resetAllFilters', 0],
+  ['reload', 0],
   ['setSorting', 2],
   ['resetSorting', 0],
   ['insertItem', 3],
@@ -173,7 +175,7 @@ test('should provide list state to child', () => {
   });
 });
 
-methodsForChild.forEach(([methodName, argsCount]: [string, number]) => {
+methodsForChild.forEach(([methodName, argsCount]) => {
   test(`should call "${methodName}" from rendered component`, () => {
     const page = setup({});
 
@@ -183,7 +185,7 @@ methodsForChild.forEach(([methodName, argsCount]: [string, number]) => {
 
     const filterlist = page.getFilterlistInstance();
 
-    expect(filterlist[methodName].mock.calls.length).toBe(1);
+    expect(filterlist[methodName]).toHaveBeenCalledTimes(1);
     expect(filterlist[methodName].mock.calls[0].slice(0, argsCount))
       .toEqual(['arg1', 'arg2', 'arg3', 'arg4'].slice(0, argsCount));
   });
@@ -261,7 +263,7 @@ test('should call shouldRecount on update', async () => {
     },
   });
 
-  expect(shouldRecount.mock.calls.length).toBe(1);
+  expect(shouldRecount).toHaveBeenCalledTimes(1);
   expect(shouldRecount.mock.calls[0][0]).toEqual({
     filtersRaw: {
       filter1: 'value3',
@@ -334,7 +336,7 @@ test('should not call setFiltersAndSorting if shouldRecount returns false', asyn
 
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
-  expect(filterlist.setFiltersAndSorting.mock.calls.length).toBe(0);
+  expect(filterlist.setFiltersAndSorting).toHaveBeenCalledTimes(0);
 });
 
 test('should call setFiltersAndSorting if shouldRecount returns true', async () => {
@@ -379,7 +381,7 @@ test('should call setFiltersAndSorting if shouldRecount returns true', async () 
 
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
-  expect(filterlist.setFiltersAndSorting.mock.calls.length).toBe(1);
+  expect(filterlist.setFiltersAndSorting).toHaveBeenCalledTimes(1);
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   expect(filterlist.setFiltersAndSorting.mock.calls[0][0]).toEqual({
@@ -497,7 +499,7 @@ test('should call asynchronously setFiltersAndSorting if shouldRecount returns t
 
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
-  expect(filterlist.setFiltersAndSorting.mock.calls.length).toBe(1);
+  expect(filterlist.setFiltersAndSorting).toHaveBeenCalledTimes(1);
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   expect(filterlist.setFiltersAndSorting.mock.calls[0][0]).toEqual({
@@ -525,7 +527,7 @@ test('should call onChangeLoadParams on "changeLoadParams" event', () => {
 
   page.getFilterlistInstance().emitter.emit('changeLoadParams', 'new list state');
 
-  expect(onChangeLoadParams.mock.calls.length).toBe(1);
+  expect(onChangeLoadParams).toHaveBeenCalledTimes(1);
   expect(onChangeLoadParams.mock.calls[0][0]).toBe('new list state');
 });
 
@@ -539,7 +541,7 @@ test('should different loadItems from different props', async () => {
 
   await page.callLoadItems('test1');
 
-  expect(loadItems1.mock.calls.length).toBe(1);
+  expect(loadItems1).toHaveBeenCalledTimes(1);
   expect(loadItems1.mock.calls[0][0]).toBe('test1');
 
   await page.setProps({
@@ -548,8 +550,8 @@ test('should different loadItems from different props', async () => {
 
   await page.callLoadItems('test2');
 
-  expect(loadItems1.mock.calls.length).toBe(1);
-  expect(loadItems2.mock.calls.length).toBe(1);
+  expect(loadItems1).toHaveBeenCalledTimes(1);
+  expect(loadItems2).toHaveBeenCalledTimes(1);
   expect(loadItems2.mock.calls[0][0]).toBe('test2');
 });
 
@@ -565,7 +567,7 @@ test('should different loadItems from different props in case with parseFiltersA
 
   await page.callLoadItems('test1');
 
-  expect(loadItems1.mock.calls.length).toBe(1);
+  expect(loadItems1).toHaveBeenCalledTimes(1);
   expect(loadItems1.mock.calls[0][0]).toBe('test1');
 
   await page.setProps({
@@ -574,8 +576,8 @@ test('should different loadItems from different props in case with parseFiltersA
 
   await page.callLoadItems('test2');
 
-  expect(loadItems1.mock.calls.length).toBe(1);
-  expect(loadItems2.mock.calls.length).toBe(1);
+  expect(loadItems1).toHaveBeenCalledTimes(1);
+  expect(loadItems2).toHaveBeenCalledTimes(1);
   expect(loadItems2.mock.calls[0][0]).toBe('test2');
 });
 
@@ -594,7 +596,7 @@ test('should different loadItems from different props in case with parseFiltersA
 
   await page.callLoadItems('test1');
 
-  expect(loadItems1.mock.calls.length).toBe(1);
+  expect(loadItems1).toHaveBeenCalledTimes(1);
   expect(loadItems1.mock.calls[0][0]).toBe('test1');
 
   await page.setProps({
@@ -603,7 +605,7 @@ test('should different loadItems from different props in case with parseFiltersA
 
   await page.callLoadItems('test2');
 
-  expect(loadItems1.mock.calls.length).toBe(1);
-  expect(loadItems2.mock.calls.length).toBe(1);
+  expect(loadItems1).toHaveBeenCalledTimes(1);
+  expect(loadItems2).toHaveBeenCalledTimes(1);
   expect(loadItems2.mock.calls[0][0]).toBe('test2');
 });

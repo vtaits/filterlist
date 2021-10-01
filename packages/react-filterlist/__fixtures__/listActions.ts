@@ -13,6 +13,7 @@ const listActions: ComponentListActions<any, any> = {
   setAndApplyFilters: async () => {},
   resetFilters: async () => {},
   resetAllFilters: async () => {},
+  reload: async () => {},
   setSorting: async () => {},
   resetSorting: async () => {},
   insertItem: () => {},

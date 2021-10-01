@@ -150,7 +150,7 @@ const List: FC<RouteComponentProps> = ({
   const setAndApplyFilter = useCallback((
     filterName: string,
     value: any,
-  ): Promise<void> => filterlist.setAndApplyFilter(
+  ) => filterlist.setAndApplyFilter(
     filterName,
     value,
   ), []);
@@ -158,7 +158,7 @@ const List: FC<RouteComponentProps> = ({
   const setFilterValue = useCallback((
     filterName: string,
     value: any,
-  ): void => filterlist.setFilterValue(
+  ) => filterlist.setFilterValue(
     filterName,
     value,
   ), []);
@@ -166,22 +166,24 @@ const List: FC<RouteComponentProps> = ({
   const setSorting = useCallback((
     paramName: string,
     asc?: boolean,
-  ): Promise<void> => filterlist.setSorting(
+  ) => filterlist.setSorting(
     paramName,
     asc,
   ), []);
 
-  const resetAllFilters = useCallback((): Promise<void> => filterlist.resetAllFilters(), []);
+  const resetAllFilters = useCallback(() => filterlist.resetAllFilters(), []);
+
+  const reload = useCallback(() => filterlist.reload(), []);
 
   const resetFilter = useCallback((
     filterName: string,
-  ): Promise<void> => filterlist.resetFilter(
+  ) => filterlist.resetFilter(
     filterName,
   ), []);
 
   const applyFilter = useCallback((
     filterName: string,
-  ): Promise<void> => filterlist.applyFilter(
+  ) => filterlist.applyFilter(
     filterName,
   ), []);
 
@@ -208,6 +210,7 @@ const List: FC<RouteComponentProps> = ({
       applyFilter={applyFilter}
       setAndApplyFilter={setAndApplyFilter}
       resetAllFilters={resetAllFilters}
+      reload={reload}
       setSorting={setSorting}
     />
   );

@@ -149,6 +149,11 @@ const List: FC<RouteComponentProps> = (props) => {
     [filterlist],
   );
 
+  const reload = useCallback(
+    (): Promise<void> => filterlist.reload(),
+    [filterlist],
+  );
+
   const resetFilter = useCallback((
     filterName: string,
   ): Promise<void> => filterlist.resetFilter(
@@ -188,6 +193,7 @@ const List: FC<RouteComponentProps> = (props) => {
       applyFilter={applyFilter}
       setAndApplyFilter={setAndApplyFilter}
       resetAllFilters={resetAllFilters}
+      reload={reload}
       setSorting={setSorting}
     />
   );

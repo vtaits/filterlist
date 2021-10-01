@@ -52,26 +52,15 @@ export class Filterlist<Item, Additional, Error> {
     this.onInit();
   }
 
-  getListStateBeforeChange(): ListState<Item, Additional, Error> {
+  getListStateBeforeReload(): ListState<Item, Additional, Error> {
     const prevListState = this.listState;
 
     const {
       saveItemsWhileLoad,
-      alwaysResetFilters,
     } = this.options;
 
     return {
       ...prevListState,
-
-      filters: {
-        ...prevListState.filters,
-        ...alwaysResetFilters,
-      },
-
-      appliedFilters: {
-        ...prevListState.appliedFilters,
-        ...alwaysResetFilters,
-      },
 
       loading: true,
       error: null,
@@ -80,6 +69,28 @@ export class Filterlist<Item, Additional, Error> {
       loadedPages: saveItemsWhileLoad ? prevListState.loadedPages : 0,
 
       shouldClean: true,
+    };
+  }
+
+  getListStateBeforeChange(): ListState<Item, Additional, Error> {
+    const stateBeforeReload = this.getListStateBeforeReload();
+
+    const {
+      alwaysResetFilters,
+    } = this.options;
+
+    return {
+      ...stateBeforeReload,
+
+      filters: {
+        ...stateBeforeReload.filters,
+        ...alwaysResetFilters,
+      },
+
+      appliedFilters: {
+        ...stateBeforeReload.appliedFilters,
+        ...alwaysResetFilters,
+      },
     };
   }
 
@@ -360,6 +371,17 @@ export class Filterlist<Item, Additional, Error> {
     });
 
     this.emitEvent(eventTypes.resetAllFilters);
+    this.emitEvent(eventTypes.changeLoadParams);
+
+    await this.requestItems();
+  }
+
+  async reload(): Promise<void> {
+    const stateBeforeChange = this.getListStateBeforeChange();
+
+    this.setListState(stateBeforeChange);
+
+    this.emitEvent(eventTypes.reload);
     this.emitEvent(eventTypes.changeLoadParams);
 
     await this.requestItems();

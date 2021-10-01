@@ -13,6 +13,7 @@ export const applyFilters: EventType = 'applyFilters';
 export const setAndApplyFilters: EventType = 'setAndApplyFilters';
 export const resetFilters: EventType = 'resetFilters';
 export const resetAllFilters: EventType = 'resetAllFilters';
+export const reload: EventType = 'reload';
 export const setSorting: EventType = 'setSorting';
 export const resetSorting: EventType = 'resetSorting';
 export const setFiltersAndSorting: EventType = 'setFiltersAndSorting';

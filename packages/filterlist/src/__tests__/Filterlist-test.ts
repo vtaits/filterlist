@@ -719,6 +719,109 @@ describe('onError', () => {
   });
 });
 
+describe('getListStateBeforeReload', () => {
+  test('should reset previous items', () => {
+    const filterlist = new ManualFilterlist({
+      ...defaultParams,
+
+      alwaysResetFilters: {
+        test2: 'value2_3',
+      },
+    });
+
+    const prevState = filterlist.getListState();
+
+    const nextState = {
+      ...prevState,
+
+      filters: {
+        test1: 'value1_1',
+        test2: 'value2_1',
+      },
+
+      appliedFilters: {
+        test1: 'value1_2',
+        test2: 'value2_2',
+      },
+
+      items: [1, 2, 3],
+      loadedPages: 2,
+
+      error: 'error',
+
+      additional: {
+        count: 3,
+      },
+    };
+
+    filterlist.listState = nextState;
+
+    const expectedState = {
+      ...nextState,
+
+      items: [],
+      loadedPages: 0,
+      error: null,
+      loading: true,
+      shouldClean: true,
+    };
+
+    expect(filterlist.getListStateBeforeReload()).toEqual(expectedState);
+  });
+
+  test('should save previous items', () => {
+    const filterlist = new ManualFilterlist({
+      ...defaultParams,
+
+      saveItemsWhileLoad: true,
+
+      alwaysResetFilters: {
+        test2: 'value2_3',
+      },
+    });
+
+    const prevState = filterlist.getListState();
+
+    const nextState = {
+      ...prevState,
+
+      filters: {
+        test1: 'value1_1',
+        test2: 'value2_1',
+      },
+
+      appliedFilters: {
+        test1: 'value1_2',
+        test2: 'value2_2',
+      },
+
+      items: [1, 2, 3],
+      loadedPages: 2,
+
+      error: 'error',
+
+      additional: {
+        count: 3,
+      },
+    };
+
+    filterlist.listState = nextState;
+
+    const expectedState = {
+      ...nextState,
+
+      items: [1, 2, 3],
+      loadedPages: 2,
+
+      error: null,
+      loading: true,
+      shouldClean: true,
+    };
+
+    expect(filterlist.getListStateBeforeReload()).toEqual(expectedState);
+  });
+});
+
 describe('getListStateBeforeChange', () => {
   test('should reset previous items', () => {
     const filterlist = new ManualFilterlist({

@@ -36,6 +36,7 @@ type PageProps = {
   applyFilter: (filterName: string) => Promise<void>;
   setAndApplyFilter: (filterName: string, value: any) => Promise<void>;
   resetAllFilters: () => Promise<void>;
+  reload: () => Promise<void>;
   setSorting: (param: string) => void;
   isInfinity?: boolean;
   loadMore?: () => void;
@@ -88,6 +89,7 @@ const Page: FC<PageProps> = ({
   additional,
   loading,
   resetAllFilters,
+  reload,
   setFilterValue,
   resetFilter,
   applyFilter,
@@ -115,6 +117,7 @@ const Page: FC<PageProps> = ({
           setFilterValue={setFilterValue}
           resetFilter={resetFilter}
           applyFilter={applyFilter}
+          reload={reload}
         />
 
         <StyledTotalCountBlock>

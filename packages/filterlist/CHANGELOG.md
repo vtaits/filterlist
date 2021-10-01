@@ -3,6 +3,7 @@
 ### New features
 
 * Added param `loadedPages` to state of list
+* Added `reload` method
 
 ## 0.2.2 (01 dec 2020)
 

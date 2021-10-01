@@ -19,7 +19,9 @@ const StyledFiltersWrapper = styled.div({
 });
 
 const StyledResetWrapper = styled.div({
-  textAlign: 'right',
+  display: 'flex',
+  justifyContent: 'flex-end',
+  gap: 20,
 });
 
 type Props = {
@@ -28,6 +30,7 @@ type Props = {
   resetFilter: (filterName: string) => Promise<void>;
   applyFilter: (filterName: string) => Promise<void>;
   resetAllFilters: () => Promise<void>;
+  reload: () => Promise<void>;
 };
 
 const Filters: FC<Props> = ({
@@ -36,6 +39,7 @@ const Filters: FC<Props> = ({
   setFilterValue,
   resetFilter,
   applyFilter,
+  reload,
 }) => (
   <StyledWrapper>
     <StyledFiltersWrapper>
@@ -65,6 +69,14 @@ const Filters: FC<Props> = ({
     </StyledFiltersWrapper>
 
     <StyledResetWrapper>
+      <Button
+        type="button"
+        buttonType="danger"
+        onClick={reload}
+      >
+        Reload
+      </Button>
+
       <Button
         type="button"
         buttonType="danger"

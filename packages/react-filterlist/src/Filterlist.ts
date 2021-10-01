@@ -203,6 +203,7 @@ ComponentParams<Item, Additional, Error, FiltersAndSortData>, State<Item, Additi
       setAndApplyFilters: (values: Record<string, any>) => filterlist.setAndApplyFilters(values),
       resetFilters: (filtersNames: string[]) => filterlist.resetFilters(filtersNames),
       resetAllFilters: () => filterlist.resetAllFilters(),
+      reload: () => filterlist.reload(),
       setSorting: (param: string, asc?: boolean) => filterlist.setSorting(param, asc),
       resetSorting: () => filterlist.resetSorting(),
       insertItem: (

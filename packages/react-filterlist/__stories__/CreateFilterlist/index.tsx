@@ -66,6 +66,7 @@ const List: FC<Props> = ({
       applyFilter={listActions.applyFilter}
       setAndApplyFilter={listActions.setAndApplyFilter}
       resetAllFilters={listActions.resetAllFilters}
+      reload={listActions.reload}
       setSorting={listActions.setSorting}
     />
   );

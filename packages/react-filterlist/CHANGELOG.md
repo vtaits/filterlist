@@ -1,3 +1,9 @@
+## 0.3.0
+
+### New features
+
+* Support `reload` method of filterlist
+
 ## 0.3.0 (01 dec 2020)
 
 ### Improvement

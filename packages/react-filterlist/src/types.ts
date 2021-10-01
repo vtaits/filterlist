@@ -50,6 +50,7 @@ export type ComponentListActions<Item, Additional> = {
   setAndApplyFilters: (values: Record<string, any>) => Promise<void>;
   resetFilters: (filtersNames: string[]) => Promise<void>;
   resetAllFilters: () => Promise<void>;
+  reload: () => Promise<void>;
   setSorting: (param: string, asc?: boolean) => Promise<void>;
   resetSorting: () => Promise<void>;
   insertItem: (itemIndex: number, item: Item, additional?: Additional) => void;
