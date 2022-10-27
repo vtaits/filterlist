@@ -2,6 +2,8 @@
   "compilerOptions": {
     "outDir": "ts",
     "jsx": "react-jsx",
+    "lib": ["ESNext"],
+    "skipLibCheck": true,
     "esModuleInterop": true
   },
   "include": [
