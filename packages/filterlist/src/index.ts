@@ -1,6 +1,6 @@
 import * as eventTypes from './eventTypes';
 
-export { Filterlist as default } from './Filterlist';
+export { Filterlist } from './Filterlist';
 export { collectListInitialState } from './collectListInitialState';
 export { collectOptions } from './collectOptions';
 export { LoadListError } from './errors';

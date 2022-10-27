@@ -3,7 +3,8 @@ import type {
   ReactNode,
 } from 'react';
 
-import Filterlist, {
+import {
+  Filterlist,
   eventTypes,
 } from '@vtaits/filterlist';
 import type {

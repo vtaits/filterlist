@@ -26,7 +26,7 @@ module.exports = {
         plugins: [
           // https://github.com/babel/babel/issues/10261
           ['@babel/plugin-transform-runtime', {
-            version: '7.15.4',
+            version: '7.19.6',
           }],
           '@babel/plugin-proposal-class-properties',
         ],

@@ -4,11 +4,15 @@ import {
   useCallback,
 } from 'react';
 import type {
-  FC,
+  ReactElement,
 } from 'react';
+
 import qs from 'qs';
-import type {
-  RouteComponentProps,
+
+import {
+  useHistory,
+  useLocation,
+  useRouteMatch,
 } from 'react-router-dom';
 
 // eslint-disable-next-line import/no-extraneous-dependencies
@@ -27,13 +31,22 @@ import type {
   Additional,
 } from '../../../../examples/types';
 
-const List: FC<RouteComponentProps> = (props) => {
-  const {
-    history,
-    match,
-  } = props;
+export function UseFilterlist(): ReactElement | null {
+  const history = useHistory();
+  const location = useLocation();
+  const match = useRouteMatch();
 
-  const [listState, filterlist] = useFilterlist({
+  const [listState, filterlist] = useFilterlist<
+    User,
+    {
+      count: number,
+    },
+    never,
+    {
+      history: History;
+      location: Location;
+    }
+  >({
     loadItems: async ({
       sort,
       appliedFilters,
@@ -76,7 +89,7 @@ const List: FC<RouteComponentProps> = (props) => {
       location: {
         search,
       },
-    }: RouteComponentProps): Promise<ParsedFiltersAndSort> => {
+    }): Promise<ParsedFiltersAndSort> => {
       const parsed: Record<string, any> = qs.parse(search, {
         ignoreQueryPrefix: true,
       });
@@ -111,12 +124,15 @@ const List: FC<RouteComponentProps> = (props) => {
       };
     },
 
-    filtersAndSortData: props,
+    filtersAndSortData: {
+      history,
+      location,
+    },
 
     shouldRecount: ({
       history: historyParam,
       location,
-    }: RouteComponentProps, prevProps: RouteComponentProps) => historyParam.action === 'POP'
+    }, prevProps) => historyParam.action === 'POP'
       && location.search !== prevProps.location.search,
   });
 
@@ -197,6 +213,4 @@ const List: FC<RouteComponentProps> = (props) => {
       setSorting={setSorting}
     />
   );
-};
-
-export default List;
+}

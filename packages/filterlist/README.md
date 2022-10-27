@@ -22,7 +22,7 @@ yarn add @vtaits/filterlist
 ## Api
 
 ```
-import Filterlist from '@vtaits/filterlist';
+import { Filterlist } from '@vtaits/filterlist';
 
 const filterlist = new Filterlist({
   ...params,

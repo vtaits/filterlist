@@ -4,13 +4,16 @@
  */
 
 import { useState, useEffect, useRef } from 'react';
-import Filterlist, {
+
+import {
+  Filterlist,
   eventTypes,
 } from '@vtaits/filterlist';
 import type {
   ItemsLoader,
   ListState,
 } from '@vtaits/filterlist';
+
 import isPromise from 'is-promise';
 
 import defaultShouldRecount from './defaultShouldRecount';

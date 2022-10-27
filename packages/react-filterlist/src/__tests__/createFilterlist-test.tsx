@@ -1,8 +1,9 @@
 import React from 'react';
 import type {
-  FC,
+  ReactElement,
   ReactNode,
 } from 'react';
+
 import {
   shallow,
 } from 'enzyme';
@@ -19,7 +20,9 @@ import type {
   ComponentRenderProps,
 } from '../types';
 
-const TestComponent: FC = () => <div />;
+function TestComponent(): ReactElement {
+  return <div />;
+}
 
 const defaultOptions = {
   loadItems: Function.prototype,

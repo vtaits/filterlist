@@ -20,7 +20,7 @@ const mockedMethods = [
   'updateItem',
 ];
 
-class Filterlist {
+export class Filterlist {
   constructor(...args) {
     this.emitter = new EventEmitter();
 
@@ -63,5 +63,3 @@ export const eventTypes = {
   loadItemsError: 'loadItemsError',
   changeListState: 'changeListState',
 };
-
-export default Filterlist;

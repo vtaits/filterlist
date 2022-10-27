@@ -3,8 +3,9 @@ import {
 } from 'react';
 import type {
   ComponentType,
-  ReactNode,
   FC,
+  ReactElement,
+  ReactNode,
 } from 'react';
 
 import type {
@@ -39,7 +40,7 @@ function createFilterlist<PermanentProps, Item, Additional, Error>(
   return (
     WrappedComponent: ComponentType<HOCProps<PermanentProps, Item, Additional, Error>>,
   ): FC<PermanentProps> => {
-    const WithFilterlist: FC<PermanentProps> = (props) => {
+    function WithFilterlist(props: PermanentProps): ReactElement {
       const onChangeLoadParams = useCallback((
         nextListState: ListState<Item, Additional, Error>,
       ): void => {
@@ -69,7 +70,7 @@ function createFilterlist<PermanentProps, Item, Additional, Error>(
           {renderContent}
         </Filterlist>
       );
-    };
+    }
 
     return WithFilterlist;
   };

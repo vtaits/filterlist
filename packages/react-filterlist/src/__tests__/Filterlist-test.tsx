@@ -2,13 +2,14 @@
 
 import React from 'react';
 import type {
-  FC,
   ReactNode,
 } from 'react';
+
 import { shallow } from 'enzyme';
 import type {
   ShallowWrapper,
 } from 'enzyme';
+
 import type {
   EventType,
   ListState,
@@ -70,7 +71,9 @@ FiltersAndSortData,
   }
 }
 
-const TestComponent: FC = () => null;
+function TestComponent() {
+  return null;
+}
 
 const defaultProps = {
   loadItems: Function.prototype,
