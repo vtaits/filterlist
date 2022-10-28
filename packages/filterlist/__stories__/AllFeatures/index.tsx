@@ -203,12 +203,14 @@ export function AllFeatures(): ReactElement {
     sort,
 
     filters,
+    appliedFilters,
   } = listState;
 
   return (
     <Page
       listState={listState}
       filters={filters}
+      appliedFilters={appliedFilters}
       sort={sort}
       items={items}
       additional={additional}

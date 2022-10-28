@@ -27,6 +27,7 @@ import type {
 type PageProps = {
   listState: ListState<User, Additional, unknown>,
   filters: Record<string, any>;
+  appliedFilters: Record<string, any>;
   sort: Sort;
   items: User[];
   additional?: Additional;
@@ -84,6 +85,7 @@ const StyledBottomBlock = styled.div({
 const Page: FC<PageProps> = ({
   listState,
   filters,
+  appliedFilters,
   sort,
   items,
   additional,
@@ -158,7 +160,7 @@ const Page: FC<PageProps> = ({
                   {
                     additional && additional.count > 0 && (
                       <Paginator
-                        page={filters.page || 1}
+                        page={appliedFilters.page || 1}
                         pageCount={Math.ceil(additional.count / perPage)}
                         onPageChange={onPageChange}
                       />
@@ -191,7 +193,7 @@ const Page: FC<PageProps> = ({
 };
 
 Page.defaultProps = {
-  additional: null,
+  additional: undefined,
   isInfinity: false,
   loadMore: undefined,
 };
