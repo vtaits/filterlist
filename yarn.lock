@@ -3820,7 +3820,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vtaits/filterlist@^0.2.3, @vtaits/filterlist@workspace:packages/filterlist":
+"@vtaits/filterlist@^0.3.0, @vtaits/filterlist@workspace:packages/filterlist":
   version: 0.0.0-use.local
   resolution: "@vtaits/filterlist@workspace:packages/filterlist"
   dependencies:
@@ -3880,7 +3880,7 @@ __metadata:
     "@types/react-router-dom": ^5.3.3
     "@typescript-eslint/parser": ^5.41.0
     "@vitejs/plugin-react": ^2.2.0
-    "@vtaits/filterlist": ^0.2.3
+    "@vtaits/filterlist": ^0.3.0
     "@vtaits/react-router-dom-fake-browser": ^0.2.0
     cross-env: ^7.0.3
     eslint-config-airbnb: ^19.0.4
@@ -3904,7 +3904,7 @@ __metadata:
     use-latest: ^1.2.1
     vite: 3.1.8
   peerDependencies:
-    "@vtaits/filterlist": ^0.2.3
+    "@vtaits/filterlist": ^0.3.0
     react: ^16.14.0 || ^17.0.0 || ^18.0.0
   languageName: unknown
   linkType: soft

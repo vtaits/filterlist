@@ -1,3 +1,19 @@
+## 0.4.0-alpha.1 (28 oct 2022)
+
+### Typings
+
+* Strict typing
+* `any` -> `unknown`
+
+### Internal changes
+
+* Migrate from `babel` to `vite`
+
+### Breaking changes
+
+* Migrate to `@vtaits/filterlist@^0.3.0`
+* Remove api with HOC and render props
+
 ## 0.3.0 (01 oct 2021)
 
 ### New features
