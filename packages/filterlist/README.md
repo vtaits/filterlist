@@ -114,12 +114,12 @@ const listState = filterlist.getListState();
 
 ### Events
 
-`emitter` is the instance of [eventemitter3](https://www.npmjs.com/package/eventemitter3).
+`emitter` is the instance of [mitt](https://github.com/developit/mitt).
 
 ```javascript
 import { eventTypes } from '@vtaits/filterlist';
 
-filterlist.emitter.addListener(eventTypes.changeListState, (listState) => {
+filterlist.emitter.on(eventTypes.changeListState, (listState) => {
   ...
 });
 ```

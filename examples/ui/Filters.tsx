@@ -1,11 +1,11 @@
-import React from 'react';
 import type {
-  FC,
+  ReactElement,
 } from 'react';
+
 import styled from 'styled-components';
 
-import StringFilter from './StringFilter';
-import Button from './Button';
+import { StringFilter } from './StringFilter';
+import { Button } from './Button';
 
 const StyledWrapper = styled.div({
   backgroundColor: '#EEE',
@@ -24,7 +24,7 @@ const StyledResetWrapper = styled.div({
   gap: 20,
 });
 
-type Props = {
+type FiltersProps = {
   filters: Record<string, any>;
   setFilterValue: (filterName: string, value: any) => void;
   resetFilter: (filterName: string) => Promise<void>;
@@ -33,59 +33,59 @@ type Props = {
   reload: () => Promise<void>;
 };
 
-const Filters: FC<Props> = ({
+export function Filters({
   filters,
   resetAllFilters,
   setFilterValue,
   resetFilter,
   applyFilter,
   reload,
-}) => (
-  <StyledWrapper>
-    <StyledFiltersWrapper>
-      <StringFilter
-        name="name"
-        value={filters.name}
-        setFilterValue={setFilterValue}
-        resetFilter={resetFilter}
-        applyFilter={applyFilter}
-      />
+}: FiltersProps): ReactElement {
+  return (
+    <StyledWrapper>
+      <StyledFiltersWrapper>
+        <StringFilter
+          name="name"
+          value={filters.name}
+          setFilterValue={setFilterValue}
+          resetFilter={resetFilter}
+          applyFilter={applyFilter}
+        />
 
-      <StringFilter
-        name="email"
-        value={filters.email}
-        setFilterValue={setFilterValue}
-        resetFilter={resetFilter}
-        applyFilter={applyFilter}
-      />
+        <StringFilter
+          name="email"
+          value={filters.email}
+          setFilterValue={setFilterValue}
+          resetFilter={resetFilter}
+          applyFilter={applyFilter}
+        />
 
-      <StringFilter
-        name="city"
-        value={filters.city}
-        setFilterValue={setFilterValue}
-        resetFilter={resetFilter}
-        applyFilter={applyFilter}
-      />
-    </StyledFiltersWrapper>
+        <StringFilter
+          name="city"
+          value={filters.city}
+          setFilterValue={setFilterValue}
+          resetFilter={resetFilter}
+          applyFilter={applyFilter}
+        />
+      </StyledFiltersWrapper>
 
-    <StyledResetWrapper>
-      <Button
-        type="button"
-        buttonType="danger"
-        onClick={reload}
-      >
-        Reload
-      </Button>
+      <StyledResetWrapper>
+        <Button
+          type="button"
+          $buttonType="danger"
+          onClick={reload}
+        >
+          Reload
+        </Button>
 
-      <Button
-        type="button"
-        buttonType="danger"
-        onClick={resetAllFilters}
-      >
-        Reset all filters
-      </Button>
-    </StyledResetWrapper>
-  </StyledWrapper>
-);
-
-export default Filters;
+        <Button
+          type="button"
+          $buttonType="danger"
+          onClick={resetAllFilters}
+        >
+          Reset all filters
+        </Button>
+      </StyledResetWrapper>
+    </StyledWrapper>
+  );
+}

@@ -1,12 +1,13 @@
-import React, {
+import {
   useCallback,
   memo,
 } from 'react';
-import styled from 'styled-components';
 import type {
-  FC,
+  ReactElement,
   SyntheticEvent,
 } from 'react';
+
+import styled from 'styled-components';
 
 const StyledWrapper = styled.div({
   display: 'inline-flex',
@@ -28,17 +29,17 @@ const StyledSelect = styled.select({
   paddingRight: 15,
 });
 
-type Props = {
+type ItemsPerPageProps = {
   name: string;
   value: number;
   setAndApplyFilter: (filterName: string, value: any) => void;
 };
 
-const ItemsPerPage: FC<Props> = memo(({
+function ItemsPerPageInner({
   name,
   value,
   setAndApplyFilter,
-}) => {
+}: ItemsPerPageProps): ReactElement {
   const onChange = useCallback((event: SyntheticEvent) => {
     setAndApplyFilter(name, Number((event.target as HTMLInputElement).value));
   }, [name, setAndApplyFilter]);
@@ -59,6 +60,6 @@ const ItemsPerPage: FC<Props> = memo(({
       </StyledSelect>
     </StyledWrapper>
   );
-});
+}
 
-export default ItemsPerPage;
+export const ItemsPerPage = memo(ItemsPerPageInner);

@@ -1,9 +1,9 @@
-import React, {
+import {
   memo,
   useCallback,
 } from 'react';
 import type {
-  FC,
+  ReactElement,
   ReactNode,
 } from 'react';
 
@@ -30,7 +30,7 @@ const StyledTh = styled.th({
   },
 });
 
-type Props ={
+type ThProps ={
   param: string;
   current?: string;
   asc?: boolean;
@@ -39,7 +39,7 @@ type Props ={
   setSorting: (param: string) => void;
 };
 
-const Th:FC<Props> = memo(({
+function ThInner({
   param,
 
   current,
@@ -48,7 +48,7 @@ const Th:FC<Props> = memo(({
   children,
 
   setSorting,
-}) => {
+}: ThProps): ReactElement {
   const onClick = useCallback((): void => {
     setSorting(param);
   }, [param, setSorting]);
@@ -68,12 +68,12 @@ const Th:FC<Props> = memo(({
       }
     </StyledTh>
   );
-});
+}
 
-Th.defaultProps = {
+ThInner.defaultProps = {
   asc: null,
   current: null,
   children: null,
 };
 
-export default Th;
+export const Th = memo(ThInner);

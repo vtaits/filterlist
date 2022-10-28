@@ -17,16 +17,13 @@ export const collectOptions = <Item, Additional, Error>(
 ): Options => ({
     ...defaultOptions,
 
-    /* eslint-disable no-prototype-builtins */
-    autoload: params.hasOwnProperty('autoload')
+    autoload: typeof params.autoload === 'boolean'
       ? params.autoload
       : defaultOptions.autoload,
 
-    /* eslint-disable no-prototype-builtins */
-    isDefaultSortAsc: params.hasOwnProperty('isDefaultSortAsc')
+    isDefaultSortAsc: typeof params.isDefaultSortAsc === 'boolean'
       ? params.isDefaultSortAsc
       : defaultOptions.isDefaultSortAsc,
-    /* eslint-enable no-prototype-builtins */
 
     alwaysResetFilters: params.alwaysResetFilters
       || defaultOptions.alwaysResetFilters,

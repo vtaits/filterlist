@@ -1,18 +1,20 @@
-import React, {
+import {
   useCallback,
 } from 'react';
 import type {
-  FC,
+  ReactElement,
 } from 'react';
+
 import styled from 'styled-components';
+
 import { Paginator } from '@vtaits/react-paginator';
 
-import Button from './Button';
-import Filters from './Filters';
-import Table from './Table';
-import ItemsPerPage from './ItemsPerPage';
-import Preloader from './Preloader';
-import TotalCount from './TotalCount';
+import { Button } from './Button';
+import { Filters } from './Filters';
+import { Table } from './Table';
+import { ItemsPerPage } from './ItemsPerPage';
+import { Preloader } from './Preloader';
+import { TotalCount } from './TotalCount';
 
 import type {
   User,
@@ -27,6 +29,7 @@ import type {
 type PageProps = {
   listState: ListState<User, Additional, unknown>,
   filters: Record<string, any>;
+  appliedFilters: Record<string, any>;
   sort: Sort;
   items: User[];
   additional?: Additional;
@@ -81,9 +84,10 @@ const StyledBottomBlock = styled.div({
   marginTop: 30,
 });
 
-const Page: FC<PageProps> = ({
+export function Page({
   listState,
   filters,
+  appliedFilters,
   sort,
   items,
   additional,
@@ -97,7 +101,7 @@ const Page: FC<PageProps> = ({
   setSorting,
   isInfinity,
   loadMore,
-}) => {
+}: PageProps): ReactElement {
   const onPageChange = useCallback((page: number): void => {
     setAndApplyFilter('page', page);
   }, [setAndApplyFilter]);
@@ -158,7 +162,7 @@ const Page: FC<PageProps> = ({
                   {
                     additional && additional.count > 0 && (
                       <Paginator
-                        page={filters.page || 1}
+                        page={appliedFilters.page || 1}
                         pageCount={Math.ceil(additional.count / perPage)}
                         onPageChange={onPageChange}
                       />
@@ -188,12 +192,10 @@ const Page: FC<PageProps> = ({
       </StyledListStateWrapper>
     </StyledWrapper>
   );
-};
+}
 
 Page.defaultProps = {
-  additional: null,
+  additional: undefined,
   isInfinity: false,
   loadMore: undefined,
 };
-
-export default Page;

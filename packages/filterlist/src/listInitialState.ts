@@ -2,7 +2,7 @@ import type {
   ListState,
 } from './types';
 
-export const listInitialState: ListState<any, any, any> = {
+export const listInitialState: ListState<unknown, unknown, unknown> = {
   sort: {
     param: null,
     asc: true,

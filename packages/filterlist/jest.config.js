@@ -1,11 +1,18 @@
-module.exports = {
+const jestConfig = {
   testPathIgnorePatterns: [
     '/node_modules/',
   ],
 
+  extensionsToTreatAsEsm: ['.ts', '.tsx'],
+
   transform: {
-    '\\.[jt]sx?$': ['babel-jest', {
-      rootMode: 'upward',
-    }],
+    '\\.tsx?$': [
+      'ts-jest',
+      {
+        useESM: true,
+      },
+    ],
   },
 };
+
+export default jestConfig;

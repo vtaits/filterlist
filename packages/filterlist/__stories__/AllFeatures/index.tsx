@@ -20,7 +20,7 @@ import {
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { Filterlist, eventTypes } from '@vtaits/filterlist';
 
-import Page from '../../../../examples/ui/Page';
+import { Page } from '../../../../examples/ui/Page';
 import * as api from '../../../../examples/api';
 
 import type {
@@ -118,10 +118,10 @@ export function AllFeatures(): ReactElement {
 
   const listState = useSyncExternalStore(
     (callback) => {
-      filterlist.emitter.addListener(eventTypes.changeListState, callback);
+      filterlist.emitter.on(eventTypes.changeListState, callback);
 
       return () => {
-        filterlist.emitter.removeAllListeners(eventTypes.changeListState);
+        filterlist.emitter.off(eventTypes.changeListState, callback);
       };
     },
 
@@ -140,10 +140,10 @@ export function AllFeatures(): ReactElement {
   }, [history]);
 
   useEffect(() => {
-    filterlist.emitter.addListener(eventTypes.changeLoadParams, onChangeListState);
+    filterlist.emitter.on(eventTypes.changeLoadParams, onChangeListState);
 
     return () => {
-      filterlist.emitter.removeAllListeners(eventTypes.changeLoadParams);
+      filterlist.emitter.off(eventTypes.changeLoadParams, onChangeListState);
     };
   }, []);
 
@@ -203,12 +203,14 @@ export function AllFeatures(): ReactElement {
     sort,
 
     filters,
+    appliedFilters,
   } = listState;
 
   return (
     <Page
       listState={listState}
       filters={filters}
+      appliedFilters={appliedFilters}
       sort={sort}
       items={items}
       additional={additional}

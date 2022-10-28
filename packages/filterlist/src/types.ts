@@ -1,17 +1,17 @@
 export type Sort = {
-  param: string;
+  param: string | null;
   asc: boolean;
 };
 
 export type ListState<Item, Additional, Error> = {
   sort: Sort;
-  filters: Record<string, any>;
-  appliedFilters: Record<string, any>;
+  filters: Record<string, unknown>;
+  appliedFilters: Record<string, unknown>;
   loading: boolean;
   items: Item[];
   loadedPages: number;
   additional: Additional;
-  error: Error;
+  error: Error | null;
   shouldClean: boolean;
   isFirstLoad: boolean;
 };
@@ -19,8 +19,8 @@ export type ListState<Item, Additional, Error> = {
 export type Options = {
   autoload: boolean;
   isDefaultSortAsc: boolean;
-  alwaysResetFilters: Record<string, any>;
-  resetFiltersTo: Record<string, any>;
+  alwaysResetFilters: Record<string, unknown>;
+  resetFiltersTo: Record<string, unknown>;
   saveFiltersOnResetAll: string[];
   saveItemsWhileLoad: boolean;
 };
@@ -39,11 +39,11 @@ export type Params<Item, Additional, Error> = {
   items?: Item[];
   sort?: Sort;
   additional?: Additional;
-  appliedFilters?: Record<string, any>;
+  appliedFilters?: Record<string, unknown>;
   autoload?: boolean;
   isDefaultSortAsc?: boolean;
-  alwaysResetFilters?: Record<string, any>;
-  resetFiltersTo?: Record<string, any>;
+  alwaysResetFilters?: Record<string, unknown>;
+  resetFiltersTo?: Record<string, unknown>;
   saveFiltersOnResetAll?: string[];
   saveItemsWhileLoad?: boolean;
 };

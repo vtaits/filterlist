@@ -30,7 +30,7 @@ import type {
   ListState,
 } from '@vtaits/filterlist';
 
-import Page from '../../../../examples/ui/Page';
+import { Page } from '../../../../examples/ui/Page';
 import * as api from '../../../../examples/api';
 
 import type {
@@ -212,12 +212,14 @@ export function DeferredInit(): ReactElement | null {
     sort,
 
     filters,
+    appliedFilters,
   } = listState;
 
   return (
     <Page
       listState={listState}
       filters={filters}
+      appliedFilters={appliedFilters}
       sort={sort}
       items={items}
       additional={additional}

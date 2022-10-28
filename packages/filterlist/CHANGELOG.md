@@ -1,3 +1,24 @@
+## 0.3.0
+
+### Typings
+
+* Strict typing
+* `any` -> `unknown`
+
+### Internal changes
+
+* Migrate from `babel` to `vite`
+
+### Breaking changes
+
+* Named export
+
+  ```typescript
+  import { Filterlist } from '@vtaits/filterlist';
+  ```
+
+* Replace `eventemitter3` with `mitt`
+
 ## 0.2.4 (01 oct 2021)
 
 ### Bugfix
@@ -50,7 +71,7 @@
 
   ...
 
-  filterlist.emitter.addListener(eventTypes.changeListState, () => {
+  filterlist.emitter.on(eventTypes.changeListState, () => {
     ...
   });
   ```

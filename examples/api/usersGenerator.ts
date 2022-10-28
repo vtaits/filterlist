@@ -1,10 +1,11 @@
 import faker from 'faker';
+
 import type {
   User,
 } from '../types';
 
-const usersGenerator = (count: number): User[] => {
-  const res = [];
+export const usersGenerator = (count: number): User[] => {
+  const res: User[] = [];
 
   for (let i: number = 0; i < count; ++i) {
     res.push({
@@ -17,5 +18,3 @@ const usersGenerator = (count: number): User[] => {
 
   return res;
 };
-
-export default usersGenerator;

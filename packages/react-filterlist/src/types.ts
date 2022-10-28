@@ -5,8 +5,8 @@ import type {
 } from '@vtaits/filterlist';
 
 export type ParsedFiltersAndSort = {
-  filters: Record<string, any>;
-  appliedFilters: Record<string, any>;
+  filters: Record<string, unknown>;
+  appliedFilters: Record<string, unknown>;
   sort: Sort;
 };
 
@@ -28,8 +28,8 @@ export type ParseFiltersAndSort<FiltersAndSortData> = (
 export type Params<Item, Additional, Error, FiltersAndSortData> =
   & BaseParams<Item, Additional, Error>
   & {
-    filtersAndSortData?: FiltersAndSortData;
     parseFiltersAndSort?: ParseFiltersAndSort<FiltersAndSortData>;
+    filtersAndSortData?: FiltersAndSortData;
     shouldRecount?: ShouldRecount<FiltersAndSortData>;
     canInit?: boolean;
     onChangeLoadParams?: OnChangeLoadParams<Item, Additional, Error>;

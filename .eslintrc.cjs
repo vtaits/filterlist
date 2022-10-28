@@ -59,10 +59,6 @@ module.exports = {
       },
     ],
 
-    'react/jsx-props-no-spreading': 'off',
-
-    '@typescript-eslint/no-explicit-any': 'off',
-
     'react/static-property-placement': 'off',
 
     'react/prop-types': 'off',
