@@ -17,14 +17,7 @@
     "validate": "yarn test && yarn build"
   },
   "devDependencies": {
-    "@babel/cli": "^7.19.3",
-    "@babel/core": "^7.19.6",
-    "@babel/plugin-proposal-class-properties": "^7.18.6",
-    "@babel/plugin-transform-runtime": "^7.19.6",
-    "@babel/preset-env": "^7.19.4",
-    "@babel/preset-react": "^7.18.6",
-    "@babel/preset-typescript": "^7.18.6",
-    "@babel/runtime": "^7.19.4",
+    "@babel/runtime": "^7.20.0",
     "@fortawesome/fontawesome-svg-core": "^6.2.0",
     "@fortawesome/free-solid-svg-icons": "^6.2.0",
     "@fortawesome/react-fontawesome": "^0.2.0",
@@ -46,7 +39,6 @@
     "@vitejs/plugin-react": "^2.2.0",
     "@vtaits/react-paginator": "^0.2.1",
     "@vtaits/react-router-dom-fake-browser": "^0.2.0",
-    "babel-loader": "^8.2.5",
     "cross-env": "^7.0.3",
     "eslint": "^8.26.0",
     "eslint-config-airbnb": "^19.0.4",
