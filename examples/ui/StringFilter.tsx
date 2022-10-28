@@ -1,15 +1,16 @@
-import React, {
+import {
   useCallback,
   memo,
 } from 'react';
-import styled from 'styled-components';
 import type {
-  FC,
   SyntheticEvent,
   KeyboardEvent,
+  ReactElement,
 } from 'react';
 
-import Button from './Button';
+import styled from 'styled-components';
+
+import { Button } from './Button';
 
 const StyledWrapper = styled.div({
   display: 'flex',
@@ -46,7 +47,7 @@ const StyledInput = styled.input({
   paddingRight: 15,
 });
 
-type Props = {
+type StringFilterProps = {
   name: string;
   value?: string;
   setFilterValue: (filterName: string, value: any) => void;
@@ -54,13 +55,13 @@ type Props = {
   applyFilter: (filterName: string) => Promise<void>;
 };
 
-const StringFilter: FC<Props> = memo(({
+function StringFilterInner({
   name,
   value,
   setFilterValue,
   resetFilter,
   applyFilter,
-}) => {
+}: StringFilterProps): ReactElement {
   const onChange = useCallback((event: SyntheticEvent) => {
     setFilterValue(name, (event.target as HTMLInputElement).value);
   }, [name, setFilterValue]);
@@ -105,7 +106,7 @@ const StringFilter: FC<Props> = memo(({
 
       <StyledButtonWrapper>
         <Button
-          buttonType="danger"
+          $buttonType="danger"
           type="button"
           onClick={onResetClick}
         >
@@ -114,10 +115,10 @@ const StringFilter: FC<Props> = memo(({
       </StyledButtonWrapper>
     </StyledWrapper>
   );
-});
+}
 
-StringFilter.defaultProps = {
+StringFilterInner.defaultProps = {
   value: '',
 };
 
-export default StringFilter;
+export const StringFilter = memo(StringFilterInner);

@@ -1,4 +1,5 @@
-import usersGenerator from './usersGenerator';
+import { usersGenerator } from './usersGenerator';
+
 import type {
   User,
 } from '../types';
@@ -39,7 +40,7 @@ export const loadUsers = async (params: Params): Promise<Response> => {
 
   const sortedUsers = sort
     ? users.sort((user1, user2) => {
-      if (user1[sortParam] > user2[sortParam]) {
+      if (user1[sortParam as keyof User] > user2[sortParam as keyof User]) {
         return desc ? -1 : 1;
       }
 
@@ -71,4 +72,4 @@ export const loadUsers = async (params: Params): Promise<Response> => {
     users: filteredUsers.slice(offset, offset + perPage),
     count: filteredUsers.length,
   };
-}
+};

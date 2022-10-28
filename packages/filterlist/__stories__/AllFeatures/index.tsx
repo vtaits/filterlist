@@ -20,7 +20,7 @@ import {
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { Filterlist, eventTypes } from '@vtaits/filterlist';
 
-import Page from '../../../../examples/ui/Page';
+import { Page } from '../../../../examples/ui/Page';
 import * as api from '../../../../examples/api';
 
 import type {

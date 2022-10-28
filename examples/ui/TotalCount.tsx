@@ -1,7 +1,7 @@
-import React from 'react';
 import type {
-  FC,
+  ReactElement,
 } from 'react';
+
 import styled from 'styled-components';
 
 const StyledWrapper = styled.div({
@@ -9,18 +9,18 @@ const StyledWrapper = styled.div({
   lineHeight: 1.2,
 });
 
-type Props = {
+type TotalCountProps = {
   count: number;
 };
 
-const TotalCount: FC<Props> = ({
+export function TotalCount({
   count,
-}) => (
-  <StyledWrapper>
-    Total:
-    {' '}
-    {count}
-  </StyledWrapper>
-);
-
-export default TotalCount;
+}: TotalCountProps): ReactElement {
+  return (
+    <StyledWrapper>
+      Total:
+      {' '}
+      {count}
+    </StyledWrapper>
+  );
+}

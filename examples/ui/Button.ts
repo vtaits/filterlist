@@ -3,7 +3,7 @@ import styled from 'styled-components';
 type ButtonType = 'default' | 'danger';
 
 type ButtonProps = {
-  buttonType?: ButtonType;
+  $buttonType?: ButtonType;
 };
 
 const mapTypeToColor: Record<ButtonType, string> = {
@@ -11,11 +11,11 @@ const mapTypeToColor: Record<ButtonType, string> = {
   danger: '#f44336',
 };
 
-const Button = styled.button<ButtonProps>(({
-  buttonType = 'default',
+export const Button = styled.button<ButtonProps>(({
+  $buttonType = 'default',
   disabled,
 }) => {
-  const baseColor = mapTypeToColor[buttonType];
+  const baseColor = mapTypeToColor[$buttonType];
 
   return {
     cursor: disabled ? 'default' : 'pointer',
@@ -43,5 +43,3 @@ const Button = styled.button<ButtonProps>(({
     },
   };
 });
-
-export default Button;

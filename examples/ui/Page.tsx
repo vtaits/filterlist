@@ -1,18 +1,20 @@
-import React, {
+import {
   useCallback,
 } from 'react';
 import type {
-  FC,
+  ReactElement,
 } from 'react';
+
 import styled from 'styled-components';
+
 import { Paginator } from '@vtaits/react-paginator';
 
-import Button from './Button';
-import Filters from './Filters';
-import Table from './Table';
-import ItemsPerPage from './ItemsPerPage';
-import Preloader from './Preloader';
-import TotalCount from './TotalCount';
+import { Button } from './Button';
+import { Filters } from './Filters';
+import { Table } from './Table';
+import { ItemsPerPage } from './ItemsPerPage';
+import { Preloader } from './Preloader';
+import { TotalCount } from './TotalCount';
 
 import type {
   User,
@@ -82,7 +84,7 @@ const StyledBottomBlock = styled.div({
   marginTop: 30,
 });
 
-const Page: FC<PageProps> = ({
+export function Page({
   listState,
   filters,
   appliedFilters,
@@ -99,7 +101,7 @@ const Page: FC<PageProps> = ({
   setSorting,
   isInfinity,
   loadMore,
-}) => {
+}: PageProps): ReactElement {
   const onPageChange = useCallback((page: number): void => {
     setAndApplyFilter('page', page);
   }, [setAndApplyFilter]);
@@ -190,12 +192,10 @@ const Page: FC<PageProps> = ({
       </StyledListStateWrapper>
     </StyledWrapper>
   );
-};
+}
 
 Page.defaultProps = {
   additional: undefined,
   isInfinity: false,
   loadMore: undefined,
 };
-
-export default Page;
