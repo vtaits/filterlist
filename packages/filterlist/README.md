@@ -119,7 +119,7 @@ const listState = filterlist.getListState();
 ```javascript
 import { eventTypes } from '@vtaits/filterlist';
 
-filterlist.emitter.addListener(eventTypes.changeListState, (listState) => {
+filterlist.emitter.on(eventTypes.changeListState, (listState) => {
   ...
 });
 ```

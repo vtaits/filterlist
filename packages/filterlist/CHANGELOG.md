@@ -71,7 +71,7 @@
 
   ...
 
-  filterlist.emitter.addListener(eventTypes.changeListState, () => {
+  filterlist.emitter.on(eventTypes.changeListState, () => {
     ...
   });
   ```
