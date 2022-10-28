@@ -3825,8 +3825,6 @@ __metadata:
   resolution: "@vtaits/filterlist@workspace:packages/filterlist"
   dependencies:
     "@babel/cli": ^7.19.3
-    "@storybook/builder-vite": ^0.2.5
-    "@storybook/react": ^6.5.13
     "@types/history": ^4.7.11
     "@types/jest": ^29.2.0
     "@types/qs": ^6.9.7
@@ -3875,8 +3873,6 @@ __metadata:
   resolution: "@vtaits/react-filterlist@workspace:packages/react-filterlist"
   dependencies:
     "@babel/cli": ^7.19.3
-    "@storybook/builder-vite": ^0.2.5
-    "@storybook/react": ^6.5.13
     "@types/history": ^4.7.11
     "@types/jest": ^29.2.0
     "@types/qs": ^6.9.7
