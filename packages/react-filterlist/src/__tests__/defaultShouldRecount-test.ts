@@ -1,4 +1,4 @@
-import defaultShouldRecount from '../defaultShouldRecount';
+import { defaultShouldRecount } from '../defaultShouldRecount';
 
 test('should be equal', () => {
   expect(defaultShouldRecount(1, 1)).toBe(true);

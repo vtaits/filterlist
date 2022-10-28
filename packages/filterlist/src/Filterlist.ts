@@ -1,8 +1,12 @@
-import EventEmitter from 'eventemitter3';
-import arrayInsert from 'array-insert';
+import mitt from 'mitt';
+import type {
+  Emitter,
+} from 'mitt';
 
 import { collectListInitialState } from './collectListInitialState';
 import { collectOptions } from './collectOptions';
+
+import { arrayInsert } from './arrayInsert';
 
 import * as eventTypes from './eventTypes';
 import { LoadListError } from './errors';
@@ -26,10 +30,10 @@ export class Filterlist<Item, Additional, Error> {
 
   itemsLoader: ItemsLoader<Item, Additional, Error>;
 
-  emitter: EventEmitter;
+  emitter: Emitter<Record<EventType, ListState<Item, Additional, Error>>>;
 
   constructor(params: Params<Item, Additional, Error>) {
-    this.emitter = new EventEmitter();
+    this.emitter = mitt();
 
     const {
       loadItems,
@@ -141,8 +145,7 @@ export class Filterlist<Item, Additional, Error> {
     await this.requestItems();
   }
 
-  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  setFilterValue(filterName: string, value: any): void {
+  setFilterValue(filterName: string, value: unknown): void {
     const prevListState = this.listState;
 
     this.setListState({
@@ -177,8 +180,7 @@ export class Filterlist<Item, Additional, Error> {
     await this.requestItems();
   }
 
-  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  async setAndApplyFilter(filterName: string, value: any): Promise<void> {
+  async setAndApplyFilter(filterName: string, value: unknown): Promise<void> {
     const prevListState = this.listState;
     const stateBeforeChange = this.getListStateBeforeChange();
 
@@ -230,7 +232,7 @@ export class Filterlist<Item, Additional, Error> {
     await this.requestItems();
   }
 
-  setFiltersValues(values: Record<string, any>): void {
+  setFiltersValues(values: Record<string, unknown>): void {
     const prevListState = this.listState;
 
     this.setListState({
@@ -250,11 +252,11 @@ export class Filterlist<Item, Additional, Error> {
     const stateBeforeChange = this.getListStateBeforeChange();
 
     const newAppliedFilters = filtersNames
-      .reduce((res, filterName) => {
-        res[filterName] = prevListState.filters[filterName];
+      .reduce<Record<string, unknown>>((res, filterName) => {
+      res[filterName] = prevListState.filters[filterName];
 
-        return res;
-      }, {});
+      return res;
+    }, {});
 
     this.setListState({
       ...stateBeforeChange,
@@ -271,7 +273,7 @@ export class Filterlist<Item, Additional, Error> {
     await this.requestItems();
   }
 
-  async setAndApplyFilters(values: Record<string, any>): Promise<void> {
+  async setAndApplyFilters(values: Record<string, unknown>): Promise<void> {
     const prevListState = this.listState;
     const stateBeforeChange = this.getListStateBeforeChange();
 
@@ -304,11 +306,11 @@ export class Filterlist<Item, Additional, Error> {
     } = this.options;
 
     const filtersForReset = filtersNames
-      .reduce((res, filterName) => {
-        res[filterName] = resetFiltersTo[filterName];
+      .reduce<Record<string, unknown>>((res, filterName) => {
+      res[filterName] = resetFiltersTo[filterName];
 
-        return res;
-      }, {});
+      return res;
+    }, {});
 
     this.setListState({
       ...stateBeforeChange,
@@ -341,18 +343,18 @@ export class Filterlist<Item, Additional, Error> {
     } = this.options;
 
     const savedFilters = saveFiltersOnResetAll
-      .reduce((res, filterName) => {
-        res[filterName] = prevListState.filters[filterName];
+      .reduce<Record<string, unknown>>((res, filterName) => {
+      res[filterName] = prevListState.filters[filterName];
 
-        return res;
-      }, {});
+      return res;
+    }, {});
 
     const savedAppliedFilters = saveFiltersOnResetAll
-      .reduce((res, filterName) => {
-        res[filterName] = prevListState.appliedFilters[filterName];
+      .reduce<Record<string, unknown>>((res, filterName) => {
+      res[filterName] = prevListState.appliedFilters[filterName];
 
-        return res;
-      }, {});
+      return res;
+    }, {});
 
     this.setListState({
       ...stateBeforeChange,
@@ -448,9 +450,9 @@ export class Filterlist<Item, Additional, Error> {
     appliedFilters,
     sort,
   }: {
-    filters: Record<string, any>;
-    appliedFilters: Record<string, any>;
-    sort: Sort;
+    filters?: Record<string, unknown>;
+    appliedFilters?: Record<string, unknown>;
+    sort?: Sort;
   }): Promise<void> {
     const stateBeforeChange = this.getListStateBeforeChange();
 
@@ -473,12 +475,12 @@ export class Filterlist<Item, Additional, Error> {
 
     this.emitEvent(eventTypes.requestItems);
 
-    let response;
-    let error;
+    let response: ItemsLoaderResponse<Item, Additional> | undefined;
+    let error: Error | undefined;
     try {
       response = await this.itemsLoader(this.listState);
     } catch (e) {
-      error = e;
+      error = e as Error;
     }
 
     if (this.requestId !== nextRequestId) {
@@ -491,10 +493,13 @@ export class Filterlist<Item, Additional, Error> {
         return;
       }
 
+      // eslint-disable-next-line @typescript-eslint/no-throw-literal
       throw error;
     }
 
-    this.onSuccess(response);
+    if (response) {
+      this.onSuccess(response);
+    }
   }
 
   onSuccess(response: ItemsLoaderResponse<Item, Additional>): void {

@@ -3,14 +3,18 @@
   "name": "@vtaits/react-filterlist",
   "version": "0.3.1",
   "description": "React wrapper above @vtaits/filterlist",
-  "main": "lib/index.js",
-  "module": "es/index.js",
-  "typings": "ts/index.d.ts",
   "files": [
-    "/es",
-    "/lib",
-    "/ts"
+    "dist"
   ],
+  "main": "./dist/react-filterlist.umd.cjs",
+  "module": "./dist/react-filterlist.js",
+  "exports": {
+    ".": {
+      "import": "./dist/react-filterlist.js",
+      "require": "./dist/react-filterlist.umd.cjs"
+    }
+  },
+  "typings": "dist/ts/index.d.ts",
   "repository": "git@github.com:vtaits/filterlist.git",
   "author": "Vadim Taits <taizvadim@gmail.com>",
   "license": "MIT",
@@ -22,11 +26,9 @@
     "react"
   ],
   "scripts": {
-    "clean": "rimraf lib es ts",
-    "build:cjs": "cross-env BABEL_ENV=cjs babel --root-mode upward --extensions '.ts,.tsx' src --out-dir lib --ignore \"src/**/__tests__\",\"src/**/__stories__\"",
-    "build:es": "cross-env BABEL_ENV=es babel --root-mode upward --extensions '.ts,.tsx' src --out-dir es --ignore \"src/**/__tests__\",\"src/**/__stories__\"",
+    "build:js": "vite build",
     "build:ts": "tsc --declaration --emitDeclarationOnly",
-    "build": "yarn clean && yarn build:cjs && yarn build:es && yarn build:ts",
+    "build": "yarn build:js && yarn build:ts",
     "lint": "eslint src --ext .ts,.tsx --ignore-path ../../.gitignore",
     "test:ts": "tsc -p ./tsconfig.validate.json --noEmit",
     "test:unit": "jest",
@@ -46,6 +48,7 @@
     "@types/react": "^18.0.24",
     "@types/react-router-dom": "^5.3.3",
     "@typescript-eslint/parser": "^5.41.0",
+    "@vitejs/plugin-react": "^2.2.0",
     "@vtaits/filterlist": "^0.2.3",
     "@vtaits/react-router-dom-fake-browser": "^0.2.0",
     "cross-env": "^7.0.3",
@@ -65,10 +68,11 @@
     "react-dom": "^18.2.0",
     "react-router-dom": "^5.3.4",
     "ts-jest": "^29.0.3",
-    "typescript": "^4.8.4"
+    "typescript": "^4.8.4",
+    "vite": "3.1.8"
   },
   "dependencies": {
-    "@babel/runtime": "^7.19.4",
-    "is-promise": "^4.0.0"
+    "is-promise": "^4.0.0",
+    "use-latest": "^1.2.1"
   }
 }

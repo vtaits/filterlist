@@ -12,12 +12,23 @@ import type {
 } from '../types';
 
 const defaultParams = {
-  loadItems: (): ItemsLoaderResponse<any, any> => ({
+  loadItems: (): ItemsLoaderResponse<unknown, unknown> => ({
     items: [],
   }),
 };
 
-let callsSequence = [];
+type CallType =
+  | 'loadMore'
+  | 'onInit'
+  | 'requestItems'
+  | 'onSuccess'
+  | 'onError'
+  | 'onChangeListState'
+  | 'onLoadItems'
+  | 'itemsLoader'
+  | 'onRequestItems';
+
+let callsSequence: CallType[] = [];
 
 const loadItemsOnInitMethod = jest.fn<Promise<void>, []>(() => {
   callsSequence.push('loadMore');
@@ -30,13 +41,13 @@ const requestItemsMethod = jest.fn<Promise<void>, []>(() => {
   callsSequence.push('requestItems');
   return Promise.resolve();
 });
-const onSuccessMethod = jest.fn<void, [ItemsLoaderResponse<any, any>]>(() => {
+const onSuccessMethod = jest.fn<void, [ItemsLoaderResponse<unknown, unknown>]>(() => {
   callsSequence.push('onSuccess');
 });
-const onErrorMethod = jest.fn<any, [LoadListError]>(() => {
+const onErrorMethod = jest.fn<unknown, [LoadListError<unknown, unknown>]>(() => {
   callsSequence.push('onError');
 });
-const onChangeListStateMethod = jest.fn<any, [ListState<any, any, any>]>(() => {
+const onChangeListStateMethod = jest.fn<unknown, [ListState<unknown, unknown, unknown>]>(() => {
   callsSequence.push('onChangeListState');
 });
 
@@ -74,11 +85,11 @@ class ManualFilterlist<Item, Additional, Error> extends Filterlist<Item, Additio
     return super.onSuccess(response);
   }
 
-  onError(error: LoadListError): void {
-    return onErrorMethod(error);
+  onError(error: LoadListError<Error, Additional>): void {
+    onErrorMethod(error);
   }
 
-  manualOnError(error: LoadListError): void {
+  manualOnError(error: LoadListError<Error, Additional>): void {
     return super.onError(error);
   }
 
@@ -220,7 +231,7 @@ test('should dispatch event and request items on load items', async () => {
     ...defaultParams,
   });
 
-  const onLoadItems = jest.fn<any, [ListState<any, any, any>]>(() => {
+  const onLoadItems = jest.fn<unknown, [ListState<unknown, unknown, unknown>]>(() => {
     callsSequence.push('onLoadItems');
   });
 
@@ -233,7 +244,7 @@ test('should dispatch event and request items on load items', async () => {
     error: 'error',
   };
 
-  filterlist.emitter.addListener(eventTypes.loadMore, onLoadItems);
+  filterlist.emitter.on(eventTypes.loadMore, onLoadItems);
 
   await filterlist.manualLoadItemsOnInit();
 
@@ -278,13 +289,13 @@ test('should request items successfully', async () => {
     loadItems,
   });
 
-  const onRequestItems = jest.fn<any, [ListState<any, any, any>]>(() => {
+  const onRequestItems = jest.fn<unknown, [ListState<unknown, unknown, unknown>]>(() => {
     callsSequence.push('onRequestItems');
   });
 
   const prevState = filterlist.getListState();
 
-  filterlist.emitter.addListener(eventTypes.requestItems, onRequestItems);
+  filterlist.emitter.on(eventTypes.requestItems, onRequestItems);
   filterlist.requestId = 3;
 
   await filterlist.manualRequestItems();
@@ -323,13 +334,13 @@ test('should request items with error', async () => {
     loadItems,
   });
 
-  const onRequestItems = jest.fn<any, [ListState<any, any, any>]>(() => {
+  const onRequestItems = jest.fn<unknown, [ListState<unknown, unknown, unknown>]>(() => {
     callsSequence.push('onRequestItems');
   });
 
   const prevState = filterlist.getListState();
 
-  filterlist.emitter.addListener(eventTypes.requestItems, onRequestItems);
+  filterlist.emitter.on(eventTypes.requestItems, onRequestItems);
   filterlist.requestId = 3;
 
   await filterlist.manualRequestItems();
@@ -338,7 +349,8 @@ test('should request items with error', async () => {
   expect(onRequestItems.mock.calls[0][0]).toBe(prevState);
 
   expect(onErrorMethod).toHaveBeenCalledTimes(1);
-  expect(onErrorMethod.mock.calls[0][0]).toEqual(testError);
+  expect(onErrorMethod.mock.calls[0][0]).toHaveProperty('error', testError.error);
+  expect(onErrorMethod.mock.calls[0][0]).toHaveProperty('additional', testError.additional);
 
   expect(filterlist.requestId).toBe(4);
 
@@ -360,13 +372,13 @@ test('should throw up not LoadListError', async () => {
     loadItems,
   });
 
-  const onRequestItems = jest.fn<any, [ListState<any, any, any>]>(() => {
+  const onRequestItems = jest.fn<unknown, [ListState<unknown, unknown, unknown>]>(() => {
     callsSequence.push('onRequestItems');
   });
 
   const prevState = filterlist.getListState();
 
-  filterlist.emitter.addListener(eventTypes.requestItems, onRequestItems);
+  filterlist.emitter.on(eventTypes.requestItems, onRequestItems);
   filterlist.requestId = 3;
 
   let hasError = false;
@@ -401,7 +413,7 @@ test('should ingore success response if requestId increased in process of loadIt
     },
   };
 
-  let filterlist;
+  let filterlist: ManualFilterlist<number, { count: number; }, unknown>;
 
   const loadItems = jest.fn(() => {
     filterlist.requestId = 10;
@@ -416,13 +428,13 @@ test('should ingore success response if requestId increased in process of loadIt
     loadItems,
   });
 
-  const onRequestItems = jest.fn<any, [ListState<any, any, any>]>(() => {
+  const onRequestItems = jest.fn<unknown, [ListState<unknown, unknown, unknown>]>(() => {
     callsSequence.push('onRequestItems');
   });
 
   const prevState = filterlist.getListState();
 
-  filterlist.emitter.addListener(eventTypes.requestItems, onRequestItems);
+  filterlist.emitter.on(eventTypes.requestItems, onRequestItems);
   filterlist.requestId = 3;
 
   await filterlist.manualRequestItems();
@@ -449,7 +461,7 @@ test('should ingore LoadListError if requestId increased in process of loadItems
     },
   };
 
-  let filterlist;
+  let filterlist: ManualFilterlist<number, { count: number; }, unknown>;
 
   const loadItems = jest.fn(() => {
     filterlist.requestId = 10;
@@ -464,13 +476,13 @@ test('should ingore LoadListError if requestId increased in process of loadItems
     loadItems,
   });
 
-  const onRequestItems = jest.fn<any, [ListState<any, any, any>]>(() => {
+  const onRequestItems = jest.fn<unknown, [ListState<unknown, unknown, unknown>]>(() => {
     callsSequence.push('onRequestItems');
   });
 
   const prevState = filterlist.getListState();
 
-  filterlist.emitter.addListener(eventTypes.requestItems, onRequestItems);
+  filterlist.emitter.on(eventTypes.requestItems, onRequestItems);
   filterlist.requestId = 3;
 
   await filterlist.manualRequestItems();
@@ -954,8 +966,8 @@ describe('public methods', () => {
     const onLoadItems = jest.fn();
     const onChangeLoadParams = jest.fn();
 
-    filterlist.emitter.addListener(eventTypes.loadMore, onLoadItems);
-    filterlist.emitter.addListener(eventTypes.changeLoadParams, onChangeLoadParams);
+    filterlist.emitter.on(eventTypes.loadMore, onLoadItems);
+    filterlist.emitter.on(eventTypes.changeLoadParams, onChangeLoadParams);
 
     const prevState = filterlist.getListState();
 
@@ -1009,7 +1021,7 @@ describe('public methods', () => {
 
     const onSetFilterValue = jest.fn();
 
-    filterlist.emitter.addListener(eventTypes.setFilterValue, onSetFilterValue);
+    filterlist.emitter.on(eventTypes.setFilterValue, onSetFilterValue);
 
     const prevState = filterlist.getListState();
 
@@ -1059,8 +1071,8 @@ describe('public methods', () => {
     const onApplyFilter = jest.fn();
     const onChangeLoadParams = jest.fn();
 
-    filterlist.emitter.addListener(eventTypes.applyFilter, onApplyFilter);
-    filterlist.emitter.addListener(eventTypes.changeLoadParams, onChangeLoadParams);
+    filterlist.emitter.on(eventTypes.applyFilter, onApplyFilter);
+    filterlist.emitter.on(eventTypes.changeLoadParams, onChangeLoadParams);
 
     const prevState = filterlist.getListState();
 
@@ -1120,8 +1132,8 @@ describe('public methods', () => {
     const onSetAndApplyFilter = jest.fn();
     const onChangeLoadParams = jest.fn();
 
-    filterlist.emitter.addListener(eventTypes.setAndApplyFilter, onSetAndApplyFilter);
-    filterlist.emitter.addListener(eventTypes.changeLoadParams, onChangeLoadParams);
+    filterlist.emitter.on(eventTypes.setAndApplyFilter, onSetAndApplyFilter);
+    filterlist.emitter.on(eventTypes.changeLoadParams, onChangeLoadParams);
 
     const prevState = filterlist.getListState();
 
@@ -1190,8 +1202,8 @@ describe('public methods', () => {
     const onResetFilter = jest.fn();
     const onChangeLoadParams = jest.fn();
 
-    filterlist.emitter.addListener(eventTypes.resetFilter, onResetFilter);
-    filterlist.emitter.addListener(eventTypes.changeLoadParams, onChangeLoadParams);
+    filterlist.emitter.on(eventTypes.resetFilter, onResetFilter);
+    filterlist.emitter.on(eventTypes.changeLoadParams, onChangeLoadParams);
 
     const prevState = filterlist.getListState();
 
@@ -1255,7 +1267,7 @@ describe('public methods', () => {
 
     const onSetFiltersValues = jest.fn();
 
-    filterlist.emitter.addListener(eventTypes.setFiltersValues, onSetFiltersValues);
+    filterlist.emitter.on(eventTypes.setFiltersValues, onSetFiltersValues);
 
     const prevState = filterlist.getListState();
 
@@ -1309,8 +1321,8 @@ describe('public methods', () => {
     const onApplyFilters = jest.fn();
     const onChangeLoadParams = jest.fn();
 
-    filterlist.emitter.addListener(eventTypes.applyFilters, onApplyFilters);
-    filterlist.emitter.addListener(eventTypes.changeLoadParams, onChangeLoadParams);
+    filterlist.emitter.on(eventTypes.applyFilters, onApplyFilters);
+    filterlist.emitter.on(eventTypes.changeLoadParams, onChangeLoadParams);
 
     const prevState = filterlist.getListState();
 
@@ -1373,8 +1385,8 @@ describe('public methods', () => {
     const onSetAndApplyFilters = jest.fn();
     const onChangeLoadParams = jest.fn();
 
-    filterlist.emitter.addListener(eventTypes.setAndApplyFilters, onSetAndApplyFilters);
-    filterlist.emitter.addListener(eventTypes.changeLoadParams, onChangeLoadParams);
+    filterlist.emitter.on(eventTypes.setAndApplyFilters, onSetAndApplyFilters);
+    filterlist.emitter.on(eventTypes.changeLoadParams, onChangeLoadParams);
 
     const prevState = filterlist.getListState();
 
@@ -1449,8 +1461,8 @@ describe('public methods', () => {
     const onResetFilters = jest.fn();
     const onChangeLoadParams = jest.fn();
 
-    filterlist.emitter.addListener(eventTypes.resetFilters, onResetFilters);
-    filterlist.emitter.addListener(eventTypes.changeLoadParams, onChangeLoadParams);
+    filterlist.emitter.on(eventTypes.resetFilters, onResetFilters);
+    filterlist.emitter.on(eventTypes.changeLoadParams, onChangeLoadParams);
 
     const prevState = filterlist.getListState();
 
@@ -1527,8 +1539,8 @@ describe('public methods', () => {
     const onResetAllFilters = jest.fn();
     const onChangeLoadParams = jest.fn();
 
-    filterlist.emitter.addListener(eventTypes.resetAllFilters, onResetAllFilters);
-    filterlist.emitter.addListener(eventTypes.changeLoadParams, onChangeLoadParams);
+    filterlist.emitter.on(eventTypes.resetAllFilters, onResetAllFilters);
+    filterlist.emitter.on(eventTypes.changeLoadParams, onChangeLoadParams);
 
     const prevState = filterlist.getListState();
 
@@ -1601,8 +1613,8 @@ describe('public methods', () => {
     const onSetSorting = jest.fn();
     const onChangeLoadParams = jest.fn();
 
-    filterlist.emitter.addListener(eventTypes.setSorting, onSetSorting);
-    filterlist.emitter.addListener(eventTypes.changeLoadParams, onChangeLoadParams);
+    filterlist.emitter.on(eventTypes.setSorting, onSetSorting);
+    filterlist.emitter.on(eventTypes.changeLoadParams, onChangeLoadParams);
 
     const prevState = filterlist.getListState();
 
@@ -1654,8 +1666,8 @@ describe('public methods', () => {
     const onSetSorting = jest.fn();
     const onChangeLoadParams = jest.fn();
 
-    filterlist.emitter.addListener(eventTypes.setSorting, onSetSorting);
-    filterlist.emitter.addListener(eventTypes.changeLoadParams, onChangeLoadParams);
+    filterlist.emitter.on(eventTypes.setSorting, onSetSorting);
+    filterlist.emitter.on(eventTypes.changeLoadParams, onChangeLoadParams);
 
     const prevState = filterlist.getListState();
 
@@ -1712,8 +1724,8 @@ describe('public methods', () => {
     const onSetSorting = jest.fn();
     const onChangeLoadParams = jest.fn();
 
-    filterlist.emitter.addListener(eventTypes.setSorting, onSetSorting);
-    filterlist.emitter.addListener(eventTypes.changeLoadParams, onChangeLoadParams);
+    filterlist.emitter.on(eventTypes.setSorting, onSetSorting);
+    filterlist.emitter.on(eventTypes.changeLoadParams, onChangeLoadParams);
 
     const prevState = filterlist.getListState();
 
@@ -1765,8 +1777,8 @@ describe('public methods', () => {
     const onSetSorting = jest.fn();
     const onChangeLoadParams = jest.fn();
 
-    filterlist.emitter.addListener(eventTypes.setSorting, onSetSorting);
-    filterlist.emitter.addListener(eventTypes.changeLoadParams, onChangeLoadParams);
+    filterlist.emitter.on(eventTypes.setSorting, onSetSorting);
+    filterlist.emitter.on(eventTypes.changeLoadParams, onChangeLoadParams);
 
     const prevState = filterlist.getListState();
 
@@ -1823,8 +1835,8 @@ describe('public methods', () => {
     const onResetSorting = jest.fn();
     const onChangeLoadParams = jest.fn();
 
-    filterlist.emitter.addListener(eventTypes.resetSorting, onResetSorting);
-    filterlist.emitter.addListener(eventTypes.changeLoadParams, onChangeLoadParams);
+    filterlist.emitter.on(eventTypes.resetSorting, onResetSorting);
+    filterlist.emitter.on(eventTypes.changeLoadParams, onChangeLoadParams);
 
     const prevState = filterlist.getListState();
 
@@ -1881,8 +1893,8 @@ describe('public methods', () => {
     const onResetSorting = jest.fn();
     const onChangeLoadParams = jest.fn();
 
-    filterlist.emitter.addListener(eventTypes.resetSorting, onResetSorting);
-    filterlist.emitter.addListener(eventTypes.changeLoadParams, onChangeLoadParams);
+    filterlist.emitter.on(eventTypes.resetSorting, onResetSorting);
+    filterlist.emitter.on(eventTypes.changeLoadParams, onChangeLoadParams);
 
     const prevState = filterlist.getListState();
 
@@ -1936,7 +1948,7 @@ describe('public methods', () => {
 
     const onSetFiltersAndSorting = jest.fn();
 
-    filterlist.emitter.addListener(eventTypes.setFiltersAndSorting, onSetFiltersAndSorting);
+    filterlist.emitter.on(eventTypes.setFiltersAndSorting, onSetFiltersAndSorting);
 
     const prevState = filterlist.getListState();
 
@@ -2024,7 +2036,7 @@ describe('public methods', () => {
 
     const onSetFiltersAndSorting = jest.fn();
 
-    filterlist.emitter.addListener(eventTypes.setFiltersAndSorting, onSetFiltersAndSorting);
+    filterlist.emitter.on(eventTypes.setFiltersAndSorting, onSetFiltersAndSorting);
 
     const prevState = filterlist.getListState();
 
@@ -2055,9 +2067,9 @@ describe('public methods', () => {
     const listStateBeforeChange = filterlist.getListStateBeforeChange();
 
     await filterlist.setFiltersAndSorting({
-      filters: null,
-      appliedFilters: null,
-      sort: null,
+      filters: undefined,
+      appliedFilters: undefined,
+      sort: undefined,
     });
 
     expect(onChangeListStateMethod).toHaveBeenCalledTimes(1);

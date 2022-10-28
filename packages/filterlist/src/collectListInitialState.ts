@@ -24,7 +24,7 @@ export const collectListInitialState = <Item, Additional, Error>(
 
     /* eslint-disable no-prototype-builtins */
     additional: params.hasOwnProperty('additional')
-      ? params.additional
+      ? params.additional as Additional
       : listInitialState.additional,
     /* eslint-enable no-prototype-builtins */
 

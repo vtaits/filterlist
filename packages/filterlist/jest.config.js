@@ -1,4 +1,4 @@
-export default {
+const jestConfig = {
   testPathIgnorePatterns: [
     '/node_modules/',
   ],
@@ -14,3 +14,5 @@ export default {
     ],
   },
 };
+
+export default jestConfig;

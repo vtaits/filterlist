@@ -1,15 +1,13 @@
-import ExtendableError from 'es6-error';
+export class LoadListError<ErrorType, Additional> extends Error {
+  error?: ErrorType;
 
-export class LoadListError<Error = any, Additional = any> extends ExtendableError {
-  error: Error;
-
-  additional: Additional;
+  additional?: Additional;
 
   constructor({
     error,
     additional,
   }: {
-    error?: Error;
+    error?: ErrorType;
     additional?: Additional;
   }) {
     super('List loading failed');

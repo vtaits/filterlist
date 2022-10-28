@@ -6,7 +6,7 @@ import type {
 } from '../types';
 
 const defaultParams = {
-  loadItems: (): ItemsLoaderResponse<any, any> => ({
+  loadItems: (): ItemsLoaderResponse<unknown, unknown> => ({
     items: [],
   }),
 };
