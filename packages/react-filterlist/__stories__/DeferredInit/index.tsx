@@ -12,15 +12,13 @@ import type {
 import qs from 'qs';
 
 import {
-  useHistory,
+  useNavigate,
+  useNavigationType,
   useLocation,
-  useRouteMatch,
 } from 'react-router-dom';
-
 import type {
-  History,
   Location,
-} from 'history';
+} from 'react-router-dom';
 
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { useFilterlist } from '@vtaits/react-filterlist';
@@ -47,10 +45,9 @@ export function DeferredInit(): ReactElement | null {
     }, 2000);
   }, []);
 
-  const history = useHistory();
+  const navigate = useNavigate();
+  const navigationType = useNavigationType();
   const location = useLocation();
-
-  const match = useRouteMatch();
 
   const [listState, filterlist] = useFilterlist<
   User,
@@ -59,7 +56,7 @@ export function DeferredInit(): ReactElement | null {
   },
   never,
   {
-    history: History;
+    navigationType: string;
     location: Location;
   }
   >({
@@ -90,7 +87,7 @@ export function DeferredInit(): ReactElement | null {
           : null,
       });
 
-      history.push(`${match.path}?${newQuery}`);
+      navigate(`${location.pathname}?${newQuery}`);
     },
 
     alwaysResetFilters: {
@@ -143,14 +140,14 @@ export function DeferredInit(): ReactElement | null {
     },
 
     filtersAndSortData: {
-      history,
+      navigationType,
       location,
     },
 
     shouldRecount: ({
-      history: historyParam,
+      navigationType: navigationTypeParam,
       location,
-    }, prevProps) => historyParam.action === 'POP'
+    }, prevProps) => navigationTypeParam === 'POP'
       && location.search !== prevProps.location.search,
   });
 

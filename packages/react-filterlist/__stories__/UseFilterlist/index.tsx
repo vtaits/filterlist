@@ -10,9 +10,12 @@ import type {
 import qs from 'qs';
 
 import {
-  useHistory,
+  useNavigate,
+  useNavigationType,
   useLocation,
-  useRouteMatch,
+} from 'react-router-dom';
+import type {
+  Location,
 } from 'react-router-dom';
 
 // eslint-disable-next-line import/no-extraneous-dependencies
@@ -32,9 +35,9 @@ import type {
 } from '../../../../examples/types';
 
 export function UseFilterlist(): ReactElement | null {
-  const history = useHistory();
+  const navigate = useNavigate();
+  const navigationType = useNavigationType();
   const location = useLocation();
-  const match = useRouteMatch();
 
   const [listState, filterlist] = useFilterlist<
     User,
@@ -43,7 +46,7 @@ export function UseFilterlist(): ReactElement | null {
     },
     never,
     {
-      history: History;
+      navigationType: string;
       location: Location;
     }
   >({
@@ -72,7 +75,7 @@ export function UseFilterlist(): ReactElement | null {
           : null,
       });
 
-      history.push(`${match.path}?${newQuery}`);
+      navigate(`${location.pathname}?${newQuery}`);
     },
 
     alwaysResetFilters: {
@@ -125,14 +128,14 @@ export function UseFilterlist(): ReactElement | null {
     },
 
     filtersAndSortData: {
-      history,
+      navigationType,
       location,
     },
 
     shouldRecount: ({
-      history: historyParam,
+      navigationType: navigationTypeParam,
       location,
-    }, prevProps) => historyParam.action === 'POP'
+    }, prevProps) => navigationTypeParam === 'POP'
       && location.search !== prevProps.location.search,
   });
 

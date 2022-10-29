@@ -13,7 +13,8 @@ import type {
 import qs from 'qs';
 
 import {
-  useHistory,
+  useNavigate,
+  useNavigationType,
   useLocation,
 } from 'react-router-dom';
 
@@ -89,7 +90,8 @@ const loadItems: ItemsLoader<User, Additional, unknown> = async ({
 };
 
 export function AllFeatures(): ReactElement {
-  const history = useHistory();
+  const navigate = useNavigate();
+  const navigationType = useNavigationType();
   const location = useLocation();
 
   const [filterlist] = useState(() => {
@@ -136,8 +138,8 @@ export function AllFeatures(): ReactElement {
         : null,
     });
 
-    history.push(`/?${newQuery}`);
-  }, [history]);
+    navigate(`/?${newQuery}`);
+  }, [navigate]);
 
   useEffect(() => {
     filterlist.emitter.on(eventTypes.changeLoadParams, onChangeListState);
@@ -148,12 +150,12 @@ export function AllFeatures(): ReactElement {
   }, []);
 
   useEffect(() => {
-    if (history.action === 'POP') {
+    if (navigationType === 'POP') {
       const stateFromSearch = getStateFromSearch(location.search);
 
       filterlist.setFiltersAndSorting(stateFromSearch);
     }
-  }, [location.search]);
+  }, [navigationType, location.search]);
 
   const setAndApplyFilter = useCallback((
     filterName: string,
