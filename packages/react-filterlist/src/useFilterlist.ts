@@ -73,8 +73,8 @@ const createFilterlist = <Item, Additional, Error, FiltersAndSortData>(
 ): Filterlist<Item, Additional, Error> => {
   const filterlist = new Filterlist<Item, Additional, Error>(options);
 
-  filterlist.emitter.addListener(eventTypes.changeListState, syncListState);
-  filterlist.emitter.addListener(eventTypes.changeLoadParams, onChangeLoadParams);
+  filterlist.emitter.on(eventTypes.changeListState, syncListState);
+  filterlist.emitter.on(eventTypes.changeLoadParams, onChangeLoadParams);
 
   return filterlist;
 };
@@ -202,8 +202,8 @@ const useFilterlist = <Item, Additional, Error, FiltersAndSortData>(
 
     return (): void => {
       if (filterlistRef.current) {
-        filterlistRef.current.emitter.removeAllListeners(eventTypes.changeListState);
-        filterlistRef.current.emitter.removeAllListeners(eventTypes.changeLoadParams);
+        filterlistRef.current.emitter.off(eventTypes.changeListState);
+        filterlistRef.current.emitter.off(eventTypes.changeLoadParams);
       }
 
       filterlistRef.current = null;

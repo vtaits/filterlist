@@ -89,8 +89,8 @@ ComponentParams<Item, Additional, Error, FiltersAndSortData>, State<Item, Additi
     this.unmounted = true;
 
     if (this.filterlist) {
-      this.filterlist.emitter.removeAllListeners(eventTypes.changeListState);
-      this.filterlist.emitter.removeAllListeners(eventTypes.changeLoadParams);
+      this.filterlist.emitter.off(eventTypes.changeListState);
+      this.filterlist.emitter.off(eventTypes.changeLoadParams);
     }
   }
 
@@ -179,7 +179,7 @@ ComponentParams<Item, Additional, Error, FiltersAndSortData>, State<Item, Additi
   createFilterlist(options: Params<Item, Additional, Error>): void {
     const filterlist: Filterlist<Item, Additional, Error> = new Filterlist(options);
 
-    filterlist.emitter.addListener(eventTypes.changeListState, this.syncListState);
+    filterlist.emitter.on(eventTypes.changeListState, this.syncListState);
 
     const listActions: ComponentListActions<Item, Additional> = {
       loadMore: () => filterlist.loadMore(),
@@ -223,7 +223,7 @@ ComponentParams<Item, Additional, Error, FiltersAndSortData>, State<Item, Additi
       ) => filterlist.updateItem(itemIndex, item, additional),
     };
 
-    filterlist.emitter.addListener(eventTypes.changeLoadParams, this.onChangeLoadParams);
+    filterlist.emitter.on(eventTypes.changeLoadParams, this.onChangeLoadParams);
 
     this.listActions = listActions;
 

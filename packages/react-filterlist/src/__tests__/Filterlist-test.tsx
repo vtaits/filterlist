@@ -21,6 +21,7 @@ import type {
   State,
 } from '../Filterlist';
 import type {
+  ComponentListActions,
   ComponentParams,
   ParseFiltersAndSort,
 } from '../types';
@@ -136,10 +137,12 @@ class PageObject {
   }
 
   // eslint-disable-next-line @typescript-eslint/ban-types
-  getListAction(actionName): Function {
+  getListAction<
+  Key extends keyof ComponentListActions<any, any>,
+  >(actionName: Key): ComponentListActions<any, any>[Key] {
     const testComponentNode = this.getTestComponentNode();
 
-    const listActions = testComponentNode.prop('listActions');
+    const listActions = testComponentNode.prop('listActions') as ComponentListActions<any, any>;
 
     return listActions[actionName];
   }
@@ -182,7 +185,9 @@ methodsForChild.forEach(([methodName, argsCount]) => {
   test(`should call "${methodName}" from rendered component`, () => {
     const page = setup({});
 
-    const method = page.getListAction(methodName);
+    const method = page.getListAction(
+      methodName as keyof ComponentListActions<any, any>,
+    ) as unknown as (...args: any[]) => void;
 
     method('arg1', 'arg2', 'arg3', 'arg4');
 

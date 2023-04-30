@@ -1,15 +1,13 @@
 import React from 'react';
 import type {
   ReactElement,
-  ReactNode,
 } from 'react';
 
-import {
-  shallow,
-} from 'enzyme';
+import { createRenderer } from 'react-test-renderer/shallow';
+
 import type {
-  ShallowWrapper,
-} from 'enzyme';
+  ListState,
+} from '@vtaits/filterlist';
 
 import listActions from '../../__fixtures__/listActions';
 
@@ -17,6 +15,8 @@ import Filterlist from '../Filterlist';
 import createFilterlist from '../createFilterlist';
 
 import type {
+  HOCParams,
+  ComponentParams,
   ComponentRenderProps,
 } from '../types';
 
@@ -24,70 +24,96 @@ function TestComponent(): ReactElement {
   return <div />;
 }
 
-const defaultOptions = {
-  loadItems: Function.prototype,
+const defaultOptions: HOCParams<any, any, any> = {
+  loadItems: jest.fn(),
 };
 
-type RenderChildren = (renderProps: ComponentRenderProps<any, any, any>) => ReactNode;
+class PageObject<Item, Additional, ErrorType, FiltersAndSortData> {
+  wrapper: ReactElement<
+  ComponentParams<Item, Additional, ErrorType, FiltersAndSortData>,
+  typeof Filterlist
+  >;
 
-class PageObject {
-  wrapper: ShallowWrapper;
-
-  constructor(options, props) {
+  constructor(
+    options: Partial<HOCParams<Item, Additional, ErrorType>>,
+    props: any,
+  ) {
     const WithFilterlist = createFilterlist({
       ...defaultOptions,
       ...options,
     })(TestComponent);
 
-    this.wrapper = shallow(
+    const renderer = createRenderer();
+
+    renderer.render(
       <WithFilterlist
         {...props}
       />,
     );
+
+    this.wrapper = renderer.getRenderOutput() as unknown as ReactElement<
+    ComponentParams<Item, Additional, ErrorType, FiltersAndSortData>,
+    typeof Filterlist
+    >;
   }
 
-  getFilterlistNode(): ShallowWrapper {
-    return this.wrapper.find(Filterlist);
+  getFilterlistNode(): ReactElement<
+  ComponentParams<Item, Additional, ErrorType, FiltersAndSortData>,
+  typeof Filterlist
+  > {
+    return this.wrapper;
   }
 
-  getFilterlistProp(propName): any {
-    return this.getFilterlistNode().prop(propName);
+  getFilterlistProps(): ComponentParams<Item, Additional, ErrorType, FiltersAndSortData> {
+    return this.getFilterlistNode().props;
   }
 
-  renderTestComponentNode(filterlistProps: ComponentRenderProps<any, any, any>): ShallowWrapper {
-    const renderContent: RenderChildren = this.getFilterlistNode().prop('children');
+  renderTestComponentNode(filterlistProps: ComponentRenderProps<any, any, any>): ReactElement {
+    const {
+      children: renderContent,
+    } = this.getFilterlistProps();
 
-    const renderedContent: ReactNode = renderContent(filterlistProps);
+    const renderedContent = renderContent(filterlistProps);
 
-    const wrapper: ShallowWrapper = shallow(
-      <div>
-        {renderedContent}
-      </div>,
-    );
-
-    return wrapper.find(TestComponent);
+    return renderedContent as ReactElement;
   }
 
   getChildProps(filterlistProps: ComponentRenderProps<any, any, any>): Record<string, any> {
-    const testComponentNode: ShallowWrapper = this.renderTestComponentNode(filterlistProps);
+    const testComponentNode = this.renderTestComponentNode(filterlistProps);
 
-    return testComponentNode.props();
+    return testComponentNode.props;
   }
 }
 
-const setup = (options, props): PageObject => new PageObject(options, props);
+const setup = <Item, Additional, ErrorType, FiltersAndSortData>(
+  options: Partial<HOCParams<Item, Additional, ErrorType>>,
+  props: any,
+): PageObject<Item, Additional, ErrorType, FiltersAndSortData> => new PageObject(options, props);
 
 test('should provide options from decorator', () => {
   const page = setup(
     {
-      param1: 'value1',
-      param2: 'value2',
+      loadItems: jest.fn(),
+
+      appliedFilters: {
+        filter1: 'value1',
+      },
+
+      alwaysResetFilters: {
+        filter2: 'value2',
+      },
     },
     {},
   );
 
-  expect(page.getFilterlistProp('param1')).toBe('value1');
-  expect(page.getFilterlistProp('param2')).toBe('value2');
+  const filterlistProps = page.getFilterlistProps();
+
+  expect(filterlistProps.appliedFilters).toEqual({
+    filter1: 'value1',
+  });
+  expect(filterlistProps.alwaysResetFilters).toEqual({
+    filter2: 'value2',
+  });
 });
 
 test('should set filtersAndSortData as component props', () => {
@@ -96,7 +122,7 @@ test('should set filtersAndSortData as component props', () => {
     param2: 'value2',
   });
 
-  expect(page.getFilterlistProp('filtersAndSortData')).toEqual({
+  expect(page.getFilterlistProps().filtersAndSortData).toEqual({
     param1: 'value1',
     param2: 'value2',
   });
@@ -112,10 +138,27 @@ test('should call loadItems with props of component', () => {
     param2: 'value2',
   });
 
-  page.getFilterlistProp('loadItems')('Test list state');
+  const listState: ListState<any, any, any> = {
+    sort: {
+      asc: true,
+      param: '',
+    },
+
+    filters: {},
+    appliedFilters: {},
+    loading: false,
+    items: [],
+    loadedPages: 1,
+    additional: null,
+    error: null,
+    shouldClean: false,
+    isFirstLoad: false,
+  };
+
+  page.getFilterlistProps().loadItems(listState);
 
   expect(loadItems.mock.calls.length).toBe(1);
-  expect(loadItems.mock.calls[0][0]).toBe('Test list state');
+  expect(loadItems.mock.calls[0][0]).toBe(listState);
   expect(loadItems.mock.calls[0][1]).toEqual({
     param1: 'value1',
     param2: 'value2',
@@ -132,10 +175,35 @@ test('should call onChangeLoadParams with props of component', () => {
     param2: 'value2',
   });
 
-  page.getFilterlistProp('onChangeLoadParams')('Test list state');
+  const listState: ListState<any, any, any> = {
+    sort: {
+      asc: true,
+      param: '',
+    },
+
+    filters: {},
+    appliedFilters: {},
+    loading: false,
+    items: [],
+    loadedPages: 1,
+    additional: null,
+    error: null,
+    shouldClean: false,
+    isFirstLoad: false,
+  };
+
+  const {
+    onChangeLoadParams: onChangeLoadParamsHandler,
+  } = page.getFilterlistProps();
+
+  if (!onChangeLoadParamsHandler) {
+    throw new Error('`onChangeLoadParams` is not defined');
+  }
+
+  onChangeLoadParamsHandler(listState);
 
   expect(onChangeLoadParams.mock.calls.length).toBe(1);
-  expect(onChangeLoadParams.mock.calls[0][0]).toBe('Test list state');
+  expect(onChangeLoadParams.mock.calls[0][0]).toBe(listState);
   expect(onChangeLoadParams.mock.calls[0][1]).toEqual({
     param1: 'value1',
     param2: 'value2',
@@ -145,7 +213,7 @@ test('should call onChangeLoadParams with props of component', () => {
 test('should not provide onChangeLoadParams if not defined in options', () => {
   const page = setup({}, {});
 
-  expect(page.getFilterlistProp('onChangeLoadParams')).toBeFalsy();
+  expect(page.getFilterlistProps().onChangeLoadParams).toBeFalsy();
 });
 
 test('should add filterlist props to child component', () => {
