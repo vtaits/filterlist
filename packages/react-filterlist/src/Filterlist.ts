@@ -20,13 +20,13 @@ import type {
   ComponentParams,
 } from './types';
 
-export type State<Item, Additional, Error> = {
+export type State<Item, Additional, ErrorType> = {
   isListInited: boolean;
-  listState?: ListState<Item, Additional, Error>;
+  listState: ListState<Item, Additional, ErrorType> | null;
 };
 
-class FilterlistWrapper<Item, Additional, Error, FiltersAndSortData> extends Component<
-ComponentParams<Item, Additional, Error, FiltersAndSortData>, State<Item, Additional, Error>
+class FilterlistWrapper<Item, Additional, ErrorType, FiltersAndSortData> extends Component<
+ComponentParams<Item, Additional, ErrorType, FiltersAndSortData>, State<Item, Additional, ErrorType>
 > {
   static defaultProps = {
     parseFiltersAndSort: null,
@@ -36,13 +36,13 @@ ComponentParams<Item, Additional, Error, FiltersAndSortData>, State<Item, Additi
     onChangeLoadParams: null,
   };
 
-  unmounted: boolean;
+  unmounted = false;
 
-  filterlist: Filterlist<Item, Additional, Error>;
+  filterlist: Filterlist<Item, Additional, ErrorType> | undefined = undefined;
 
-  listActions: ComponentListActions<Item, Additional>;
+  listActions: ComponentListActions<Item, Additional> | null = null;
 
-  constructor(props: ComponentParams<Item, Additional, Error, FiltersAndSortData>) {
+  constructor(props: ComponentParams<Item, Additional, ErrorType, FiltersAndSortData>) {
     super(props);
 
     const {
@@ -62,12 +62,12 @@ ComponentParams<Item, Additional, Error, FiltersAndSortData>, State<Item, Additi
       isListInited: !shouldInitAsync,
       listState: shouldInitAsync
         ? null
-        : this.filterlist.getListState(),
+        : this.filterlist?.getListState() || null,
     };
   }
 
   async componentDidUpdate(
-    prevProps: ComponentParams<Item, Additional, Error, FiltersAndSortData>,
+    prevProps: ComponentParams<Item, Additional, ErrorType, FiltersAndSortData>,
   ): Promise<void> {
     const {
       parseFiltersAndSort,
@@ -77,11 +77,12 @@ ComponentParams<Item, Additional, Error, FiltersAndSortData>, State<Item, Additi
 
     if (
       parseFiltersAndSort
-      && shouldRecount(filtersAndSortData, prevProps.filtersAndSortData)
+      && shouldRecount
+      && shouldRecount(filtersAndSortData!, prevProps.filtersAndSortData!)
     ) {
-      const parsedFiltersAndSort = await parseFiltersAndSort(filtersAndSortData);
+      const parsedFiltersAndSort = await parseFiltersAndSort(filtersAndSortData!);
 
-      this.filterlist.setFiltersAndSorting(parsedFiltersAndSort);
+      this.filterlist?.setFiltersAndSorting(parsedFiltersAndSort);
     }
   }
 
@@ -94,7 +95,7 @@ ComponentParams<Item, Additional, Error, FiltersAndSortData>, State<Item, Additi
     }
   }
 
-  onChangeLoadParams = (nextListState: ListState<Item, Additional, Error>): void => {
+  onChangeLoadParams = (nextListState: ListState<Item, Additional, ErrorType>): void => {
     const {
       onChangeLoadParams,
     } = this.props;
@@ -104,14 +105,14 @@ ComponentParams<Item, Additional, Error, FiltersAndSortData>, State<Item, Additi
     }
   };
 
-  getFilterlistOptions(): Params<Item, Additional, Error> {
+  getFilterlistOptions(): Params<Item, Additional, ErrorType> {
     const {
       parseFiltersAndSort,
       filtersAndSortData,
     } = this.props;
 
     if (parseFiltersAndSort) {
-      const parsedFiltersAndSort = parseFiltersAndSort(filtersAndSortData);
+      const parsedFiltersAndSort = parseFiltersAndSort(filtersAndSortData!);
 
       return {
         ...this.props,
@@ -126,13 +127,17 @@ ComponentParams<Item, Additional, Error, FiltersAndSortData>, State<Item, Additi
     };
   }
 
-  async getFilterlistOptionsAsync(): Promise<Params<Item, Additional, Error>> {
+  async getFilterlistOptionsAsync(): Promise<Params<Item, Additional, ErrorType>> {
     const {
       parseFiltersAndSort,
       filtersAndSortData,
     } = this.props;
 
-    const parsedFiltersAndSort = await parseFiltersAndSort(filtersAndSortData);
+    if (!parseFiltersAndSort) {
+      throw new Error('`parseFiltersAndSort` is not defined');
+    }
+
+    const parsedFiltersAndSort = await parseFiltersAndSort(filtersAndSortData!);
 
     return {
       ...this.props,
@@ -143,11 +148,11 @@ ComponentParams<Item, Additional, Error, FiltersAndSortData>, State<Item, Additi
 
   syncListState = (): void => {
     this.setState({
-      listState: this.filterlist.getListState(),
+      listState: this.filterlist?.getListState() || null,
     });
   };
 
-  loadItemsProxy: ItemsLoader<Item, Additional, Error> = (listState) => {
+  loadItemsProxy: ItemsLoader<Item, Additional, ErrorType> = (listState) => {
     const {
       loadItems,
     } = this.props;
@@ -156,7 +161,7 @@ ComponentParams<Item, Additional, Error, FiltersAndSortData>, State<Item, Additi
   };
 
   async initFilterlistAsync(): Promise<void> {
-    const options: Params<Item, Additional, Error> = await this.getFilterlistOptionsAsync();
+    const options: Params<Item, Additional, ErrorType> = await this.getFilterlistOptionsAsync();
 
     if (this.unmounted) {
       return;
@@ -166,18 +171,18 @@ ComponentParams<Item, Additional, Error, FiltersAndSortData>, State<Item, Additi
 
     await this.setState({
       isListInited: true,
-      listState: this.filterlist.getListState(),
+      listState: this.filterlist?.getListState() || null,
     });
   }
 
   initFilterlist(): void {
-    const options: Params<Item, Additional, Error> = this.getFilterlistOptions();
+    const options: Params<Item, Additional, ErrorType> = this.getFilterlistOptions();
 
     this.createFilterlist(options);
   }
 
-  createFilterlist(options: Params<Item, Additional, Error>): void {
-    const filterlist: Filterlist<Item, Additional, Error> = new Filterlist(options);
+  createFilterlist(options: Params<Item, Additional, ErrorType>): void {
+    const filterlist: Filterlist<Item, Additional, ErrorType> = new Filterlist(options);
 
     filterlist.emitter.on(eventTypes.changeListState, this.syncListState);
 
@@ -240,7 +245,9 @@ ComponentParams<Item, Additional, Error, FiltersAndSortData>, State<Item, Additi
       listState,
     } = this.state;
 
-    return (children as ComponentParams<Item, Additional, Error, FiltersAndSortData>['children'])({
+    return (children as ComponentParams<
+    Item, Additional, ErrorType, FiltersAndSortData
+    >['children'])({
       isListInited,
       listState,
       listActions: this.listActions,

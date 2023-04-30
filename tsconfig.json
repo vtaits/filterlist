@@ -1,11 +1,25 @@
 {
   "compilerOptions": {
-    "outDir": "ts",
+    "target": "ES2021",
+    "outDir": "dist/ts",
     "jsx": "react-jsx",
-    "esModuleInterop": true
+    "lib": [
+      "ESNext",
+      "DOM"
+    ],
+    "allowJs": false,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true
   },
   "include": [
-    "src/**/*"
+    "packages/**/*"
   ],
   "exclude": [
     "node_modules",

@@ -4,7 +4,7 @@ module.exports = {
   ],
 
   setupFiles: [
-    './setup-jest.js',
+    './setup-jest.cjs',
   ],
 
   transform: {

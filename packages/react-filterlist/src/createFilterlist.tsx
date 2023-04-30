@@ -44,7 +44,9 @@ function createFilterlist<PermanentProps, Item, Additional, Error>(
       const onChangeLoadParams = useCallback((
         nextListState: ListState<Item, Additional, Error>,
       ): void => {
-        onChangeLoadParamsOption(nextListState, props);
+        if (onChangeLoadParamsOption) {
+          onChangeLoadParamsOption(nextListState, props);
+        }
       }, [onChangeLoadParamsOption]);
 
       const loadItems: ItemsLoader<Item, Additional, Error> = (

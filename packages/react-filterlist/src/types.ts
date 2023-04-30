@@ -60,8 +60,8 @@ export type ComponentListActions<Item, Additional> = {
 
 export type ComponentRenderProps<Item, Additional, Error> = {
   isListInited: boolean;
-  listState?: ListState<Item, Additional, Error>;
-  listActions?: ComponentListActions<Item, Additional>;
+  listState: ListState<Item, Additional, Error> | null;
+  listActions: ComponentListActions<Item, Additional> | null;
 };
 
 export type ComponentParams<Item, Additional, Error, FiltersAndSortData> =

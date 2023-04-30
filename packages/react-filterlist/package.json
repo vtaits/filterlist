@@ -2,14 +2,19 @@
   "name": "@vtaits/react-filterlist",
   "version": "0.3.1",
   "description": "React wrapper above @vtaits/filterlist",
-  "main": "lib/index.js",
-  "module": "es/index.js",
-  "typings": "ts/index.d.ts",
   "files": [
-    "/es",
-    "/lib",
-    "/ts"
+    "dist"
   ],
+  "main": "./dist/index.js",
+  "module": "./dist/esm/index.js",
+  "exports": {
+    ".": {
+      "import": "./dist/esm/index.js",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "typings": "./dist/index.d.ts",
   "repository": "git@github.com:vtaits/filterlist.git",
   "author": "Vadim Taits <taizvadim@gmail.com>",
   "license": "MIT",
@@ -21,23 +26,19 @@
     "react"
   ],
   "scripts": {
-    "clean": "rimraf lib es ts",
-    "build:cjs": "cross-env BABEL_ENV=cjs babel --root-mode upward --extensions '.ts,.tsx' src --out-dir lib --ignore \"src/**/__tests__\",\"src/**/__stories__\"",
-    "build:es": "cross-env BABEL_ENV=es babel --root-mode upward --extensions '.ts,.tsx' src --out-dir es --ignore \"src/**/__tests__\",\"src/**/__stories__\"",
-    "build:ts": "tsc --declaration --emitDeclarationOnly",
-    "build": "yarn clean && yarn build:cjs && yarn build:es && yarn build:ts",
+    "clean": "rimraf dist",
+    "build": "tsup src/index.ts --sourcemap --format esm,cjs --dts --legacy-output",
     "lint": "eslint src --ext .ts,.tsx --ignore-path ../../.gitignore",
-    "test:ts": "tsc -p ./tsconfig.validate.json --noEmit",
+    "test:ts": "tsc --noEmit",
     "test:unit": "jest",
     "test": "yarn test:unit",
     "prepare": "yarn build"
   },
   "peerDependencies": {
-    "@vtaits/filterlist": "^0.2.3",
     "react": "^16.14.0 || ^17.0.0 || ^18.0.0"
   },
   "devDependencies": {
-    "@babel/cli": "^7.21.5",
+    "@babel/runtime": "^7.21.5",
     "@storybook/react": "^6.5.16",
     "@types/enzyme": "^3.10.13",
     "@types/history": "^4.7.11",
@@ -47,7 +48,6 @@
     "@types/react-router-dom": "^5.3.3",
     "@types/react-test-renderer": "^18.0.0",
     "@typescript-eslint/parser": "^5.59.1",
-    "@vtaits/filterlist": "^0.3.0",
     "@vtaits/react-router-dom-fake-browser": "^0.2.2",
     "@wojtekmaj/enzyme-adapter-react-17": "^0.6.7",
     "cross-env": "^7.0.3",
@@ -69,11 +69,14 @@
     "react-router-dom": "^5.3.4",
     "react-test-renderer": "^18.2.0",
     "ts-jest": "^29.1.0",
+    "tsup": "^6.7.0",
     "typescript": "^5.0.4"
   },
   "dependencies": {
-    "@babel/runtime": "^7.21.5",
+    "@types/prop-types": "^15.7.5",
+    "@vtaits/filterlist": "^0.3.0",
     "is-promise": "^4.0.0",
-    "prop-types": "^15.8.1"
+    "prop-types": "^15.8.1",
+    "use-latest": "^1.2.1"
   }
 }

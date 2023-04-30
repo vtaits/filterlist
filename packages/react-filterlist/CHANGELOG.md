@@ -1,3 +1,11 @@
+## 0.3.2 (30 apr 2022)
+
+### Improvement
+
+* Strict typings
+* Migrate to `@vtaits/filterlist` version `0.3.0`
+* Migrate from `babel` to `tsup`
+
 ## 0.3.0 (01 oct 2021)
 
 ### New features

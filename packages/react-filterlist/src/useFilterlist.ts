@@ -14,6 +14,8 @@ import type {
   ListState,
 } from '@vtaits/filterlist';
 
+import useLatest from 'use-latest';
+
 import isPromise from 'is-promise';
 
 import defaultShouldRecount from './defaultShouldRecount';
@@ -42,7 +44,7 @@ const getFilterlistOptions = <Item, Additional, Error, FiltersAndSortData>(
   } = params;
 
   if (parseFiltersAndSort) {
-    const parseResult = parseFiltersAndSort(filtersAndSortData);
+    const parseResult = parseFiltersAndSort(filtersAndSortData!);
 
     if (isPromise(parseResult)) {
       return (parseResult as AsyncParsedFiltersAndSort)
@@ -102,7 +104,10 @@ const initFilterlist = <Item, Additional, Error, FiltersAndSortData>(
 const useFilterlist = <Item, Additional, Error, FiltersAndSortData>(
   params: Params<Item, Additional, Error, FiltersAndSortData>,
   inputs: any[] = [],
-): [null | ListState<Item, Additional, Error>, Filterlist<Item, Additional, Error>] => {
+): [
+    ListState<Item, Additional, Error> | null,
+    Filterlist<Item, Additional, Error> | null,
+  ] => {
   const {
     parseFiltersAndSort = null,
     filtersAndSortData = null,
@@ -112,27 +117,25 @@ const useFilterlist = <Item, Additional, Error, FiltersAndSortData>(
     canInit = true,
   } = params;
 
-  const loadItemsRef = useRef<ItemsLoader<Item, Additional, Error>>(null);
-  loadItemsRef.current = loadItems;
+  const loadItemsRef = useLatest(loadItems);
   const loadItemsProxy: ItemsLoader<Item, Additional, Error> = (
     nextListState,
   ) => loadItemsRef.current(nextListState);
 
-  const onChangeLoadParamsRef = useRef<OnChangeLoadParams<Item, Additional, Error>>(
-    (Function.prototype as OnChangeLoadParams<Item, Additional, Error>),
-  );
-  onChangeLoadParamsRef.current = onChangeLoadParams;
+  const onChangeLoadParamsRef = useLatest(onChangeLoadParams);
 
-  const onChangeLoadParamsProxy = (nextListState): void => {
-    if (onChangeLoadParams) {
-      onChangeLoadParamsRef.current(nextListState);
+  const onChangeLoadParamsProxy = (nextListState: ListState<Item, Additional, Error>): void => {
+    const onChangeLoadParamsValue = onChangeLoadParamsRef.current;
+
+    if (onChangeLoadParamsValue) {
+      onChangeLoadParamsValue(nextListState);
     }
   };
 
-  let setListState;
+  let setListState: (nextListState: ListState<Item, Additional, Error> | null) => void;
 
   const isInitInProgressRef = useRef(false);
-  const filterlistRef = useRef<Filterlist<Item, Additional, Error>>(null);
+  const filterlistRef = useRef<Filterlist<Item, Additional, Error> | null>();
 
   const syncListState = (): void => {
     setListState(
@@ -142,7 +145,7 @@ const useFilterlist = <Item, Additional, Error, FiltersAndSortData>(
     );
   };
 
-  const initFilterlistInComponent = (isInEffect): void => {
+  const initFilterlistInComponent = (isInEffect: boolean): void => {
     if (!filterlistRef.current && !isInitInProgressRef.current) {
       const filterlistResult = initFilterlist(
         params,
@@ -176,19 +179,19 @@ const useFilterlist = <Item, Additional, Error, FiltersAndSortData>(
   }
 
   const [listState, setListStateHandler] = useState<null | ListState<Item, Additional, Error>>(
-    filterlistRef.current && filterlistRef.current.getListState(),
+    filterlistRef.current?.getListState() || null,
   );
   setListState = setListStateHandler;
 
   const filtersAndSortDataRef = useRef(filtersAndSortData);
   if (
     parseFiltersAndSort
-    && shouldRecount(filtersAndSortData, filtersAndSortDataRef.current)
+    && shouldRecount(filtersAndSortData!, filtersAndSortDataRef.current!)
   ) {
     (async (): Promise<void> => {
-      const parsedFiltersAndSort = await parseFiltersAndSort(filtersAndSortData);
+      const parsedFiltersAndSort = await parseFiltersAndSort(filtersAndSortData!);
 
-      filterlistRef.current.setFiltersAndSorting(parsedFiltersAndSort);
+      filterlistRef.current?.setFiltersAndSorting(parsedFiltersAndSort);
     })();
   }
   filtersAndSortDataRef.current = filtersAndSortData;
@@ -211,7 +214,7 @@ const useFilterlist = <Item, Additional, Error, FiltersAndSortData>(
     };
   }, [...inputs, canInit]);
 
-  return [listState, filterlistRef.current];
+  return [listState, filterlistRef.current || null];
 };
 
 export default useFilterlist;
