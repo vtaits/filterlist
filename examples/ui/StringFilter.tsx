@@ -50,8 +50,8 @@ type Props = {
   name: string;
   value?: string;
   setFilterValue: (filterName: string, value: any) => void;
-  resetFilter: (filterName: string) => Promise<void>;
-  applyFilter: (filterName: string) => Promise<void>;
+  resetFilter: (filterName: string) => void;
+  applyFilter: (filterName: string) => void;
 };
 
 const StringFilter: FC<Props> = memo(({

@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 
-import React, {
+import {
   useState,
   useCallback,
   useEffect,
@@ -12,13 +12,12 @@ import type {
 import qs from 'qs';
 
 import {
-  useHistory,
+  useNavigationType,
+  useNavigate,
   useLocation,
-  useRouteMatch,
 } from 'react-router-dom';
 
 import type {
-  History,
   Location,
 } from 'history';
 
@@ -47,10 +46,9 @@ export function DeferredInit(): ReactElement | null {
     }, 2000);
   }, []);
 
-  const history = useHistory();
+  const navigate = useNavigate();
+  const navigationType = useNavigationType();
   const location = useLocation();
-
-  const match = useRouteMatch();
 
   const [listState, filterlist] = useFilterlist<
   User,
@@ -59,7 +57,7 @@ export function DeferredInit(): ReactElement | null {
   },
   never,
   {
-    history: History;
+    navigationType: string;
     location: Location;
   }
   >({
@@ -90,7 +88,7 @@ export function DeferredInit(): ReactElement | null {
           : null,
       });
 
-      history.push(`${match.path}?${newQuery}`);
+      navigate(`${location.pathname}?${newQuery}`);
     },
 
     alwaysResetFilters: {
@@ -143,21 +141,21 @@ export function DeferredInit(): ReactElement | null {
     },
 
     filtersAndSortData: {
-      history,
+      navigationType,
       location,
     },
 
     shouldRecount: ({
-      history: historyParam,
+      navigationType: navigationTypeParam,
       location,
-    }, prevProps) => historyParam.action === 'POP'
+    }, prevProps) => navigationTypeParam === 'POP'
       && location.search !== prevProps.location.search,
   });
 
   const setAndApplyFilter = useCallback((
     filterName: string,
     value: any,
-  ): Promise<void> => filterlist.setAndApplyFilter(
+  ) => filterlist?.setAndApplyFilter(
     filterName,
     value,
   ), [filterlist]);
@@ -165,7 +163,7 @@ export function DeferredInit(): ReactElement | null {
   const setFilterValue = useCallback((
     filterName: string,
     value: any,
-  ): void => filterlist.setFilterValue(
+  ) => filterlist?.setFilterValue(
     filterName,
     value,
   ), [filterlist]);
@@ -173,30 +171,30 @@ export function DeferredInit(): ReactElement | null {
   const setSorting = useCallback((
     paramName: string,
     asc?: boolean,
-  ): Promise<void> => filterlist.setSorting(
+  ) => filterlist?.setSorting(
     paramName,
     asc,
   ), [filterlist]);
 
   const resetAllFilters = useCallback(
-    (): Promise<void> => filterlist.resetAllFilters(),
+    () => filterlist?.resetAllFilters(),
     [filterlist],
   );
 
   const reload = useCallback(
-    (): Promise<void> => filterlist.reload(),
+    () => filterlist?.reload(),
     [filterlist],
   );
 
   const resetFilter = useCallback((
     filterName: string,
-  ): Promise<void> => filterlist.resetFilter(
+  ) => filterlist?.resetFilter(
     filterName,
   ), [filterlist]);
 
   const applyFilter = useCallback((
     filterName: string,
-  ): Promise<void> => filterlist.applyFilter(
+  ) => filterlist?.applyFilter(
     filterName,
   ), [filterlist]);
 

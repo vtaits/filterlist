@@ -1,4 +1,3 @@
-import React from 'react';
 import type {
   FC,
 } from 'react';
@@ -27,10 +26,10 @@ const StyledResetWrapper = styled.div({
 type Props = {
   filters: Record<string, any>;
   setFilterValue: (filterName: string, value: any) => void;
-  resetFilter: (filterName: string) => Promise<void>;
-  applyFilter: (filterName: string) => Promise<void>;
-  resetAllFilters: () => Promise<void>;
-  reload: () => Promise<void>;
+  resetFilter: (filterName: string) => void;
+  applyFilter: (filterName: string) => void;
+  resetAllFilters: () => void;
+  reload: () => void;
 };
 
 const Filters: FC<Props> = ({

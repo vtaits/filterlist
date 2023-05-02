@@ -1,6 +1,10 @@
 module.exports = {
   stories: ['../packages/**/*.stories.tsx'],
 
+  core: {
+    builder: 'webpack5',
+  },
+
   webpackFinal: (config) => {
     config.module.rules.push({
       test: /\.(ts|tsx)$/,

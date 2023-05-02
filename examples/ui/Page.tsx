@@ -7,6 +7,11 @@ import type {
 import styled from 'styled-components';
 import { Paginator } from '@vtaits/react-paginator';
 
+import type {
+  Sort,
+  ListState,
+} from '@vtaits/filterlist';
+
 import Button from './Button';
 import Filters from './Filters';
 import Table from './Table';
@@ -19,11 +24,6 @@ import type {
   Additional,
 } from '../types';
 
-import type {
-  Sort,
-  ListState,
-} from '../../packages/filterlist/src/types';
-
 type PageProps = {
   listState: ListState<User, Additional, unknown>,
   filters: Record<string, any>;
@@ -32,11 +32,11 @@ type PageProps = {
   additional?: Additional;
   loading: boolean;
   setFilterValue: (filterName: string, value: any) => void;
-  resetFilter: (filterName: string) => Promise<void>;
-  applyFilter: (filterName: string) => Promise<void>;
-  setAndApplyFilter: (filterName: string, value: any) => Promise<void>;
-  resetAllFilters: () => Promise<void>;
-  reload: () => Promise<void>;
+  resetFilter: (filterName: string) => void;
+  applyFilter: (filterName: string) => void;
+  setAndApplyFilter: (filterName: string, value: any) => void;
+  resetAllFilters: () => void;
+  reload: () => void;
   setSorting: (param: string) => void;
   isInfinity?: boolean;
   loadMore?: () => void;
