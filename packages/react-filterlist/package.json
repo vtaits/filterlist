@@ -65,7 +65,7 @@
     "react-router-dom": "^6.4.2",
     "ts-jest": "^29.0.3",
     "typescript": "^4.8.4",
-    "vite": "3.1.8"
+    "vite": "3.2.7"
   },
   "dependencies": {
     "is-promise": "^4.0.0",
