@@ -1,6 +1,6 @@
 {
   "name": "@vtaits/react-filterlist",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "React wrapper above @vtaits/filterlist",
   "files": [
     "dist"
