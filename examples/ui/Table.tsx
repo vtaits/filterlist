@@ -25,9 +25,9 @@ const StyledTd = styled.td({
 });
 
 type TableProps = {
-	sort: Sort;
-	items: readonly User[];
-	setSorting: (param: string) => void;
+	readonly sort: Sort;
+	readonly items: readonly User[];
+	readonly setSorting: (param: string) => void;
 };
 
 function TableInner({ sort, items, setSorting }: TableProps): ReactElement {

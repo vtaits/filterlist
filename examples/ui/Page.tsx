@@ -83,7 +83,7 @@ export function Page({
 	appliedFilters,
 	sort,
 	items,
-	additional,
+	additional = undefined,
 	loading,
 	resetAllFilters,
 	reload,
@@ -92,8 +92,8 @@ export function Page({
 	applyFilter,
 	setAndApplyFilter,
 	setSorting,
-	isInfinity,
-	loadMore,
+	isInfinity = false,
+	loadMore = undefined,
 }: PageProps): ReactElement {
 	const onPageChange = useCallback(
 		(page: number): void => {
@@ -172,9 +172,3 @@ export function Page({
 		</StyledWrapper>
 	);
 }
-
-Page.defaultProps = {
-	additional: undefined,
-	isInfinity: false,
-	loadMore: undefined,
-};

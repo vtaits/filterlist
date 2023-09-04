@@ -8,6 +8,22 @@ import { collectOptions } from "./collectOptions";
 import { LoadListError } from "./errors";
 import type { ListState, ItemsLoaderResponse } from "./types";
 
+// rome-ignore lint/suspicious/noExplicitAny: stub for any filterlist
+const testListState: ListState<any, any, any> = {
+	items: ["test"],
+	additional: "test",
+	filters: {},
+	appliedFilters: {},
+	loading: false,
+	shouldClean: false,
+	isFirstLoad: false,
+	loadedPages: 3,
+	sort: {
+		asc: false,
+	},
+	error: null,
+};
+
 const defaultParams = {
 	loadItems: (): ItemsLoaderResponse<unknown, unknown> => ({
 		items: [],
@@ -75,8 +91,10 @@ class ManualFilterlist<Item, Additional, Error> extends Filterlist<
 		return requestItemsMethod();
 	}
 
-	manualRequestItems(): Promise<void> {
-		return super.requestItems();
+	manualRequestItems(
+		prevListState: ListState<Item, Additional, Error>,
+	): Promise<void> {
+		return super.requestItems(prevListState);
 	}
 
 	onSuccess(response: ItemsLoaderResponse<Item, Additional>): void {
@@ -263,252 +281,326 @@ test("should dispatch event and request items on load items", async () => {
 	]);
 });
 
-test("should request items successfully", async () => {
-	const testResponse = {
-		items: [1, 2, 3],
+describe("requestItems", () => {
+	test("should not load items if `shouldRequest` returns `false`", async () => {
+		const shouldRequest = vi.fn().mockReturnValue(false);
 
-		additional: {
-			count: 3,
-		},
-	};
+		const filterlist = new ManualFilterlist({
+			...defaultParams,
+			shouldRequest,
+		});
 
-	const loadItems = vi.fn(() => {
-		callsSequence.push("itemsLoader");
+		const onRequestItems = vi.fn(() => {
+			callsSequence.push("onRequestItems");
+		});
 
-		return testResponse;
+		filterlist.emitter.on(eventTypes.requestItems, onRequestItems);
+
+		const currentState = filterlist.getListState();
+
+		await filterlist.manualRequestItems(testListState);
+
+		expect(onRequestItems).toHaveBeenCalledTimes(0);
+
+		expect(shouldRequest).toHaveBeenCalledTimes(1);
+		expect(shouldRequest).toHaveBeenCalledWith(testListState, currentState);
 	});
 
-	const filterlist = new ManualFilterlist({
-		...defaultParams,
+	test("should load items if `shouldRequest` returns `true`", async () => {
+		const shouldRequest = vi.fn().mockReturnValue(true);
 
-		loadItems,
+		const filterlist = new ManualFilterlist({
+			...defaultParams,
+			shouldRequest,
+		});
+
+		const onRequestItems = vi.fn(() => {
+			callsSequence.push("onRequestItems");
+		});
+
+		filterlist.emitter.on(eventTypes.requestItems, onRequestItems);
+
+		const currentState = filterlist.getListState();
+
+		await filterlist.manualRequestItems(testListState);
+
+		expect(onRequestItems).toHaveBeenCalledTimes(1);
+
+		expect(shouldRequest).toHaveBeenCalledTimes(1);
+		expect(shouldRequest).toHaveBeenCalledWith(testListState, currentState);
 	});
 
-	const onRequestItems = vi.fn(() => {
-		callsSequence.push("onRequestItems");
+	test("should load items if `shouldRequest` is not defined", async () => {
+		const filterlist = new ManualFilterlist({
+			...defaultParams,
+		});
+
+		const onRequestItems = vi.fn(() => {
+			callsSequence.push("onRequestItems");
+		});
+
+		filterlist.emitter.on(eventTypes.requestItems, onRequestItems);
+
+		const currentState = filterlist.getListState();
+
+		await filterlist.manualRequestItems(testListState);
+
+		expect(onRequestItems).toHaveBeenCalledTimes(1);
 	});
 
-	const prevState = filterlist.getListState();
+	test("should request items successfully", async () => {
+		const testResponse = {
+			items: [1, 2, 3],
 
-	filterlist.emitter.on(eventTypes.requestItems, onRequestItems);
-	filterlist.requestId = 3;
+			additional: {
+				count: 3,
+			},
+		};
 
-	await filterlist.manualRequestItems();
+		const loadItems = vi.fn(() => {
+			callsSequence.push("itemsLoader");
 
-	expect(onRequestItems).toHaveBeenCalledTimes(1);
-	expect(onRequestItems).toHaveBeenCalledWith(prevState);
+			return testResponse;
+		});
 
-	expect(onSuccessMethod).toHaveBeenCalledTimes(1);
-	expect(onSuccessMethod).toHaveBeenCalledWith(testResponse);
+		const filterlist = new ManualFilterlist({
+			...defaultParams,
 
-	expect(filterlist.requestId).toBe(4);
+			loadItems,
+		});
 
-	expect(callsSequence).toEqual([
-		"onInit",
-		"onRequestItems",
-		"itemsLoader",
-		"onSuccess",
-	]);
-});
+		const onRequestItems = vi.fn(() => {
+			callsSequence.push("onRequestItems");
+		});
 
-test("should request items with error", async () => {
-	const testError = {
-		error: "error",
+		const prevState = filterlist.getListState();
 
-		additional: {
-			count: 3,
-		},
-	};
+		filterlist.emitter.on(eventTypes.requestItems, onRequestItems);
+		filterlist.requestId = 3;
 
-	const loadItems = vi.fn(() => {
-		callsSequence.push("itemsLoader");
+		await filterlist.manualRequestItems(prevState);
 
-		throw new LoadListError(testError);
+		expect(onRequestItems).toHaveBeenCalledTimes(1);
+		expect(onRequestItems).toHaveBeenCalledWith(prevState);
+
+		expect(onSuccessMethod).toHaveBeenCalledTimes(1);
+		expect(onSuccessMethod).toHaveBeenCalledWith(testResponse);
+
+		expect(filterlist.requestId).toBe(4);
+
+		expect(callsSequence).toEqual([
+			"onInit",
+			"onRequestItems",
+			"itemsLoader",
+			"onSuccess",
+		]);
 	});
 
-	const filterlist = new ManualFilterlist({
-		...defaultParams,
+	test("should request items with error", async () => {
+		const testError = {
+			error: "error",
 
-		loadItems,
+			additional: {
+				count: 3,
+			},
+		};
+
+		const loadItems = vi.fn(() => {
+			callsSequence.push("itemsLoader");
+
+			throw new LoadListError(testError);
+		});
+
+		const filterlist = new ManualFilterlist({
+			...defaultParams,
+
+			loadItems,
+		});
+
+		const onRequestItems = vi.fn(() => {
+			callsSequence.push("onRequestItems");
+		});
+
+		const prevState = filterlist.getListState();
+
+		filterlist.emitter.on(eventTypes.requestItems, onRequestItems);
+		filterlist.requestId = 3;
+
+		await filterlist.manualRequestItems(prevState);
+
+		expect(onRequestItems).toHaveBeenCalledTimes(1);
+		expect(onRequestItems).toHaveBeenCalledWith(prevState);
+
+		expect(onErrorMethod).toHaveBeenCalledTimes(1);
+		expect(onErrorMethod.mock.calls[0][0]).toHaveProperty(
+			"error",
+			testError.error,
+		);
+		expect(onErrorMethod.mock.calls[0][0]).toHaveProperty(
+			"additional",
+			testError.additional,
+		);
+
+		expect(filterlist.requestId).toBe(4);
+
+		expect(callsSequence).toEqual([
+			"onInit",
+			"onRequestItems",
+			"itemsLoader",
+			"onError",
+		]);
 	});
 
-	const onRequestItems = vi.fn(() => {
-		callsSequence.push("onRequestItems");
-	});
+	test("should throw up not LoadListError", async () => {
+		const loadItems = vi.fn(() => {
+			callsSequence.push("itemsLoader");
 
-	const prevState = filterlist.getListState();
+			throw new Error("Other error");
+		});
 
-	filterlist.emitter.on(eventTypes.requestItems, onRequestItems);
-	filterlist.requestId = 3;
+		const filterlist = new ManualFilterlist({
+			...defaultParams,
 
-	await filterlist.manualRequestItems();
+			loadItems,
+		});
 
-	expect(onRequestItems).toHaveBeenCalledTimes(1);
-	expect(onRequestItems).toHaveBeenCalledWith(prevState);
+		const onRequestItems = vi.fn(() => {
+			callsSequence.push("onRequestItems");
+		});
 
-	expect(onErrorMethod).toHaveBeenCalledTimes(1);
-	expect(onErrorMethod.mock.calls[0][0]).toHaveProperty(
-		"error",
-		testError.error,
-	);
-	expect(onErrorMethod.mock.calls[0][0]).toHaveProperty(
-		"additional",
-		testError.additional,
-	);
+		const prevState = filterlist.getListState();
 
-	expect(filterlist.requestId).toBe(4);
+		filterlist.emitter.on(eventTypes.requestItems, onRequestItems);
+		filterlist.requestId = 3;
 
-	expect(callsSequence).toEqual([
-		"onInit",
-		"onRequestItems",
-		"itemsLoader",
-		"onError",
-	]);
-});
+		let hasError = false;
 
-test("should throw up not LoadListError", async () => {
-	const loadItems = vi.fn(() => {
-		callsSequence.push("itemsLoader");
-
-		throw new Error("Other error");
-	});
-
-	const filterlist = new ManualFilterlist({
-		...defaultParams,
-
-		loadItems,
-	});
-
-	const onRequestItems = vi.fn(() => {
-		callsSequence.push("onRequestItems");
-	});
-
-	const prevState = filterlist.getListState();
-
-	filterlist.emitter.on(eventTypes.requestItems, onRequestItems);
-	filterlist.requestId = 3;
-
-	let hasError = false;
-
-	try {
-		await filterlist.manualRequestItems();
-	} catch (e) {
-		hasError = true;
-	}
-
-	expect(hasError).toBe(true);
-
-	expect(onRequestItems).toHaveBeenCalledTimes(1);
-	expect(onRequestItems).toHaveBeenCalledWith(prevState);
-
-	expect(onSuccessMethod).toHaveBeenCalledTimes(0);
-	expect(onErrorMethod).toHaveBeenCalledTimes(0);
-
-	expect(filterlist.requestId).toBe(4);
-
-	expect(callsSequence).toEqual(["onInit", "onRequestItems", "itemsLoader"]);
-});
-
-test("should ingore success response if requestId increased in process of loadItems", async () => {
-	const testResponse = {
-		items: [1, 2, 3],
-
-		additional: {
-			count: 3,
-		},
-	};
-
-	let filterlist: ManualFilterlist<number, { count: number }, unknown> | null =
-		null;
-
-	const loadItems = vi.fn(() => {
-		if (!filterlist) {
-			throw new Error("filterlist is not initialized");
+		try {
+			await filterlist.manualRequestItems(prevState);
+		} catch (e) {
+			hasError = true;
 		}
 
-		filterlist.requestId = 10;
-		callsSequence.push("itemsLoader");
+		expect(hasError).toBe(true);
 
-		return testResponse;
+		expect(onRequestItems).toHaveBeenCalledTimes(1);
+		expect(onRequestItems).toHaveBeenCalledWith(prevState);
+
+		expect(onSuccessMethod).toHaveBeenCalledTimes(0);
+		expect(onErrorMethod).toHaveBeenCalledTimes(0);
+
+		expect(filterlist.requestId).toBe(4);
+
+		expect(callsSequence).toEqual(["onInit", "onRequestItems", "itemsLoader"]);
 	});
 
-	filterlist = new ManualFilterlist({
-		...defaultParams,
+	test("should ingore success response if requestId increased in process of loadItems", async () => {
+		const testResponse = {
+			items: [1, 2, 3],
 
-		loadItems,
+			additional: {
+				count: 3,
+			},
+		};
+
+		let filterlist: ManualFilterlist<
+			number,
+			{ count: number },
+			unknown
+		> | null = null;
+
+		const loadItems = vi.fn(() => {
+			if (!filterlist) {
+				throw new Error("filterlist is not initialized");
+			}
+
+			filterlist.requestId = 10;
+			callsSequence.push("itemsLoader");
+
+			return testResponse;
+		});
+
+		filterlist = new ManualFilterlist({
+			...defaultParams,
+
+			loadItems,
+		});
+
+		const onRequestItems = vi.fn(() => {
+			callsSequence.push("onRequestItems");
+		});
+
+		const prevState = filterlist.getListState();
+
+		filterlist.emitter.on(eventTypes.requestItems, onRequestItems);
+		filterlist.requestId = 3;
+
+		await filterlist.manualRequestItems(prevState);
+
+		expect(onRequestItems).toHaveBeenCalledTimes(1);
+		expect(onRequestItems).toHaveBeenCalledWith(prevState);
+
+		expect(onSuccessMethod).toHaveBeenCalledTimes(0);
+		expect(onErrorMethod).toHaveBeenCalledTimes(0);
+
+		expect(filterlist.requestId).toBe(10);
+
+		expect(callsSequence).toEqual(["onInit", "onRequestItems", "itemsLoader"]);
 	});
 
-	const onRequestItems = vi.fn(() => {
-		callsSequence.push("onRequestItems");
+	test("should ingore LoadListError if requestId increased in process of loadItems", async () => {
+		const testError = {
+			error: "error",
+
+			additional: {
+				count: 3,
+			},
+		};
+
+		let filterlist: ManualFilterlist<
+			number,
+			{ count: number },
+			unknown
+		> | null = null;
+
+		const loadItems = vi.fn(() => {
+			if (!filterlist) {
+				throw new Error("filterlist is not initialized");
+			}
+
+			filterlist.requestId = 10;
+			callsSequence.push("itemsLoader");
+
+			throw new LoadListError(testError);
+		});
+
+		filterlist = new ManualFilterlist({
+			...defaultParams,
+
+			loadItems,
+		});
+
+		const onRequestItems = vi.fn(() => {
+			callsSequence.push("onRequestItems");
+		});
+
+		const prevState = filterlist.getListState();
+
+		filterlist.emitter.on(eventTypes.requestItems, onRequestItems);
+		filterlist.requestId = 3;
+
+		await filterlist.manualRequestItems(prevState);
+
+		expect(onRequestItems).toHaveBeenCalledTimes(1);
+		expect(onRequestItems).toHaveBeenCalledWith(prevState);
+
+		expect(onSuccessMethod).toHaveBeenCalledTimes(0);
+		expect(onErrorMethod).toHaveBeenCalledTimes(0);
+
+		expect(filterlist.requestId).toBe(10);
+
+		expect(callsSequence).toEqual(["onInit", "onRequestItems", "itemsLoader"]);
 	});
-
-	const prevState = filterlist.getListState();
-
-	filterlist.emitter.on(eventTypes.requestItems, onRequestItems);
-	filterlist.requestId = 3;
-
-	await filterlist.manualRequestItems();
-
-	expect(onRequestItems).toHaveBeenCalledTimes(1);
-	expect(onRequestItems).toHaveBeenCalledWith(prevState);
-
-	expect(onSuccessMethod).toHaveBeenCalledTimes(0);
-	expect(onErrorMethod).toHaveBeenCalledTimes(0);
-
-	expect(filterlist.requestId).toBe(10);
-
-	expect(callsSequence).toEqual(["onInit", "onRequestItems", "itemsLoader"]);
-});
-
-test("should ingore LoadListError if requestId increased in process of loadItems", async () => {
-	const testError = {
-		error: "error",
-
-		additional: {
-			count: 3,
-		},
-	};
-
-	let filterlist: ManualFilterlist<number, { count: number }, unknown> | null =
-		null;
-
-	const loadItems = vi.fn(() => {
-		if (!filterlist) {
-			throw new Error("filterlist is not initialized");
-		}
-
-		filterlist.requestId = 10;
-		callsSequence.push("itemsLoader");
-
-		throw new LoadListError(testError);
-	});
-
-	filterlist = new ManualFilterlist({
-		...defaultParams,
-
-		loadItems,
-	});
-
-	const onRequestItems = vi.fn(() => {
-		callsSequence.push("onRequestItems");
-	});
-
-	const prevState = filterlist.getListState();
-
-	filterlist.emitter.on(eventTypes.requestItems, onRequestItems);
-	filterlist.requestId = 3;
-
-	await filterlist.manualRequestItems();
-
-	expect(onRequestItems).toHaveBeenCalledTimes(1);
-	expect(onRequestItems).toHaveBeenCalledWith(prevState);
-
-	expect(onSuccessMethod).toHaveBeenCalledTimes(0);
-	expect(onErrorMethod).toHaveBeenCalledTimes(0);
-
-	expect(filterlist.requestId).toBe(10);
-
-	expect(callsSequence).toEqual(["onInit", "onRequestItems", "itemsLoader"]);
 });
 
 describe("onSuccess", () => {

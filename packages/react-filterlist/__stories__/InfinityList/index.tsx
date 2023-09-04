@@ -131,50 +131,96 @@ export function InfinityList(): ReactElement | null {
   const setAndApplyFilter = useCallback((
     filterName: string,
     value: any,
-  ): Promise<void> => filterlist.setAndApplyFilter(
-    filterName,
-    value,
-  ), [filterlist]);
+  ): Promise<void> => {
+    if (!filterlist) {
+      throw new Error('filterlist is not initialized');
+    }
+
+    return filterlist.setAndApplyFilter(
+      filterName,
+      value,
+    );
+  }, [filterlist]);
 
   const setFilterValue = useCallback((
     filterName: string,
     value: any,
-  ): void => filterlist.setFilterValue(
-    filterName,
-    value,
-  ), [filterlist]);
+  ): void => {
+    if (!filterlist) {
+      throw new Error('filterlist is not initialized');
+    }
+
+    return filterlist.setFilterValue(
+      filterName,
+      value,
+    );
+  }, [filterlist]);
 
   const setSorting = useCallback((
     paramName: string,
     asc?: boolean,
-  ): Promise<void> => filterlist.setSorting(
-    paramName,
-    asc,
-  ), [filterlist]);
+  ): Promise<void> => {
+    if (!filterlist) {
+      throw new Error('filterlist is not initialized');
+    }
+
+    return filterlist.setSorting(
+      paramName,
+      asc,
+    );
+  }, [filterlist]);
 
   const resetAllFilters = useCallback(
-    (): Promise<void> => filterlist.resetAllFilters(),
+    (): Promise<void> => {
+      if (!filterlist) {
+        throw new Error('filterlist is not initialized');
+      }
+  
+      return filterlist.resetAllFilters();
+    },
     [filterlist],
   );
 
   const reload = useCallback(
-    (): Promise<void> => filterlist.reload(),
+    (): Promise<void> => {
+      if (!filterlist) {
+        throw new Error('filterlist is not initialized');
+      }
+  
+      return filterlist.reload();
+    },
     [filterlist],
   );
 
   const resetFilter = useCallback((
     filterName: string,
-  ): Promise<void> => filterlist.resetFilter(
-    filterName,
-  ), [filterlist]);
+  ): Promise<void> => {
+    if (!filterlist) {
+      throw new Error('filterlist is not initialized');
+    }
+
+    return filterlist.resetFilter(
+      filterName,
+    );
+  }, [filterlist]);
 
   const applyFilter = useCallback((
     filterName: string,
-  ): Promise<void> => filterlist.applyFilter(
-    filterName,
-  ), [filterlist]);
+  ): Promise<void> => {
+    if (!filterlist) {
+      throw new Error('filterlist is not initialized');
+    }
+
+    return filterlist.applyFilter(
+      filterName,
+    );
+  }, [filterlist]);
 
   const loadMore = useCallback(() => {
+    if (!filterlist) {
+      throw new Error('filterlist is not initialized');
+    }
+
     filterlist.loadMore();
   }, [filterlist]);
 

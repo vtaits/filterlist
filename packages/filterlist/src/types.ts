@@ -30,6 +30,11 @@ export type ItemsLoaderResponse<Item, Additional> = {
 	readonly additional?: Additional;
 };
 
+export type ShouldRequest<Item, Additional, Error> = (
+	prevState: ListState<Item, Additional, Error>,
+	nextState: ListState<Item, Additional, Error>,
+) => boolean;
+
 export type ItemsLoader<Item, Additional, Error> = (
 	prevListState: ListState<Item, Additional, Error>,
 ) =>
@@ -37,6 +42,7 @@ export type ItemsLoader<Item, Additional, Error> = (
 	| Promise<ItemsLoaderResponse<Item, Additional>>;
 
 export type Params<Item, Additional, Error> = {
+	readonly shouldRequest?: ShouldRequest<Item, Additional, Error>;
 	readonly loadItems: ItemsLoader<Item, Additional, Error>;
 	readonly items?: readonly Item[];
 	readonly sort?: Sort;

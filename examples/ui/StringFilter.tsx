@@ -42,7 +42,7 @@ const StyledInput = styled.input({
 
 type StringFilterProps = {
 	name: string;
-	value?: string;
+	value?: unknown;
 	setFilterValue: (filterName: string, value: any) => void;
 	resetFilter: (filterName: string) => Promise<void>;
 	applyFilter: (filterName: string) => Promise<void>;
@@ -50,7 +50,7 @@ type StringFilterProps = {
 
 function StringFilterInner({
 	name,
-	value,
+	value = undefined,
 	setFilterValue,
 	resetFilter,
 	applyFilter,
@@ -62,7 +62,7 @@ function StringFilterInner({
 		[name, setFilterValue],
 	);
 
-	const onKeyPress = useCallback(
+	const onKeyDown = useCallback(
 		(event: KeyboardEvent) => {
 			if (event.key === "Enter") {
 				applyFilter(name);
@@ -86,9 +86,9 @@ function StringFilterInner({
 			<StyledInputWrapper>
 				<StyledInput
 					name={name}
-					value={value || ""}
+					value={typeof value === "string" ? value : ""}
 					onChange={onChange}
-					onKeyPress={onKeyPress}
+					onKeyDown={onKeyDown}
 				/>
 			</StyledInputWrapper>
 
@@ -106,9 +106,5 @@ function StringFilterInner({
 		</StyledWrapper>
 	);
 }
-
-StringFilterInner.defaultProps = {
-	value: "",
-};
 
 export const StringFilter = memo(StringFilterInner);

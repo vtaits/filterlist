@@ -17,6 +17,7 @@ import type {
 	ItemsLoaderResponse,
 	ItemsLoader,
 	EventType,
+	ShouldRequest,
 } from "./types";
 
 export class Filterlist<Item, Additional, Error> {
@@ -28,12 +29,14 @@ export class Filterlist<Item, Additional, Error> {
 
 	itemsLoader: ItemsLoader<Item, Additional, Error>;
 
+	shouldRequest?: ShouldRequest<Item, Additional, Error>;
+
 	emitter: Emitter<Record<EventType, ListState<Item, Additional, Error>>>;
 
 	constructor(params: Params<Item, Additional, Error>) {
 		this.emitter = mitt();
 
-		const { loadItems } = params;
+		const { loadItems, shouldRequest } = params;
 
 		if (!loadItems) {
 			throw new Error("loadItems is required");
@@ -44,6 +47,7 @@ export class Filterlist<Item, Additional, Error> {
 		}
 
 		this.itemsLoader = loadItems;
+		this.shouldRequest = shouldRequest;
 
 		this.requestId = 0;
 		this.listState = collectListInitialState(params);
@@ -115,7 +119,7 @@ export class Filterlist<Item, Additional, Error> {
 
 		this.emitEvent(eventTypes.loadMore);
 
-		await this.requestItems();
+		await this.requestItems(prevListState);
 	}
 
 	async loadMore(): Promise<void> {
@@ -132,7 +136,7 @@ export class Filterlist<Item, Additional, Error> {
 		this.emitEvent(eventTypes.loadMore);
 		this.emitEvent(eventTypes.changeLoadParams);
 
-		await this.requestItems();
+		await this.requestItems(prevListState);
 	}
 
 	setFilterValue(filterName: string, value: unknown): void {
@@ -167,7 +171,7 @@ export class Filterlist<Item, Additional, Error> {
 		this.emitEvent(eventTypes.applyFilter);
 		this.emitEvent(eventTypes.changeLoadParams);
 
-		await this.requestItems();
+		await this.requestItems(prevListState);
 	}
 
 	async setAndApplyFilter(filterName: string, value: unknown): Promise<void> {
@@ -192,7 +196,7 @@ export class Filterlist<Item, Additional, Error> {
 		this.emitEvent(eventTypes.setAndApplyFilter);
 		this.emitEvent(eventTypes.changeLoadParams);
 
-		await this.requestItems();
+		await this.requestItems(prevListState);
 	}
 
 	async resetFilter(filterName: string): Promise<void> {
@@ -219,7 +223,7 @@ export class Filterlist<Item, Additional, Error> {
 		this.emitEvent(eventTypes.resetFilter);
 		this.emitEvent(eventTypes.changeLoadParams);
 
-		await this.requestItems();
+		await this.requestItems(prevListState);
 	}
 
 	setFiltersValues(values: Record<string, unknown>): void {
@@ -262,7 +266,7 @@ export class Filterlist<Item, Additional, Error> {
 		this.emitEvent(eventTypes.applyFilters);
 		this.emitEvent(eventTypes.changeLoadParams);
 
-		await this.requestItems();
+		await this.requestItems(prevListState);
 	}
 
 	async setAndApplyFilters(values: Record<string, unknown>): Promise<void> {
@@ -286,7 +290,7 @@ export class Filterlist<Item, Additional, Error> {
 		this.emitEvent(eventTypes.setAndApplyFilters);
 		this.emitEvent(eventTypes.changeLoadParams);
 
-		await this.requestItems();
+		await this.requestItems(prevListState);
 	}
 
 	async resetFilters(filtersNames: string[]): Promise<void> {
@@ -321,7 +325,7 @@ export class Filterlist<Item, Additional, Error> {
 		this.emitEvent(eventTypes.resetFilters);
 		this.emitEvent(eventTypes.changeLoadParams);
 
-		await this.requestItems();
+		await this.requestItems(prevListState);
 	}
 
 	async resetAllFilters(): Promise<void> {
@@ -367,10 +371,11 @@ export class Filterlist<Item, Additional, Error> {
 		this.emitEvent(eventTypes.resetAllFilters);
 		this.emitEvent(eventTypes.changeLoadParams);
 
-		await this.requestItems();
+		await this.requestItems(prevListState);
 	}
 
 	async reload(): Promise<void> {
+		const prevState = this.listState;
 		const stateBeforeChange = this.getListStateBeforeChange();
 
 		this.setListState(stateBeforeChange);
@@ -378,7 +383,7 @@ export class Filterlist<Item, Additional, Error> {
 		this.emitEvent(eventTypes.reload);
 		this.emitEvent(eventTypes.changeLoadParams);
 
-		await this.requestItems();
+		await this.requestItems(prevState);
 	}
 
 	getNextAsc(param: string, asc?: boolean): boolean {
@@ -396,6 +401,7 @@ export class Filterlist<Item, Additional, Error> {
 	}
 
 	async setSorting(param: string, asc?: boolean): Promise<void> {
+		const prevListState = this.listState;
 		const stateBeforeChange = this.getListStateBeforeChange();
 
 		const nextAsc = this.getNextAsc(param, asc);
@@ -412,10 +418,11 @@ export class Filterlist<Item, Additional, Error> {
 		this.emitEvent(eventTypes.setSorting);
 		this.emitEvent(eventTypes.changeLoadParams);
 
-		await this.requestItems();
+		await this.requestItems(prevListState);
 	}
 
 	async resetSorting(): Promise<void> {
+		const prevListState = this.listState;
 		const stateBeforeChange = this.getListStateBeforeChange();
 
 		const { isDefaultSortAsc } = this.options;
@@ -432,7 +439,7 @@ export class Filterlist<Item, Additional, Error> {
 		this.emitEvent(eventTypes.resetSorting);
 		this.emitEvent(eventTypes.changeLoadParams);
 
-		await this.requestItems();
+		await this.requestItems(prevListState);
 	}
 
 	async setFiltersAndSorting({
@@ -444,6 +451,7 @@ export class Filterlist<Item, Additional, Error> {
 		appliedFilters?: Record<string, unknown>;
 		sort?: Sort;
 	}): Promise<void> {
+		const prevListState = this.listState;
 		const stateBeforeChange = this.getListStateBeforeChange();
 
 		this.setListState({
@@ -456,10 +464,19 @@ export class Filterlist<Item, Additional, Error> {
 
 		this.emitEvent(eventTypes.setFiltersAndSorting);
 
-		await this.requestItems();
+		await this.requestItems(prevListState);
 	}
 
-	async requestItems(): Promise<void> {
+	async requestItems(
+		prevListState: ListState<Item, Additional, Error>,
+	): Promise<void> {
+		if (
+			this.shouldRequest &&
+			!this.shouldRequest(prevListState, this.listState)
+		) {
+			return;
+		}
+
 		const nextRequestId = this.requestId + 1;
 		++this.requestId;
 

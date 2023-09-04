@@ -1,3 +1,13 @@
+## 0.3.1 (04 sep 2023)
+
+### New features
+
+* Added `shouldRequest` param
+
+### Typings
+
+* Support readonly arrays
+
 ## 0.3.0 (28 oct 2022)
 
 ### Typings

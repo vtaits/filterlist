@@ -57,6 +57,7 @@ const filterlist = new Filterlist({
     asc /* boolean, asc or desc */,
   }
   ```
+- **shouldRequest** - function, invoked before requests. Receives state of previous request and current list state. If returns `false`, request will be prevented
 
 - **isDefaultSortAsc** - Boolean, default `asc` param after change sorting column (true by default)
 

@@ -3,10 +3,10 @@ import styled from "styled-components";
 type ButtonType = "default" | "danger";
 
 type ButtonProps = {
-	$buttonType?: ButtonType;
+	readonly $buttonType?: ButtonType;
 };
 
-const mapTypeToColor: Record<ButtonType, string> = {
+const mapTypeToColor: Readonly<Record<ButtonType, string>> = {
 	default: "#666",
 	danger: "#f44336",
 };

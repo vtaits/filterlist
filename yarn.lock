@@ -4259,6 +4259,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@vtaits/filterlist@workspace:packages/filterlist"
   dependencies:
+    "@storybook/react": ^7.4.0
     "@types/qs": ^6.9.8
     "@types/react": ^18.2.21
     "@types/react-router-dom": ^5.3.3
@@ -4294,6 +4295,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@vtaits/react-filterlist@workspace:packages/react-filterlist"
   dependencies:
+    "@storybook/react": ^7.4.0
     "@types/qs": ^6.9.8
     "@types/react": ^18.2.21
     "@types/react-router-dom": ^5.3.3

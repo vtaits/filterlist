@@ -1,5 +1,4 @@
-import { memo, useCallback } from "react";
-import type { ReactElement, ReactNode } from "react";
+import { memo, type ReactElement, type ReactNode, useCallback } from "react";
 
 import styled from "styled-components";
 
@@ -25,21 +24,20 @@ const StyledTh = styled.th({
 });
 
 type ThProps = {
-	param: string;
-	current?: string;
-	asc?: boolean;
-	children?: ReactNode;
-
-	setSorting: (param: string) => void;
+	readonly asc?: boolean;
+	readonly children?: ReactNode;
+	readonly current?: string | null;
+	readonly param: string;
+	readonly setSorting: (param: string) => void;
 };
 
 function ThInner({
 	param,
 
-	current,
-	asc,
+	current = null,
+	asc = undefined,
 
-	children,
+	children = undefined,
 
 	setSorting,
 }: ThProps): ReactElement {
@@ -55,11 +53,5 @@ function ThInner({
 		</StyledTh>
 	);
 }
-
-ThInner.defaultProps = {
-	asc: null,
-	current: null,
-	children: null,
-};
 
 export const Th = memo(ThInner);

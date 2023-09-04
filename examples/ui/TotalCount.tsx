@@ -8,7 +8,7 @@ const StyledWrapper = styled.div({
 });
 
 type TotalCountProps = {
-	count: number;
+	readonly count: number;
 };
 
 export function TotalCount({ count }: TotalCountProps): ReactElement {

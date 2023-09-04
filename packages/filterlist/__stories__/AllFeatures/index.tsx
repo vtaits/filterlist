@@ -14,7 +14,7 @@ import {
   useLocation,
 } from 'react-router-dom';
 
-import { Filterlist, eventTypes } from '@vtaits/filterlist';
+import { Filterlist, type ListState, eventTypes } from '@vtaits/filterlist';
 
 import { Page } from '../../../../examples/ui/Page';
 import * as api from '../../../../examples/api';
@@ -125,7 +125,7 @@ export function AllFeatures(): ReactElement {
     () => filterlist.getListState(),
   );
 
-  const onChangeListState = useCallback((newListState) => {
+  const onChangeListState = useCallback((newListState: ListState<User, Additional, unknown>) => {
     const newQuery = qs.stringify({
       ...newListState.appliedFilters,
       sort: newListState.sort.param
