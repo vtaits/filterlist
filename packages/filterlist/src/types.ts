@@ -1,33 +1,33 @@
 export type Sort = {
-	param: string | null;
-	asc: boolean;
+	readonly param?: string | null;
+	readonly asc: boolean;
 };
 
 export type ListState<Item, Additional, Error> = {
-	sort: Sort;
-	filters: Record<string, unknown>;
-	appliedFilters: Record<string, unknown>;
-	loading: boolean;
-	items: Item[];
-	loadedPages: number;
-	additional: Additional;
-	error: Error | null;
-	shouldClean: boolean;
-	isFirstLoad: boolean;
+	readonly sort: Sort;
+	readonly filters: Record<string, unknown>;
+	readonly appliedFilters: Record<string, unknown>;
+	readonly loading: boolean;
+	readonly items: readonly Item[];
+	readonly loadedPages: number;
+	readonly additional: Additional;
+	readonly error: Error | null;
+	readonly shouldClean: boolean;
+	readonly isFirstLoad: boolean;
 };
 
 export type Options = {
-	autoload: boolean;
-	isDefaultSortAsc: boolean;
-	alwaysResetFilters: Record<string, unknown>;
-	resetFiltersTo: Record<string, unknown>;
-	saveFiltersOnResetAll: string[];
-	saveItemsWhileLoad: boolean;
+	readonly autoload: boolean;
+	readonly isDefaultSortAsc: boolean;
+	readonly alwaysResetFilters: Readonly<Record<string, unknown>>;
+	readonly resetFiltersTo: Readonly<Record<string, unknown>>;
+	readonly saveFiltersOnResetAll: readonly string[];
+	readonly saveItemsWhileLoad: boolean;
 };
 
 export type ItemsLoaderResponse<Item, Additional> = {
-	items: Item[];
-	additional?: Additional;
+	readonly items: readonly Item[];
+	readonly additional?: Additional;
 };
 
 export type ItemsLoader<Item, Additional, Error> = (
@@ -37,17 +37,17 @@ export type ItemsLoader<Item, Additional, Error> = (
 	| Promise<ItemsLoaderResponse<Item, Additional>>;
 
 export type Params<Item, Additional, Error> = {
-	loadItems: ItemsLoader<Item, Additional, Error>;
-	items?: Item[];
-	sort?: Sort;
-	additional?: Additional;
-	appliedFilters?: Record<string, unknown>;
-	autoload?: boolean;
-	isDefaultSortAsc?: boolean;
-	alwaysResetFilters?: Record<string, unknown>;
-	resetFiltersTo?: Record<string, unknown>;
-	saveFiltersOnResetAll?: string[];
-	saveItemsWhileLoad?: boolean;
+	readonly loadItems: ItemsLoader<Item, Additional, Error>;
+	readonly items?: readonly Item[];
+	readonly sort?: Sort;
+	readonly additional?: Additional;
+	readonly appliedFilters?: Readonly<Record<string, unknown>>;
+	readonly autoload?: boolean;
+	readonly isDefaultSortAsc?: boolean;
+	readonly alwaysResetFilters?: Readonly<Record<string, unknown>>;
+	readonly resetFiltersTo?: Readonly<Record<string, unknown>>;
+	readonly saveFiltersOnResetAll?: readonly string[];
+	readonly saveItemsWhileLoad?: boolean;
 };
 
 export type EventType =

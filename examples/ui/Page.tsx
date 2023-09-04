@@ -17,22 +17,22 @@ import type { User, Additional } from "../types";
 import type { Sort, ListState } from "../../packages/filterlist/src/types";
 
 type PageProps = {
-	listState: ListState<User, Additional, unknown>;
-	filters: Record<string, any>;
-	appliedFilters: Record<string, any>;
-	sort: Sort;
-	items: User[];
-	additional?: Additional;
-	loading: boolean;
-	setFilterValue: (filterName: string, value: any) => void;
-	resetFilter: (filterName: string) => Promise<void>;
-	applyFilter: (filterName: string) => Promise<void>;
-	setAndApplyFilter: (filterName: string, value: any) => Promise<void>;
-	resetAllFilters: () => Promise<void>;
-	reload: () => Promise<void>;
-	setSorting: (param: string) => void;
-	isInfinity?: boolean;
-	loadMore?: () => void;
+	readonly listState: ListState<User, Additional, unknown>;
+	readonly filters: Readonly<Record<string, unknown>>;
+	readonly appliedFilters: Readonly<Record<string, unknown>>;
+	readonly sort: Sort;
+	readonly items: readonly User[];
+	readonly additional?: Additional;
+	readonly loading: boolean;
+	readonly setFilterValue: (filterName: string, value: unknown) => void;
+	readonly resetFilter: (filterName: string) => Promise<void>;
+	readonly applyFilter: (filterName: string) => Promise<void>;
+	readonly setAndApplyFilter: (filterName: string, value: unknown) => Promise<void>;
+	readonly resetAllFilters: () => Promise<void>;
+	readonly reload: () => Promise<void>;
+	readonly setSorting: (param: string) => void;
+	readonly isInfinity?: boolean;
+	readonly loadMore?: () => void;
 };
 
 const StyledWrapper = styled.div({
@@ -101,7 +101,8 @@ export function Page({
 
 	const { loadedPages } = listState;
 
-	const perPage = filters.perPage || 10;
+	const perPage = typeof filters.perPage === "number" ? filters.perPage : 10;
+	const page = typeof appliedFilters.page === "number" ? appliedFilters.page : 1;
 
 	return (
 		<StyledWrapper>
@@ -140,7 +141,7 @@ export function Page({
 							<div>
 								{additional && additional.count > 0 && (
 									<Paginator
-										page={appliedFilters.page || 1}
+										page={page}
 										pageCount={Math.ceil(additional.count / perPage)}
 										onPageChange={onPageChange}
 									/>
@@ -149,7 +150,7 @@ export function Page({
 
 							<ItemsPerPage
 								name="perPage"
-								value={filters.perPage}
+								value={perPage}
 								setAndApplyFilter={setAndApplyFilter}
 							/>
 						</>

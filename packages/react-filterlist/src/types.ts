@@ -1,9 +1,9 @@
 import type { ListState, Sort, Params as BaseParams } from "@vtaits/filterlist";
 
 export type ParsedFiltersAndSort = {
-	filters: Record<string, unknown>;
-	appliedFilters: Record<string, unknown>;
-	sort: Sort;
+	readonly filters: Readonly<Record<string, unknown>>;
+	readonly appliedFilters: Readonly<Record<string, unknown>>;
+	readonly sort: Sort;
 };
 
 export type AsyncParsedFiltersAndSort = Promise<ParsedFiltersAndSort>;
@@ -26,11 +26,11 @@ export type Params<Item, Additional, Error, FiltersAndSortData> = BaseParams<
 	Additional,
 	Error
 > & {
-	parseFiltersAndSort?: ParseFiltersAndSort<FiltersAndSortData>;
-	filtersAndSortData?: FiltersAndSortData;
-	shouldRecount?: ShouldRecount<FiltersAndSortData>;
-	canInit?: boolean;
-	onChangeLoadParams?: OnChangeLoadParams<Item, Additional, Error>;
+	readonly parseFiltersAndSort?: ParseFiltersAndSort<FiltersAndSortData>;
+	readonly filtersAndSortData?: FiltersAndSortData;
+	readonly shouldRecount?: ShouldRecount<FiltersAndSortData>;
+	readonly canInit?: boolean;
+	readonly onChangeLoadParams?: OnChangeLoadParams<Item, Additional, Error>;
 };
 
 export type AsyncParams<Item, Additional, Error, FiltersAndSortData> = Promise<

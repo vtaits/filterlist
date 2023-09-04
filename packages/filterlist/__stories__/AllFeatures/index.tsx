@@ -1,11 +1,9 @@
 import {
+  type ReactElement,
   useState,
   useEffect,
   useCallback,
   useSyncExternalStore,
-} from 'react';
-import type {
-  ReactElement,
 } from 'react';
 
 import qs from 'qs';

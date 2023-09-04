@@ -1,5 +1,5 @@
 export const arrayInsert = <ItemType>(
-	arr: ItemType[],
+	arr: readonly ItemType[],
 	pos: number,
 	item: ItemType,
 ) => {
