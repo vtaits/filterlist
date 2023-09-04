@@ -1,29 +1,20 @@
-/* eslint-disable jsx-a11y/label-has-associated-control */
-
 import React, {
+  type ReactElement,
   useState,
   useCallback,
   useEffect,
-} from 'react';
-import type {
-  ReactElement,
 } from 'react';
 
 import qs from 'qs';
 
 import {
+  type Location,
   useNavigate,
   useNavigationType,
   useLocation,
 } from 'react-router-dom';
-import type {
-  Location,
-} from 'react-router-dom';
 
-// eslint-disable-next-line import/no-extraneous-dependencies
-import { useFilterlist } from '@vtaits/react-filterlist';
-// eslint-disable-next-line import/no-extraneous-dependencies
-import type { ParsedFiltersAndSort } from '@vtaits/react-filterlist';
+import { useFilterlist, type ParsedFiltersAndSort } from '@vtaits/react-filterlist';
 import type {
   ListState,
 } from '@vtaits/filterlist';

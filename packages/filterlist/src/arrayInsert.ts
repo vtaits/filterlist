@@ -1,11 +1,11 @@
 export const arrayInsert = <ItemType>(
-  arr: ItemType[],
-  pos: number,
-  item: ItemType,
+	arr: ItemType[],
+	pos: number,
+	item: ItemType,
 ) => {
-  const res = arr.slice();
+	const res = arr.slice();
 
-  res.splice(pos, 0, item);
+	res.splice(pos, 0, item);
 
-  return res;
+	return res;
 };

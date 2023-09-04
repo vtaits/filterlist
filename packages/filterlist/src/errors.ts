@@ -1,18 +1,18 @@
 export class LoadListError<ErrorType, Additional> extends Error {
-  error?: ErrorType;
+	error?: ErrorType;
 
-  additional?: Additional;
+	additional?: Additional;
 
-  constructor({
-    error,
-    additional,
-  }: {
-    error?: ErrorType;
-    additional?: Additional;
-  }) {
-    super('List loading failed');
+	constructor({
+		error,
+		additional,
+	}: {
+		error?: ErrorType;
+		additional?: Additional;
+	}) {
+		super("List loading failed");
 
-    this.error = error;
-    this.additional = additional;
-  }
+		this.error = error;
+		this.additional = additional;
+	}
 }

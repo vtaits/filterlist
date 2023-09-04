@@ -3,7 +3,7 @@
     "target": "ES2021",
     "outDir": "dist/ts",
     "jsx": "react-jsx",
-    "lib": ["ESNext"],
+    "lib": ["ESNext", "DOM"],
     "allowJs": false,
     "skipLibCheck": true,
     "esModuleInterop": true,
@@ -16,10 +16,10 @@
     "isolatedModules": true
   },
   "include": [
+    "examples/**/*",
     "src/**/*"
   ],
   "exclude": [
-    "node_modules",
-    "src/__tests__"
+    "node_modules"
   ]
 }

@@ -1,5 +1,3 @@
-/* eslint-disable jsx-a11y/label-has-associated-control */
-
 import {
   useState,
   useEffect,
@@ -18,7 +16,6 @@ import {
   useLocation,
 } from 'react-router-dom';
 
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { Filterlist, eventTypes } from '@vtaits/filterlist';
 
 import { Page } from '../../../../examples/ui/Page';

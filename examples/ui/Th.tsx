@@ -1,79 +1,65 @@
-import {
-  memo,
-  useCallback,
-} from 'react';
-import type {
-  ReactElement,
-  ReactNode,
-} from 'react';
+import { memo, useCallback } from "react";
+import type { ReactElement, ReactNode } from "react";
 
-import styled from 'styled-components';
+import styled from "styled-components";
 
 const StyledTh = styled.th({
-  cursor: 'pointer',
-  color: 'blue',
-  borderBottom: '2px solid #ccc',
-  padding: '5px 10px',
-  textAlign: 'left',
-  outline: 'none',
+	cursor: "pointer",
+	color: "blue",
+	borderBottom: "2px solid #ccc",
+	padding: "5px 10px",
+	textAlign: "left",
+	outline: "none",
 
-  '&:hover': {
-    textDecoration: 'underline',
-  },
+	"&:hover": {
+		textDecoration: "underline",
+	},
 
-  '&:active': {
-    opacity: 0.75,
-  },
+	"&:active": {
+		opacity: 0.75,
+	},
 
-  '& + &': {
-    borderLeft: '1px solid #ccc',
-  },
+	"& + &": {
+		borderLeft: "1px solid #ccc",
+	},
 });
 
-type ThProps ={
-  param: string;
-  current?: string;
-  asc?: boolean;
-  children?: ReactNode;
+type ThProps = {
+	param: string;
+	current?: string;
+	asc?: boolean;
+	children?: ReactNode;
 
-  setSorting: (param: string) => void;
+	setSorting: (param: string) => void;
 };
 
 function ThInner({
-  param,
+	param,
 
-  current,
-  asc,
+	current,
+	asc,
 
-  children,
+	children,
 
-  setSorting,
+	setSorting,
 }: ThProps): ReactElement {
-  const onClick = useCallback((): void => {
-    setSorting(param);
-  }, [param, setSorting]);
+	const onClick = useCallback((): void => {
+		setSorting(param);
+	}, [param, setSorting]);
 
-  return (
-    <StyledTh
-      onClick={onClick}
-      role="button"
-      tabIndex={0}
-    >
-      {children}
+	return (
+		<StyledTh onClick={onClick} role="button" tabIndex={0}>
+			{children}
 
-      {
-        param === current && (
-          asc ? '↓' : '↑'
-        )
-      }
-    </StyledTh>
-  );
+			{param === current && (asc ? "↓" : "↑")}
+		</StyledTh>
+	);
 }
 
 ThInner.defaultProps = {
-  asc: null,
-  current: null,
-  children: null,
+	asc: null,
+	current: null,
+	children: null,
 };
 
 export const Th = memo(ThInner);

@@ -1,124 +1,114 @@
-import {
-  useCallback,
-  memo,
-} from 'react';
-import type {
-  SyntheticEvent,
-  KeyboardEvent,
-  ReactElement,
-} from 'react';
+import { useCallback, memo } from "react";
+import type { SyntheticEvent, KeyboardEvent, ReactElement } from "react";
 
-import styled from 'styled-components';
+import styled from "styled-components";
 
-import { Button } from './Button';
+import { Button } from "./Button";
 
 const StyledWrapper = styled.div({
-  display: 'flex',
-  alignItems: 'center',
+	display: "flex",
+	alignItems: "center",
 
-  '& + &': {
-    marginTop: 20,
-  },
+	"& + &": {
+		marginTop: 20,
+	},
 });
 
 const StyledName = styled.div({
-  width: 100,
-  textAlign: 'right',
-  paddingRight: 20,
+	width: 100,
+	textAlign: "right",
+	paddingRight: 20,
 });
 
 const StyledInputWrapper = styled.div({
-  flex: 1,
+	flex: 1,
 });
 
 const StyledButtonWrapper = styled.div({
-  paddingLeft: 20,
+	paddingLeft: 20,
 });
 
 const StyledInput = styled.input({
-  height: 30,
-  borderRadius: 15,
-  boxSizing: 'border-box',
-  width: '100%',
-  border: '2px solid #999',
-  backgroundColor: '#fff',
-  outline: 'none',
-  paddingLeft: 15,
-  paddingRight: 15,
+	height: 30,
+	borderRadius: 15,
+	boxSizing: "border-box",
+	width: "100%",
+	border: "2px solid #999",
+	backgroundColor: "#fff",
+	outline: "none",
+	paddingLeft: 15,
+	paddingRight: 15,
 });
 
 type StringFilterProps = {
-  name: string;
-  value?: string;
-  setFilterValue: (filterName: string, value: any) => void;
-  resetFilter: (filterName: string) => Promise<void>;
-  applyFilter: (filterName: string) => Promise<void>;
+	name: string;
+	value?: string;
+	setFilterValue: (filterName: string, value: any) => void;
+	resetFilter: (filterName: string) => Promise<void>;
+	applyFilter: (filterName: string) => Promise<void>;
 };
 
 function StringFilterInner({
-  name,
-  value,
-  setFilterValue,
-  resetFilter,
-  applyFilter,
+	name,
+	value,
+	setFilterValue,
+	resetFilter,
+	applyFilter,
 }: StringFilterProps): ReactElement {
-  const onChange = useCallback((event: SyntheticEvent) => {
-    setFilterValue(name, (event.target as HTMLInputElement).value);
-  }, [name, setFilterValue]);
+	const onChange = useCallback(
+		(event: SyntheticEvent) => {
+			setFilterValue(name, (event.target as HTMLInputElement).value);
+		},
+		[name, setFilterValue],
+	);
 
-  const onKeyPress = useCallback((event: KeyboardEvent) => {
-    if (event.key === 'Enter') {
-      applyFilter(name);
-    }
-  }, [name, applyFilter]);
+	const onKeyPress = useCallback(
+		(event: KeyboardEvent) => {
+			if (event.key === "Enter") {
+				applyFilter(name);
+			}
+		},
+		[name, applyFilter],
+	);
 
-  const onApplyClick = useCallback(() => {
-    applyFilter(name);
-  }, [name, applyFilter]);
+	const onApplyClick = useCallback(() => {
+		applyFilter(name);
+	}, [name, applyFilter]);
 
-  const onResetClick = useCallback(() => {
-    resetFilter(name);
-  }, [name, resetFilter]);
+	const onResetClick = useCallback(() => {
+		resetFilter(name);
+	}, [name, resetFilter]);
 
-  return (
-    <StyledWrapper>
-      <StyledName>
-        {name}
-      </StyledName>
+	return (
+		<StyledWrapper>
+			<StyledName>{name}</StyledName>
 
-      <StyledInputWrapper>
-        <StyledInput
-          name={name}
-          value={value || ''}
-          onChange={onChange}
-          onKeyPress={onKeyPress}
-        />
-      </StyledInputWrapper>
+			<StyledInputWrapper>
+				<StyledInput
+					name={name}
+					value={value || ""}
+					onChange={onChange}
+					onKeyPress={onKeyPress}
+				/>
+			</StyledInputWrapper>
 
-      <StyledButtonWrapper>
-        <Button
-          type="button"
-          onClick={onApplyClick}
-        >
-          Apply
-        </Button>
-      </StyledButtonWrapper>
+			<StyledButtonWrapper>
+				<Button type="button" onClick={onApplyClick}>
+					Apply
+				</Button>
+			</StyledButtonWrapper>
 
-      <StyledButtonWrapper>
-        <Button
-          $buttonType="danger"
-          type="button"
-          onClick={onResetClick}
-        >
-          Reset
-        </Button>
-      </StyledButtonWrapper>
-    </StyledWrapper>
-  );
+			<StyledButtonWrapper>
+				<Button $buttonType="danger" type="button" onClick={onResetClick}>
+					Reset
+				</Button>
+			</StyledButtonWrapper>
+		</StyledWrapper>
+	);
 }
 
 StringFilterInner.defaultProps = {
-  value: '',
+	value: "",
 };
 
 export const StringFilter = memo(StringFilterInner);

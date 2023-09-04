@@ -1,20 +1,18 @@
-import faker from 'faker';
+import { faker } from "@faker-js/faker";
 
-import type {
-  User,
-} from '../types';
+import type { User } from "../types";
 
 export const usersGenerator = (count: number): User[] => {
-  const res: User[] = [];
+	const res: User[] = [];
 
-  for (let i: number = 0; i < count; ++i) {
-    res.push({
-      id: i + 1,
-      name: faker.name.findName(),
-      email: faker.internet.email(),
-      city: faker.address.city(),
-    });
-  }
+	for (let i: number = 0; i < count; ++i) {
+		res.push({
+			id: i + 1,
+			name: faker.person.fullName(),
+			email: faker.internet.email(),
+			city: faker.location.city(),
+		});
+	}
 
-  return res;
+	return res;
 };

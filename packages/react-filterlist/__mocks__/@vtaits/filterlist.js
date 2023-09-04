@@ -31,7 +31,6 @@ export class Filterlist {
     });
   }
 
-  // eslint-disable-next-line class-methods-use-this
   getListState() {
     return {
       isMockedState: true,
