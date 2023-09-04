@@ -3923,13 +3923,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/history@npm:*, @types/history@npm:^4.7.11":
-  version: 4.7.11
-  resolution: "@types/history@npm:4.7.11"
-  checksum: c92e2ba407dcab0581a9afdf98f533aa41b61a71133420a6d92b1ca9839f741ab1f9395b17454ba5b88cb86020b70b22d74a1950ccfbdfd9beeaa5459fdc3464
-  languageName: node
-  linkType: hard
-
 "@types/http-errors@npm:*":
   version: 2.0.1
   resolution: "@types/http-errors@npm:2.0.1"
@@ -4056,28 +4049,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react-router-dom@npm:^5.3.3":
-  version: 5.3.3
-  resolution: "@types/react-router-dom@npm:5.3.3"
-  dependencies:
-    "@types/history": ^4.7.11
-    "@types/react": "*"
-    "@types/react-router": "*"
-  checksum: 28c4ea48909803c414bf5a08502acbb8ba414669b4b43bb51297c05fe5addc4df0b8fd00e0a9d1e3535ec4073ef38aaafac2c4a2b95b787167d113bc059beff3
-  languageName: node
-  linkType: hard
-
-"@types/react-router@npm:*":
-  version: 5.1.16
-  resolution: "@types/react-router@npm:5.1.16"
-  dependencies:
-    "@types/history": "*"
-    "@types/react": "*"
-  checksum: a9c04be430e7f63b17d3ac46fb5594e4089747b3004af04560cd068db136ccaedd66622f448489280cb5a94873dece69a5bc1f91c892ec5178e41ed00b78b43d
-  languageName: node
-  linkType: hard
-
-"@types/react@npm:*, @types/react@npm:>=16, @types/react@npm:^18.2.21":
+"@types/react@npm:>=16, @types/react@npm:^18.2.21":
   version: 18.2.21
   resolution: "@types/react@npm:18.2.21"
   dependencies:
@@ -4262,9 +4234,7 @@ __metadata:
     "@storybook/react": ^7.4.0
     "@types/qs": ^6.9.8
     "@types/react": ^18.2.21
-    "@types/react-router-dom": ^5.3.3
     "@vtaits/react-router-dom-fake-browser": ^1.0.0
-    cross-env: ^7.0.3
     mitt: ^3.0.1
     qs: ^6.11.2
     react: ^18.2.0
@@ -4298,11 +4268,9 @@ __metadata:
     "@storybook/react": ^7.4.0
     "@types/qs": ^6.9.8
     "@types/react": ^18.2.21
-    "@types/react-router-dom": ^5.3.3
     "@vitejs/plugin-react": ^4.0.4
     "@vtaits/filterlist": ^0.3.0
     "@vtaits/react-router-dom-fake-browser": ^1.0.0
-    cross-env: ^7.0.3
     is-promise: ^4.0.0
     qs: ^6.11.2
     react: ^18.2.0
@@ -5372,19 +5340,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cross-env@npm:^7.0.3":
-  version: 7.0.3
-  resolution: "cross-env@npm:7.0.3"
-  dependencies:
-    cross-spawn: ^7.0.1
-  bin:
-    cross-env: src/bin/cross-env.js
-    cross-env-shell: src/bin/cross-env-shell.js
-  checksum: 26f2f3ea2ab32617f57effb70d329c2070d2f5630adc800985d8b30b56e8bf7f5f439dd3a0358b79cee6f930afc23cf8e23515f17ccfb30092c6b62c6b630a79
-  languageName: node
-  linkType: hard
-
-"cross-spawn@npm:^7.0.0, cross-spawn@npm:^7.0.1, cross-spawn@npm:^7.0.3":
+"cross-spawn@npm:^7.0.0, cross-spawn@npm:^7.0.3":
   version: 7.0.3
   resolution: "cross-spawn@npm:7.0.3"
   dependencies:
@@ -9368,7 +9324,6 @@ __metadata:
     "@vitejs/plugin-react": ^4.0.4
     "@vtaits/react-paginator": ^2.0.0
     "@vtaits/react-router-dom-fake-browser": ^1.0.0
-    cross-env: ^7.0.3
     husky: ^8.0.3
     react: ^18.2.0
     react-dom: ^18.2.0
