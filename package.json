@@ -15,7 +15,7 @@
     "format": "rome format --write examples && yarn workspaces foreach -p run format",
     "test:unit": "yarn workspaces foreach -p run test:unit",
     "test": "yarn lint && yarn test:ts && yarn test:unit",
-    "validate": "yarn test && yarn build",
+    "validate": "yarn format && yarn build && yarn test",
     "prepare": "husky install"
   },
   "devDependencies": {

@@ -27,7 +27,10 @@ type PageProps = {
 	readonly setFilterValue: (filterName: string, value: unknown) => void;
 	readonly resetFilter: (filterName: string) => Promise<void>;
 	readonly applyFilter: (filterName: string) => Promise<void>;
-	readonly setAndApplyFilter: (filterName: string, value: unknown) => Promise<void>;
+	readonly setAndApplyFilter: (
+		filterName: string,
+		value: unknown,
+	) => Promise<void>;
 	readonly resetAllFilters: () => Promise<void>;
 	readonly reload: () => Promise<void>;
 	readonly setSorting: (param: string) => void;
@@ -102,7 +105,8 @@ export function Page({
 	const { loadedPages } = listState;
 
 	const perPage = typeof filters.perPage === "number" ? filters.perPage : 10;
-	const page = typeof appliedFilters.page === "number" ? appliedFilters.page : 1;
+	const page =
+		typeof appliedFilters.page === "number" ? appliedFilters.page : 1;
 
 	return (
 		<StyledWrapper>
