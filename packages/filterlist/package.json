@@ -1,7 +1,7 @@
 {
   "type": "module",
   "name": "@vtaits/filterlist",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Creating lists with filters, sotring, paginatinon, endless scroll etc",
   "files": [
     "dist"
