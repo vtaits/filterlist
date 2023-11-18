@@ -1,5 +1,4 @@
-import { memo } from "react";
-import type { ReactElement } from "react";
+import { type ReactElement, memo } from "react";
 
 import styled from "styled-components";
 

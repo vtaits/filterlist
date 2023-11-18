@@ -2,8 +2,8 @@ import type { ReactElement } from "react";
 
 import styled from "styled-components";
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { definition as faSpinner } from "@fortawesome/free-solid-svg-icons/faSpinner";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const StyledWrapper = styled.div({
 	display: "flex",

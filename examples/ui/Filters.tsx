@@ -2,8 +2,8 @@ import type { ReactElement } from "react";
 
 import styled from "styled-components";
 
-import { StringFilter } from "./StringFilter";
 import { Button } from "./Button";
+import { StringFilter } from "./StringFilter";
 
 const StyledWrapper = styled.div({
 	backgroundColor: "#EEE",

@@ -14,11 +14,11 @@ import useLatest from "use-latest";
 import { defaultShouldRecount } from "./defaultShouldRecount";
 
 import type {
-	Params,
 	AsyncParams,
-	ParsedFiltersAndSort,
 	AsyncParsedFiltersAndSort,
 	OnChangeLoadParams,
+	Params,
+	ParsedFiltersAndSort,
 } from "./types";
 
 type SyncListState = () => void;
@@ -127,7 +127,7 @@ const useFilterlist = <Item, Additional, Error, FiltersAndSortData>(
 				onChangeLoadParamsRef.current(nextListState);
 			}
 		},
-		[],
+		[onChangeLoadParamsRef],
 	);
 
 	const isInitInProgressRef = useRef(false);
@@ -199,9 +199,8 @@ const useFilterlist = <Item, Additional, Error, FiltersAndSortData>(
 		shouldRecount(filtersAndSortData, filtersAndSortDataRef.current)
 	) {
 		(async (): Promise<void> => {
-			const parsedFiltersAndSort = await parseFiltersAndSort(
-				filtersAndSortData,
-			);
+			const parsedFiltersAndSort =
+				await parseFiltersAndSort(filtersAndSortData);
 
 			const filterlist = filterlistRef.current;
 
@@ -212,7 +211,8 @@ const useFilterlist = <Item, Additional, Error, FiltersAndSortData>(
 	}
 	filtersAndSortDataRef.current = filtersAndSortData;
 
-	useEffect((): void | (() => void) => {
+	// biome-ignore lint/correctness/useExhaustiveDependencies: call only on init
+	useEffect(() => {
 		if (!canInit) {
 			return undefined;
 		}

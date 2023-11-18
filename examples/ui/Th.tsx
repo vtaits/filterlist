@@ -1,4 +1,4 @@
-import { memo, type ReactElement, type ReactNode, useCallback } from "react";
+import { type ReactElement, type ReactNode, memo, useCallback } from "react";
 
 import styled from "styled-components";
 
@@ -23,13 +23,13 @@ const StyledTh = styled.th({
 	},
 });
 
-type ThProps = {
-	readonly asc?: boolean;
-	readonly children?: ReactNode;
-	readonly current?: string | null;
-	readonly param: string;
-	readonly setSorting: (param: string) => void;
-};
+type ThProps = Readonly<{
+	asc?: boolean;
+	children?: ReactNode;
+	current?: string | null;
+	param: string;
+	setSorting: (param: string) => void;
+}>;
 
 function ThInner({
 	param,

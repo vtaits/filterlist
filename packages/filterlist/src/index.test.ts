@@ -1,10 +1,10 @@
 import { expect, test } from "vitest";
 
 import { Filterlist } from "./Filterlist";
-import * as eventTypes from "./eventTypes";
 import { collectListInitialState } from "./collectListInitialState";
 import { collectOptions } from "./collectOptions";
 import { LoadListError } from "./errors";
+import * as eventTypes from "./eventTypes";
 
 import * as lib from "./index";
 

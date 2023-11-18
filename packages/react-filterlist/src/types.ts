@@ -1,4 +1,4 @@
-import type { ListState, Sort, Params as BaseParams } from "@vtaits/filterlist";
+import type { ListState, Params as BaseParams, Sort } from "@vtaits/filterlist";
 
 export type ParsedFiltersAndSort = {
 	readonly filters: Readonly<Record<string, unknown>>;

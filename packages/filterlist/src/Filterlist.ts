@@ -6,18 +6,18 @@ import { collectOptions } from "./collectOptions";
 
 import { arrayInsert } from "./arrayInsert";
 
-import * as eventTypes from "./eventTypes";
 import { LoadListError } from "./errors";
+import * as eventTypes from "./eventTypes";
 
 import type {
-	Sort,
+	EventType,
+	ItemsLoader,
+	ItemsLoaderResponse,
 	ListState,
 	Options,
 	Params,
-	ItemsLoaderResponse,
-	ItemsLoader,
-	EventType,
 	ShouldRequest,
+	Sort,
 } from "./types";
 
 export class Filterlist<Item, Additional, Error> {

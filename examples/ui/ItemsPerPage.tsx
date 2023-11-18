@@ -1,5 +1,9 @@
-import { useCallback, memo } from "react";
-import type { ReactElement, SyntheticEvent } from "react";
+import {
+	type ReactElement,
+	type SyntheticEvent,
+	memo,
+	useCallback,
+} from "react";
 
 import styled from "styled-components";
 
@@ -23,11 +27,11 @@ const StyledSelect = styled.select({
 	paddingRight: 15,
 });
 
-type ItemsPerPageProps = {
+type ItemsPerPageProps = Readonly<{
 	name: string;
 	value: number;
-	setAndApplyFilter: (filterName: string, value: any) => void;
-};
+	setAndApplyFilter: (filterName: string, value: unknown) => void;
+}>;
 
 function ItemsPerPageInner({
 	name,

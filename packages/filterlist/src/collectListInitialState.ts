@@ -1,4 +1,4 @@
-import type { Params, ListState } from "./types";
+import type { ListState, Params } from "./types";
 
 import { listInitialState as defaultListInitialState } from "./listInitialState";
 
@@ -22,7 +22,7 @@ export const collectListInitialState = <Item, Additional, Error>(
 
 		sort: params.sort || listInitialState.sort,
 
-		// rome-ignore lint/suspicious/noPrototypeBuiltins: `additional` can be `undefined`
+		// biome-ignore lint/suspicious/noPrototypeBuiltins: `additional` can be `undefined`
 		additional: params.hasOwnProperty("additional")
 			? (params.additional as Additional)
 			: listInitialState.additional,

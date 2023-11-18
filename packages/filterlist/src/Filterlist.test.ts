@@ -2,13 +2,13 @@ import { afterEach, describe, expect, test, vi } from "vitest";
 
 import { Filterlist } from "./Filterlist";
 
-import * as eventTypes from "./eventTypes";
 import { collectListInitialState } from "./collectListInitialState";
 import { collectOptions } from "./collectOptions";
 import { LoadListError } from "./errors";
-import type { ListState, ItemsLoaderResponse } from "./types";
+import * as eventTypes from "./eventTypes";
+import type { ItemsLoaderResponse, ListState } from "./types";
 
-// rome-ignore lint/suspicious/noExplicitAny: stub for any filterlist
+// biome-ignore lint/suspicious/noExplicitAny: stub for any filterlist
 const testListState: ListState<any, any, any> = {
 	items: ["test"],
 	additional: "test",

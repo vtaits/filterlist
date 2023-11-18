@@ -1,5 +1,10 @@
-import { useCallback, memo } from "react";
-import type { SyntheticEvent, KeyboardEvent, ReactElement } from "react";
+import {
+	type KeyboardEvent,
+	type ReactElement,
+	type SyntheticEvent,
+	memo,
+	useCallback,
+} from "react";
 
 import styled from "styled-components";
 
@@ -40,13 +45,13 @@ const StyledInput = styled.input({
 	paddingRight: 15,
 });
 
-type StringFilterProps = {
+type StringFilterProps = Readonly<{
 	name: string;
 	value?: unknown;
-	setFilterValue: (filterName: string, value: any) => void;
+	setFilterValue: (filterName: string, value: unknown) => void;
 	resetFilter: (filterName: string) => Promise<void>;
 	applyFilter: (filterName: string) => Promise<void>;
-};
+}>;
 
 function StringFilterInner({
 	name,

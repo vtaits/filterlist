@@ -1,5 +1,4 @@
-import { useCallback } from "react";
-import type { ReactElement } from "react";
+import { type ReactElement, useCallback } from "react";
 
 import styled from "styled-components";
 
@@ -7,14 +6,14 @@ import { Paginator } from "@vtaits/react-paginator";
 
 import { Button } from "./Button";
 import { Filters } from "./Filters";
-import { Table } from "./Table";
 import { ItemsPerPage } from "./ItemsPerPage";
 import { Preloader } from "./Preloader";
+import { Table } from "./Table";
 import { TotalCount } from "./TotalCount";
 
-import type { User, Additional } from "../types";
+import type { Additional, User } from "../types";
 
-import type { Sort, ListState } from "../../packages/filterlist/src/types";
+import type { ListState, Sort } from "../../packages/filterlist/src/types";
 
 type PageProps = {
 	readonly listState: ListState<User, Additional, unknown>;
