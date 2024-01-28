@@ -1,6 +1,5 @@
 [![NPM](https://img.shields.io/npm/v/@vtaits/react-filterlist.svg)](https://www.npmjs.com/package/@vtaits/react-filterlist)
-[![dependencies status](https://david-dm.org/vtaits/filterlist/status.svg?path=packages/react-filterlist)](https://david-dm.org/vtaits/filterlist?path=packages/react-filterlist)
-[![devDependencies status](https://david-dm.org/vtaits/filterlist/dev-status.svg?path=packages/react-filterlist)](https://david-dm.org/vtaits/filterlist?path=packages/react-filterlist&type=dev)
+![dependencies status](https://img.shields.io/librariesio/release/npm/@vtaits/react-filterlist)
 [![Types](https://img.shields.io/npm/types/@vtaits/react-filterlist.svg)](https://www.npmjs.com/package/@vtaits/react-filterlist)
 
 # @vtaits/react-filterlist
@@ -133,4 +132,3 @@ const [listState, filterlist] = useFilterlist({
 - **onChangeLoadParams** - function, callback of `changeLoadParams` event of [@vtaits/filterlist](https://www.npmjs.com/package/@vtaits/filterlist)
 
 - **canInit** - boolean, filterlist will not be initialized until `canInit` is `true`
-

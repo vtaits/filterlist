@@ -17,6 +17,7 @@
   },
   "include": [
     "examples/**/*",
+    "docs-entry.ts",
     "src/**/*"
   ],
   "exclude": [

@@ -7,7 +7,7 @@
 .pnp.*
 
 node_modules
-
+docs
 dist
 
 *.log

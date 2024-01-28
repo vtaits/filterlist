@@ -1,9 +1,10 @@
 [![NPM](https://img.shields.io/npm/v/@vtaits/filterlist.svg)](https://www.npmjs.com/package/@vtaits/filterlist)
-[![dependencies status](https://david-dm.org/vtaits/filterlist/status.svg?path=packages/filterlist)](https://david-dm.org/vtaits/filterlist?path=packages/filterlist)
-[![devDependencies status](https://david-dm.org/vtaits/filterlist/dev-status.svg?path=packages/filterlist)](https://david-dm.org/vtaits/filterlist?path=packages/filterlist&type=dev)
+![dependencies status](https://img.shields.io/librariesio/release/npm/@vtaits/filterlist)
 [![Types](https://img.shields.io/npm/types/@vtaits/filterlist.svg)](https://www.npmjs.com/package/@vtaits/filterlist)
 
 # @vtaits/filterlist
+
+[Api reference](https://vtaits.github.io/filterlist/modules/Filterlist.html)
 
 Util for creating lists with filters, sotring, paginatinon, endless scroll etc.
 
@@ -21,107 +22,64 @@ yarn add @vtaits/filterlist
 
 ## Api
 
-```
+```ts
 import { Filterlist } from '@vtaits/filterlist';
 
+/*
+ * assuming the API returns something like this:
+ *   const json = {
+ *     results: [
+ *       {
+ *         value: 1,
+ *         label: 'Audi',
+ *       },
+ *       {
+ *         value: 2,
+ *         label: 'Mercedes',
+ *       },
+ *       {
+ *         value: 3,
+ *         label: 'BMW',
+ *       },
+ *     ],
+ *     total: 50,
+ *   };
+ */
+
 const filterlist = new Filterlist({
-  ...params,
-})(List)
+  loadItems: async ({
+    page,
+  }) => {
+    const response = await fetch(`/awesome-api-url/?page=${page}`);
+    const responseJSON = await response.json();
+
+    return {
+      items: responseJSON.results,
+      total: responseJSON.total,
+    };
+  },
+});
+
+filterlist.emitter.on(eventTypes.changeListState, (nextListState) => {
+  // change ui
+  document.getElementById('loader').style.display = nextListState.loading ? 'block' : 'none';
+});
+
+// change the page
+const changePage = (nextPage: number) => {
+  filterlist.setPage(nextPage);
+};
 ```
-
-### Params
-
-- **loadItems** - **required**, async Function. Receives current list state as first argument. Should return next object:
-  ```
-  {
-    items: [...],
-    additional: {...}
-  }
-  ```
-
-  - items is array of loaded data
-
-  - additional is additional info (total count etc.), can be null if not needed)
-
-  Can throw `LoadListError` with Object `{ error, additional }`. Error can be null if not needed.
-
-- **items** - Array, items setted by default
-
-- **additional** - any, Additional info (total count etc.) setted by default
-
-- **sort** - Object , default sorting state of the list, should be
-
-  ```
-  {
-    param /* string, column id */,
-    asc /* boolean, asc or desc */,
-  }
-  ```
-- **shouldRequest** - function, invoked before requests. Receives state of previous request and current list state. If returns `false`, request will be prevented
-
-- **isDefaultSortAsc** - Boolean, default `asc` param after change sorting column (true by default)
-
-- **appliedFilters** - Object, filters and their values that applied by default. Should be { filterName1: filterValue, filter2Name: filter2Value, ... }
-
-- **resetFiltersTo** - Object, filters and their values that sets after filter reset. Should be { filterName1: filterValue, filter2Name: filter2Value, ... }
-
-- **alwaysResetFilters** - Object, filters and their values that sets after every filters or sorting change. Should be { filterName1: filterValue, filter2Name: filter2Value, ... }
-
-- **saveFiltersOnResetAll** - Array, filters names that not reset after `resetAllFilters` call. Should be [filterName1, filter2Name, ...]
-
-- **saveItemsWhileLoad** - Boolean, by default items are cleared if filters or sorting changed. If `saveItemsWhileLoad` is true, previous list items are saved while load request is pending
-
-- **autoload** - Boolean, configure initial loading process
-
-### List state
-
-```
-const listState = filterlist.getListState();
-```
-
-| Param | Description | Type |
-| ----- | ----------- | ---- |
-| loading | is list loading in this moment | Boolean |
-| isFirstLoad | is the first load after initialization | Boolean |
-| items | loaded items | Array |
-| loadedPages | number of pages that loaded without changing filters or sorting | Number |
-| additional | additional info that can be recieved together with items | any |
-| error | error that can be received if list not loaded | any |
-| sort | sorting state of the list | Object { param, asc } |
-| filters | current filters state on page (intermediate inputs values etc.) | Object { filterName1: filterValue, filter2Name: filter2Value, ... } |
-| appliedFilters | applied filters | Object { filterName1: filterValue, filter2Name: filter2Value, ... } |
-
-### Methods
-
-| Property | Arguments | Description |
-| -------- | --------- | ----------- |
-| loadMore | | loads more items to page |
-| setFilterValue | filterName, value | sets filter intermediate value |
-| applyFilter | filterName | applies filter intermediate value, clears list and loads items |
-| setAndApplyFilter | filterName, value | sets filter values, applies that, clears list and loads items |
-| resetFilter | filterName | resets filter value to it initial value, applies that, clears list and loads items |
-| setFiltersValues | Object { filterName1: filterValue, filter2Name: filter2Value, ... } | sets multiple filters intermediate values |
-| applyFilters | Array [filterName1, filter2Name, ...] | applies multiple filters intermediate values, clears list and loads items |
-| setAndApplyFilters | Object { filterName1: filterValue, filter2Name: filter2Value, ... } | sets multiple filters values, applies them, clears list and loads items |
-| resetFilters | Array [filterName1, filter2Name, ...] | resets filters values to them initial values, applies them, clears list and loads items |
-| resetAllFilters | | resets all filters (without `saveFiltersOnResetAll`) values to them initial values, applies them, clears list and loads items |
-| reload | | reload list without changing filters and sorting |
-| setSorting | param, asc | sets sorting column. If asc defined and Boolean, sets it. Otherwise, if this column differs from previous sorting column, asc will be setted with `isDefaultSortAsc` param from decorator. Otherwise, it will be reverse `asc` param from previous state. |
-| resetSorting | | resets sorting. Sort param will be setted with null, asc will be setted with `isDefaultSortAsc` param from decorator. |
-| deleteItem | index, additional | delete item with specified index from list. If `additional` defined, sets it. |
-| insertItem | index, item, additional | insert item by specified index. If `additional` defined, sets it. |
-| updateItem | index, item, additional | update item by specified index. If `additional` defined, sets it. |
-| updateStateAndRequest | { filters, appliedFilters, sort } | sets filters, applied filters and sort and loads items |
 
 ### Events
 
 `emitter` is the instance of [mitt](https://github.com/developit/mitt).
 
-```javascript
+```ts
 import { eventTypes } from '@vtaits/filterlist';
 
 filterlist.emitter.on(eventTypes.changeListState, (listState) => {
-  ...
+  // ...
 });
 ```
 
@@ -137,6 +95,8 @@ List of event types:
 | setFiltersValues | after call `setFiltersValues` method |
 | applyFilters | after call `applyFilters` method |
 | setAndApplyFilters | after call `setAndApplyFilters` method |
+| setPage | after call `setPage` method |
+| setPageSize | after call `setPageSize` method |
 | resetFilters | after call `resetFilters` method |
 | resetAllFilters | after call `resetAllFilters` method |
 | setSorting | after call `setSorting` method |

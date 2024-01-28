@@ -123,6 +123,9 @@ export class Filterlist<Item, Additional, Error> {
 		await this.requestItems(prevListState);
 	}
 
+	/**
+	 * load next pack of items next to the last item, can be used for infinite scroll realization
+	 */
 	async loadMore(): Promise<void> {
 		const prevListState = this.listState;
 
@@ -140,6 +143,9 @@ export class Filterlist<Item, Additional, Error> {
 		await this.requestItems(prevListState);
 	}
 
+	/**
+	 * set intermediate filter value of the filter without request
+	 */
 	setFilterValue(filterName: string, value: unknown): void {
 		const prevListState = this.listState;
 
@@ -156,6 +162,9 @@ export class Filterlist<Item, Additional, Error> {
 		this.emitEvent(eventTypes.setFilterValue);
 	}
 
+	/**
+	 * apply intermediate filter value and request
+	 */
 	async applyFilter(filterName: string): Promise<void> {
 		const prevListState = this.listState;
 		const stateBeforeChange = this.getListStateBeforeChange();
@@ -175,6 +184,9 @@ export class Filterlist<Item, Additional, Error> {
 		await this.requestItems(prevListState);
 	}
 
+	/**
+	 * set filter value and request
+	 */
 	async setAndApplyFilter(filterName: string, value: unknown): Promise<void> {
 		const prevListState = this.listState;
 		const stateBeforeChange = this.getListStateBeforeChange();
@@ -200,6 +212,9 @@ export class Filterlist<Item, Additional, Error> {
 		await this.requestItems(prevListState);
 	}
 
+	/**
+	 * reset filter to the corresponding value in `resetFiltersTo` (or `undefined`) and request
+	 */
 	async resetFilter(filterName: string): Promise<void> {
 		const prevListState = this.listState;
 		const stateBeforeChange = this.getListStateBeforeChange();
@@ -227,6 +242,9 @@ export class Filterlist<Item, Additional, Error> {
 		await this.requestItems(prevListState);
 	}
 
+	/**
+	 * set multiple intermediate filter values witout request
+	 */
 	setFiltersValues(values: Record<string, unknown>): void {
 		const prevListState = this.listState;
 
@@ -242,6 +260,9 @@ export class Filterlist<Item, Additional, Error> {
 		this.emitEvent(eventTypes.setFiltersValues);
 	}
 
+	/**
+	 * apply multiple intermediate filter values and request
+	 */
 	async applyFilters(filtersNames: string[]): Promise<void> {
 		const prevListState = this.listState;
 		const stateBeforeChange = this.getListStateBeforeChange();
@@ -270,6 +291,9 @@ export class Filterlist<Item, Additional, Error> {
 		await this.requestItems(prevListState);
 	}
 
+	/**
+	 * set multiple filter values and request
+	 */
 	async setAndApplyFilters(values: Record<string, unknown>): Promise<void> {
 		const prevListState = this.listState;
 		const stateBeforeChange = this.getListStateBeforeChange();
@@ -294,6 +318,9 @@ export class Filterlist<Item, Additional, Error> {
 		await this.requestItems(prevListState);
 	}
 
+	/**
+	 * load specific page
+	 */
 	async setPage(page: number): Promise<void> {
 		const prevListState = this.listState;
 		const stateBeforeChange = this.getListStateBeforeChange();
@@ -309,6 +336,9 @@ export class Filterlist<Item, Additional, Error> {
 		await this.requestItems(prevListState);
 	}
 
+	/**
+	 * set number of items on page and request
+	 */
 	async setPageSize(pageSize: number | null | undefined): Promise<void> {
 		const prevListState = this.listState;
 		const stateBeforeChange = this.getListStateBeforeChange();
@@ -324,6 +354,9 @@ export class Filterlist<Item, Additional, Error> {
 		await this.requestItems(prevListState);
 	}
 
+	/**
+	 * reset multiple filters to the corresponding value in `resetFiltersTo` (or `undefined`) and request
+	 */
 	async resetFilters(filtersNames: string[]): Promise<void> {
 		const prevListState = this.listState;
 		const stateBeforeChange = this.getListStateBeforeChange();
@@ -359,6 +392,9 @@ export class Filterlist<Item, Additional, Error> {
 		await this.requestItems(prevListState);
 	}
 
+	/**
+	 * reset all of the filters to the corresponding value in `resetFiltersTo` (or `undefined`) and request
+	 */
 	async resetAllFilters(): Promise<void> {
 		const prevListState = this.listState;
 		const stateBeforeChange = this.getListStateBeforeChange();
@@ -405,6 +441,9 @@ export class Filterlist<Item, Additional, Error> {
 		await this.requestItems(prevListState);
 	}
 
+	/**
+	 * reload the list in the current state 
+	 */
 	async reload(): Promise<void> {
 		const prevState = this.listState;
 		const stateBeforeChange = this.getListStateBeforeChange();
@@ -431,6 +470,15 @@ export class Filterlist<Item, Additional, Error> {
 		return this.options.isDefaultSortAsc;
 	}
 
+	/**
+	 * sets sorting column
+	 * 
+	 * if `asc` defined and Boolean, sets it
+	 * 
+	 * otherwise, if this column differs from previous sorting column, asc will be setted with `isDefaultSortAsc` param from decorator
+	 * 
+	 * otherwise, it will be reverse `asc` param from previous state
+	 */
 	async setSorting(param: string, asc?: boolean): Promise<void> {
 		const prevListState = this.listState;
 		const stateBeforeChange = this.getListStateBeforeChange();
@@ -452,6 +500,11 @@ export class Filterlist<Item, Additional, Error> {
 		await this.requestItems(prevListState);
 	}
 
+	/**
+	 * resets sorting
+	 * 
+	 * sort param will be setted with `null`, asc will be setted with `isDefaultSortAsc` param
+	 */
 	async resetSorting(): Promise<void> {
 		const prevListState = this.listState;
 		const stateBeforeChange = this.getListStateBeforeChange();
@@ -473,13 +526,18 @@ export class Filterlist<Item, Additional, Error> {
 		await this.requestItems(prevListState);
 	}
 
-	async updateStateAndRequest({
-		filters,
-		appliedFilters,
-		sort,
-		page,
-		pageSize,
-	}: UpdateStateParams): Promise<void> {
+	/**
+	 * set filters, applied filters, sorting, page and pageSize and request then
+	 */
+	async updateStateAndRequest(updateStateParams: UpdateStateParams): Promise<void> {
+		const {
+			filters,
+			appliedFilters,
+			sort,
+			page,
+			pageSize,
+		} = updateStateParams;
+
 		const prevListState = this.listState;
 		const stateBeforeChange = this.getListStateBeforeChange();
 
@@ -596,6 +654,12 @@ export class Filterlist<Item, Additional, Error> {
 		this.emitEvent(eventTypes.loadItemsError);
 	}
 
+	/**
+	 * insert item by specified index
+	 * @param itemIndex index of updated item
+	 * @param item updated item
+	 * @param additional if defined, set `additional` param of list state
+	 */
 	insertItem(itemIndex: number, item: Item, additional?: Additional): void {
 		const prevListState = this.listState;
 
@@ -613,6 +677,11 @@ export class Filterlist<Item, Additional, Error> {
 		this.emitEvent(eventTypes.insertItem);
 	}
 
+	/**
+	 * delete item by specified index
+	 * @param itemIndex index of deleted item
+	 * @param additional if defined, set `additional` param of list state
+	 */
 	deleteItem(itemIndex: number, additional?: Additional): void {
 		const prevListState = this.listState;
 
@@ -630,6 +699,12 @@ export class Filterlist<Item, Additional, Error> {
 		this.emitEvent(eventTypes.deleteItem);
 	}
 
+	/**
+	 * update item by specified index
+	 * @param itemIndex index of updated item
+	 * @param item updated item
+	 * @param additional if defined, set `additional` param of list state
+	 */
 	updateItem(itemIndex: number, item: Item, additional?: Additional): void {
 		const prevListState = this.listState;
 
