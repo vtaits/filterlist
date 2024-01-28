@@ -124,10 +124,7 @@ export function Page({
 						<Button
 							type="button"
 							onClick={loadMore}
-							disabled={
-								!total ||
-								Math.ceil(total / pageSize) === loadedPages
-							}
+							disabled={!total || Math.ceil(total / pageSize) === loadedPages}
 						>
 							Load more
 						</Button>
