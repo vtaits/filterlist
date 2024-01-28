@@ -309,6 +309,21 @@ export class Filterlist<Item, Additional, Error> {
 		await this.requestItems(prevListState);
 	}
 
+	async setPageSize(pageSize: number | null | undefined): Promise<void> {
+		const prevListState = this.listState;
+		const stateBeforeChange = this.getListStateBeforeChange();
+
+		this.setListState({
+			...stateBeforeChange,
+			pageSize,
+		});
+
+		this.emitEvent(eventTypes.setPageSize);
+		this.emitEvent(eventTypes.changeLoadParams);
+
+		await this.requestItems(prevListState);
+	}
+
 	async resetFilters(filtersNames: string[]): Promise<void> {
 		const prevListState = this.listState;
 		const stateBeforeChange = this.getListStateBeforeChange();

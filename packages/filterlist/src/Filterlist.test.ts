@@ -1730,6 +1730,65 @@ describe("public methods", () => {
 		expect(requestItemsMethod).toHaveBeenCalledTimes(1);
 	});
 
+	test("should change page size", async () => {
+		const filterlist = new ManualFilterlist({
+			...defaultParams,
+		});
+
+		const onSetPageSize = vi.fn();
+		const onChangeLoadParams = vi.fn();
+
+		filterlist.emitter.on(eventTypes.setPageSize, onSetPageSize);
+		filterlist.emitter.on(eventTypes.changeLoadParams, onChangeLoadParams);
+
+		const prevState = filterlist.getListState();
+
+		const nextState = {
+			...prevState,
+
+			filters: {
+				test1: "value1_1",
+				test2: "value2_1",
+			},
+
+			appliedFilters: {
+				test1: "value1_2",
+				test2: "value2_2",
+			},
+
+			items: [1, 2, 3],
+
+			additional: {
+				count: 3,
+			},
+
+			pageSize: 20,
+		};
+
+		filterlist.listState = nextState;
+
+		const listStateBeforeChange = filterlist.getListStateBeforeChange();
+
+		await filterlist.setPageSize(30);
+
+		expect(onChangeListStateMethod).toHaveBeenCalledTimes(1);
+
+		const expectedListState = {
+			...listStateBeforeChange,
+			pageSize: 30,
+		};
+
+		expect(filterlist.listState).toEqual(expectedListState);
+
+		expect(onSetPageSize).toHaveBeenCalledTimes(1);
+		expect(onSetPageSize.mock.calls[0][0]).toEqual(expectedListState);
+
+		expect(onChangeLoadParams).toHaveBeenCalledTimes(1);
+		expect(onChangeLoadParams.mock.calls[0][0]).toEqual(expectedListState);
+
+		expect(requestItemsMethod).toHaveBeenCalledTimes(1);
+	});
+
 	test("should reset multiple filters", async () => {
 		const filterlist = new ManualFilterlist({
 			...defaultParams,

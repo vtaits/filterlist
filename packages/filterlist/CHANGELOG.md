@@ -6,6 +6,8 @@
 * Added `setPage` method
 * Added `total` to the state of list
 * Added `setTotal` method
+* Added `pageSize` to the state of list
+* Added `setPageSize` method
 
 ## 0.3.1 (04 sep 2023)
 

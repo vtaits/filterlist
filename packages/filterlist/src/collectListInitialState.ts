@@ -32,6 +32,7 @@ export const collectListInitialState = <Item, Additional, Error>(
 		appliedFilters: params.appliedFilters || listInitialState.appliedFilters,
 
 		page: params.page || 1,
+		pageSize: params.pageSize,
 		total: params.total,
 	};
 };

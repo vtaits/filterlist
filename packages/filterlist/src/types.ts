@@ -15,6 +15,7 @@ export type ListState<Item, Additional, Error> = Readonly<{
 	shouldClean: boolean;
 	isFirstLoad: boolean;
 	page: number;
+	pageSize?: number | null;
 	total?: number | null;
 }>;
 
@@ -58,6 +59,7 @@ export type Params<Item, Additional, Error> = Readonly<{
 	saveFiltersOnResetAll?: readonly string[];
 	saveItemsWhileLoad?: boolean;
 	page?: number;
+	pageSize?: number | null;
 	total?: number | null;
 }>;
 
@@ -71,6 +73,7 @@ export type EventType =
 	| "applyFilters"
 	| "setAndApplyFilters"
 	| "setPage"
+	| "setPageSize"
 	| "resetFilters"
 	| "resetAllFilters"
 	| "reload"

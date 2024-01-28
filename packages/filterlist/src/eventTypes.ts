@@ -10,6 +10,7 @@ export const setFiltersValues: EventType = "setFiltersValues";
 export const applyFilters: EventType = "applyFilters";
 export const setAndApplyFilters: EventType = "setAndApplyFilters";
 export const setPage: EventType = "setPage";
+export const setPageSize: EventType = "setPageSize";
 export const resetFilters: EventType = "resetFilters";
 export const resetAllFilters: EventType = "resetAllFilters";
 export const reload: EventType = "reload";
