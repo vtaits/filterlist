@@ -1,4 +1,4 @@
-## 0.4.0-alpha.1 (28 oct 2022)
+## 1.0.0
 
 ### Typings
 
@@ -11,7 +11,7 @@
 
 ### Breaking changes
 
-* Migrate to `@vtaits/filterlist@^0.3.0`
+* Migrate to `@vtaits/filterlist@^1.0.0`
 * Remove api with HOC and render props
 
 ## 0.3.0 (01 oct 2021)

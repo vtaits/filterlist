@@ -111,7 +111,7 @@ const listState = filterlist.getListState();
 | deleteItem | index, additional | delete item with specified index from list. If `additional` defined, sets it. |
 | insertItem | index, item, additional | insert item by specified index. If `additional` defined, sets it. |
 | updateItem | index, item, additional | update item by specified index. If `additional` defined, sets it. |
-| setFiltersAndSorting | { filters, appliedFilters, sort } | sets filters, applied filters and sort and loads items |
+| updateStateAndRequest | { filters, appliedFilters, sort } | sets filters, applied filters and sort and loads items |
 
 ### Events
 
@@ -142,8 +142,8 @@ List of event types:
 | setSorting | after call `setSorting` method |
 | resetSorting | after call `resetSorting` method |
 | reload | after call `reload` method |
-| setFiltersAndSorting | after call `setFiltersAndSorting` method |
-| changeLoadParams | after call some of next methods: `loadMore`, `applyFilter`, `setAndApplyFilter`, `resetFilter`, `applyFilters`, `setAndApplyFilters`, `resetFilters`, `resetAllFilters`, `setSorting`, `resetSorting`, `setFiltersAndSorting` |
+| updateStateAndRequest | after call `updateStateAndRequest` method |
+| changeLoadParams | after call some of next methods: `loadMore`, `applyFilter`, `setAndApplyFilter`, `resetFilter`, `applyFilters`, `setAndApplyFilters`, `resetFilters`, `resetAllFilters`, `setSorting`, `resetSorting`, `updateStateAndRequest` |
 | insertItem | after call `insertItem` method |
 | deleteItem | after call `deleteItem` method |
 | updateItem | after call `updateItem` method |

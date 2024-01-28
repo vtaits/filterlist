@@ -148,7 +148,7 @@ export function AllFeatures(): ReactElement {
     if (navigationType === 'POP') {
       const stateFromSearch = getStateFromSearch(location.search);
 
-      filterlist.setFiltersAndSorting(stateFromSearch);
+      filterlist.updateStateAndRequest(stateFromSearch);
     }
   }, [navigationType, location.search]);
 

@@ -473,7 +473,7 @@ export class Filterlist<Item, Additional, Error> {
 		await this.requestItems(prevListState);
 	}
 
-	async setFiltersAndSorting({
+	async updateStateAndRequest({
 		filters,
 		appliedFilters,
 		sort,
@@ -493,7 +493,7 @@ export class Filterlist<Item, Additional, Error> {
 			pageSize: pageSize || stateBeforeChange.pageSize,
 		});
 
-		this.emitEvent(eventTypes.setFiltersAndSorting);
+		this.emitEvent(eventTypes.updateStateAndRequest);
 
 		await this.requestItems(prevListState);
 	}

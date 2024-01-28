@@ -2290,7 +2290,7 @@ describe("public methods", () => {
 		const onSetFiltersAndSorting = vi.fn();
 
 		filterlist.emitter.on(
-			eventTypes.setFiltersAndSorting,
+			eventTypes.updateStateAndRequest,
 			onSetFiltersAndSorting,
 		);
 
@@ -2325,7 +2325,7 @@ describe("public methods", () => {
 
 		const listStateBeforeChange = filterlist.getListStateBeforeChange();
 
-		await filterlist.setFiltersAndSorting({
+		await filterlist.updateStateAndRequest({
 			filters: {
 				test1: "value1_3",
 				test2: "value2_3",
@@ -2377,7 +2377,7 @@ describe("public methods", () => {
 		expect(requestItemsMethod).toHaveBeenCalledTimes(1);
 	});
 
-	test("should not change filters and sorting with setFiltersAndSorting", async () => {
+	test("should not change filters and sorting with updateStateAndRequest", async () => {
 		const filterlist = new ManualFilterlist({
 			...defaultParams,
 
@@ -2390,7 +2390,7 @@ describe("public methods", () => {
 		const onSetFiltersAndSorting = vi.fn();
 
 		filterlist.emitter.on(
-			eventTypes.setFiltersAndSorting,
+			eventTypes.updateStateAndRequest,
 			onSetFiltersAndSorting,
 		);
 
@@ -2425,7 +2425,7 @@ describe("public methods", () => {
 
 		const listStateBeforeChange = filterlist.getListStateBeforeChange();
 
-		await filterlist.setFiltersAndSorting({
+		await filterlist.updateStateAndRequest({
 			filters: undefined,
 			appliedFilters: undefined,
 			sort: undefined,

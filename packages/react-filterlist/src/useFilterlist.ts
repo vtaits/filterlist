@@ -208,7 +208,7 @@ export const useFilterlist = <Item, Additional, Error, FiltersAndSortData>(
 			const filterlist = filterlistRef.current;
 
 			if (filterlist) {
-				filterlist.setFiltersAndSorting(parsedFiltersAndSort);
+				filterlist.updateStateAndRequest(parsedFiltersAndSort);
 			}
 		})();
 	}

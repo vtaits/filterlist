@@ -87,7 +87,7 @@ export type EventType =
 	| "reload"
 	| "setSorting"
 	| "resetSorting"
-	| "setFiltersAndSorting"
+	| "updateStateAndRequest"
 	| "changeLoadParams"
 	| "insertItem"
 	| "deleteItem"

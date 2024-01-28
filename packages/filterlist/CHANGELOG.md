@@ -1,4 +1,4 @@
-## 0.3.2
+## 1.0.0
 
 ### New features
 
@@ -8,6 +8,10 @@
 * Added `setTotal` method
 * Added `pageSize` to the state of list
 * Added `setPageSize` method
+
+### Breaking changes
+
+* `setFiltersAndSorting` -> `updateStateAndRequest`
 
 ## 0.3.1 (04 sep 2023)
 
