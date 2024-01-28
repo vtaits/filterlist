@@ -1,4 +1,4 @@
-import type { LoadListError } from './errors';
+import type { LoadListError } from "./errors";
 
 export type Sort = Readonly<{
 	param?: string | null;
@@ -86,7 +86,7 @@ export type ShouldRequest<Item, Additional, Error> = (
 
 /**
  * function that loads items into the list
- * 
+ *
  * @throws {LoadListError} if an error occured during load items
  */
 export type ItemsLoader<Item, Additional, Error> = (
@@ -102,12 +102,12 @@ export type Params<Item, Additional, Error> = Readonly<{
 	shouldRequest?: ShouldRequest<Item, Additional, Error>;
 	/**
 	 * function that loads items into the list
-	 * 
+	 *
 	 * @throws
 	 */
 	loadItems: ItemsLoader<Item, Additional, Error>;
 	/**
-	 * initially defined list of items 
+	 * initially defined list of items
 	 */
 	items?: readonly Item[];
 	/**
@@ -124,13 +124,13 @@ export type Params<Item, Additional, Error> = Readonly<{
 	appliedFilters?: Readonly<Record<string, unknown>>;
 	/**
 	 * request items on init
-	 * 
+	 *
 	 * @default true
 	 */
 	autoload?: boolean;
 	/**
 	 * default `asc` param after change sorting column
-	 * 
+	 *
 	 * @default true
 	 */
 	isDefaultSortAsc?: boolean;
@@ -148,7 +148,7 @@ export type Params<Item, Additional, Error> = Readonly<{
 	saveFiltersOnResetAll?: readonly string[];
 	/**
 	 * by default items are cleared if filters or sorting changed. If `saveItemsWhileLoad` is `true`, previous list items are saved while load request is pending
-	 * 
+	 *
 	 * @default false
 	 */
 	saveItemsWhileLoad?: boolean;

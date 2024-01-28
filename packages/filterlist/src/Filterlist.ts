@@ -442,7 +442,7 @@ export class Filterlist<Item, Additional, Error> {
 	}
 
 	/**
-	 * reload the list in the current state 
+	 * reload the list in the current state
 	 */
 	async reload(): Promise<void> {
 		const prevState = this.listState;
@@ -472,11 +472,11 @@ export class Filterlist<Item, Additional, Error> {
 
 	/**
 	 * sets sorting column
-	 * 
+	 *
 	 * if `asc` defined and Boolean, sets it
-	 * 
+	 *
 	 * otherwise, if this column differs from previous sorting column, asc will be setted with `isDefaultSortAsc` param from decorator
-	 * 
+	 *
 	 * otherwise, it will be reverse `asc` param from previous state
 	 */
 	async setSorting(param: string, asc?: boolean): Promise<void> {
@@ -502,7 +502,7 @@ export class Filterlist<Item, Additional, Error> {
 
 	/**
 	 * resets sorting
-	 * 
+	 *
 	 * sort param will be setted with `null`, asc will be setted with `isDefaultSortAsc` param
 	 */
 	async resetSorting(): Promise<void> {
@@ -529,14 +529,10 @@ export class Filterlist<Item, Additional, Error> {
 	/**
 	 * set filters, applied filters, sorting, page and pageSize and request then
 	 */
-	async updateStateAndRequest(updateStateParams: UpdateStateParams): Promise<void> {
-		const {
-			filters,
-			appliedFilters,
-			sort,
-			page,
-			pageSize,
-		} = updateStateParams;
+	async updateStateAndRequest(
+		updateStateParams: UpdateStateParams,
+	): Promise<void> {
+		const { filters, appliedFilters, sort, page, pageSize } = updateStateParams;
 
 		const prevListState = this.listState;
 		const stateBeforeChange = this.getListStateBeforeChange();
