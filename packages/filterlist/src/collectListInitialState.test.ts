@@ -81,3 +81,14 @@ test("should set items", () => {
 	expect(state.items).toBe(items);
 	expect(state.loadedPages).toBe(1);
 });
+
+test("should set page", () => {
+	const page = 3;
+
+	const state = collectListInitialState({
+		...defaultParams,
+		page,
+	});
+
+	expect(state.page).toBe(page);
+});

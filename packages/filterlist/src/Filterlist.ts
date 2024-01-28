@@ -69,6 +69,7 @@ export class Filterlist<Item, Additional, Error> {
 
 			items: saveItemsWhileLoad ? prevListState.items : [],
 			loadedPages: saveItemsWhileLoad ? prevListState.loadedPages : 0,
+			page: 1,
 
 			shouldClean: true,
 		};
@@ -288,6 +289,21 @@ export class Filterlist<Item, Additional, Error> {
 		});
 
 		this.emitEvent(eventTypes.setAndApplyFilters);
+		this.emitEvent(eventTypes.changeLoadParams);
+
+		await this.requestItems(prevListState);
+	}
+
+	async setPage(page: number): Promise<void> {
+		const prevListState = this.listState;
+		const stateBeforeChange = this.getListStateBeforeChange();
+
+		this.setListState({
+			...stateBeforeChange,
+			page,
+		});
+
+		this.emitEvent(eventTypes.setPage);
 		this.emitEvent(eventTypes.changeLoadParams);
 
 		await this.requestItems(prevListState);

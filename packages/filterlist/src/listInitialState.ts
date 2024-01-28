@@ -14,4 +14,5 @@ export const listInitialState: ListState<unknown, unknown, unknown> = {
 	error: null,
 	shouldClean: false,
 	isFirstLoad: true,
+	page: 1,
 };

@@ -1,3 +1,10 @@
+## 0.3.2
+
+### New features
+
+* Added `page` to the state of list
+* Added `setPage` method
+
 ## 0.3.1 (04 sep 2023)
 
 ### New features

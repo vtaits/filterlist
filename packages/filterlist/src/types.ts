@@ -14,6 +14,7 @@ export type ListState<Item, Additional, Error> = Readonly<{
 	error: Error | null;
 	shouldClean: boolean;
 	isFirstLoad: boolean;
+	page: number;
 }>;
 
 export type Options = Readonly<{
@@ -54,6 +55,7 @@ export type Params<Item, Additional, Error> = Readonly<{
 	resetFiltersTo?: Readonly<Record<string, unknown>>;
 	saveFiltersOnResetAll?: readonly string[];
 	saveItemsWhileLoad?: boolean;
+	page?: number;
 }>;
 
 export type EventType =
@@ -65,6 +67,7 @@ export type EventType =
 	| "setFiltersValues"
 	| "applyFilters"
 	| "setAndApplyFilters"
+	| "setPage"
 	| "resetFilters"
 	| "resetAllFilters"
 	| "reload"

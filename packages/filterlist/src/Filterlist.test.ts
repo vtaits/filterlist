@@ -21,6 +21,7 @@ const testListState: ListState<any, any, any> = {
 	sort: {
 		asc: false,
 	},
+	page: 1,
 	error: null,
 };
 
@@ -340,8 +341,6 @@ describe("requestItems", () => {
 		});
 
 		filterlist.emitter.on(eventTypes.requestItems, onRequestItems);
-
-		const currentState = filterlist.getListState();
 
 		await filterlist.manualRequestItems(testListState);
 
@@ -871,6 +870,8 @@ describe("getListStateBeforeReload", () => {
 			additional: {
 				count: 3,
 			},
+
+			page: 3,
 		};
 
 		filterlist.listState = nextState;
@@ -883,6 +884,7 @@ describe("getListStateBeforeReload", () => {
 			error: null,
 			loading: true,
 			shouldClean: true,
+			page: 1,
 		};
 
 		expect(filterlist.getListStateBeforeReload()).toEqual(expectedState);
@@ -922,6 +924,8 @@ describe("getListStateBeforeReload", () => {
 			additional: {
 				count: 3,
 			},
+
+			page: 3,
 		};
 
 		filterlist.listState = nextState;
@@ -935,6 +939,7 @@ describe("getListStateBeforeReload", () => {
 			error: null,
 			loading: true,
 			shouldClean: true,
+			page: 1,
 		};
 
 		expect(filterlist.getListStateBeforeReload()).toEqual(expectedState);
@@ -974,6 +979,8 @@ describe("getListStateBeforeChange", () => {
 			additional: {
 				count: 3,
 			},
+
+			page: 3,
 		};
 
 		filterlist.listState = nextState;
@@ -996,6 +1003,7 @@ describe("getListStateBeforeChange", () => {
 			error: null,
 			loading: true,
 			shouldClean: true,
+			page: 1,
 		};
 
 		expect(filterlist.getListStateBeforeChange()).toEqual(expectedState);
@@ -1035,6 +1043,8 @@ describe("getListStateBeforeChange", () => {
 			additional: {
 				count: 3,
 			},
+
+			page: 3,
 		};
 
 		filterlist.listState = nextState;
@@ -1058,6 +1068,7 @@ describe("getListStateBeforeChange", () => {
 			error: null,
 			loading: true,
 			shouldClean: true,
+			page: 1,
 		};
 
 		expect(filterlist.getListStateBeforeChange()).toEqual(expectedState);
@@ -1548,6 +1559,65 @@ describe("public methods", () => {
 
 		expect(onSetAndApplyFilters).toHaveBeenCalledTimes(1);
 		expect(onSetAndApplyFilters.mock.calls[0][0]).toEqual(expectedListState);
+
+		expect(onChangeLoadParams).toHaveBeenCalledTimes(1);
+		expect(onChangeLoadParams.mock.calls[0][0]).toEqual(expectedListState);
+
+		expect(requestItemsMethod).toHaveBeenCalledTimes(1);
+	});
+
+	test("should change page", async () => {
+		const filterlist = new ManualFilterlist({
+			...defaultParams,
+		});
+
+		const onSetPage = vi.fn();
+		const onChangeLoadParams = vi.fn();
+
+		filterlist.emitter.on(eventTypes.setPage, onSetPage);
+		filterlist.emitter.on(eventTypes.changeLoadParams, onChangeLoadParams);
+
+		const prevState = filterlist.getListState();
+
+		const nextState = {
+			...prevState,
+
+			filters: {
+				test1: "value1_1",
+				test2: "value2_1",
+			},
+
+			appliedFilters: {
+				test1: "value1_2",
+				test2: "value2_2",
+			},
+
+			items: [1, 2, 3],
+
+			additional: {
+				count: 3,
+			},
+
+			page: 3,
+		};
+
+		filterlist.listState = nextState;
+
+		const listStateBeforeChange = filterlist.getListStateBeforeChange();
+
+		await filterlist.setPage(5);
+
+		expect(onChangeListStateMethod).toHaveBeenCalledTimes(1);
+
+		const expectedListState = {
+			...listStateBeforeChange,
+			page: 5,
+		};
+
+		expect(filterlist.listState).toEqual(expectedListState);
+
+		expect(onSetPage).toHaveBeenCalledTimes(1);
+		expect(onSetPage.mock.calls[0][0]).toEqual(expectedListState);
 
 		expect(onChangeLoadParams).toHaveBeenCalledTimes(1);
 		expect(onChangeLoadParams.mock.calls[0][0]).toEqual(expectedListState);
