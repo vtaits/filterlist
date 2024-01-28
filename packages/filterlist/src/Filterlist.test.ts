@@ -742,6 +742,55 @@ describe("onSuccess", () => {
 			test: "value1",
 		});
 	});
+
+	test("should update total", () => {
+		const filterlist = new ManualFilterlist({
+			...defaultParams,
+		});
+
+		const prevState = filterlist.getListState();
+
+		filterlist.listState = {
+			...prevState,
+			loading: true,
+			total: 5,
+		};
+
+		filterlist.manualOnSuccess({
+			items: [],
+			total: 10,
+		});
+
+		expect(onChangeListStateMethod).toHaveBeenCalledTimes(1);
+
+		expect(filterlist.listState.loading).toBe(false);
+		expect(filterlist.listState.isFirstLoad).toBe(false);
+		expect(filterlist.listState.total).toEqual(10);
+	});
+
+	test("should not update total", () => {
+		const filterlist = new ManualFilterlist({
+			...defaultParams,
+		});
+
+		const prevState = filterlist.getListState();
+
+		filterlist.listState = {
+			...prevState,
+			loading: true,
+			total: 5,
+		};
+
+		filterlist.manualOnSuccess({
+			items: [],
+		});
+
+		expect(onChangeListStateMethod).toHaveBeenCalledTimes(1);
+
+		expect(filterlist.listState.loading).toBe(false);
+		expect(filterlist.listState.isFirstLoad).toBe(false);
+		expect(filterlist.listState.total).toEqual(5);
+	});
 });
 
 describe("onError", () => {
@@ -834,6 +883,62 @@ describe("onError", () => {
 		expect(filterlist.listState.shouldClean).toBe(false);
 		expect(filterlist.listState.error).toBe(null);
 		expect(filterlist.listState.additional).toBe("additional2");
+	});
+
+	test("should update total", () => {
+		const filterlist = new ManualFilterlist({
+			...defaultParams,
+		});
+
+		const prevState = filterlist.getListState();
+
+		filterlist.listState = {
+			...prevState,
+			loading: true,
+			shouldClean: true,
+			error: "error1",
+			total: 5,
+		};
+
+		filterlist.manualOnError(
+			new LoadListError({
+				total: 10,
+			}),
+		);
+
+		expect(onChangeListStateMethod).toHaveBeenCalledTimes(1);
+
+		expect(filterlist.listState.loading).toBe(false);
+		expect(filterlist.listState.isFirstLoad).toBe(true);
+		expect(filterlist.listState.shouldClean).toBe(false);
+		expect(filterlist.listState.error).toBe(null);
+		expect(filterlist.listState.total).toBe(10);
+	});
+
+	test("should not update total", () => {
+		const filterlist = new ManualFilterlist({
+			...defaultParams,
+		});
+
+		const prevState = filterlist.getListState();
+
+		filterlist.listState = {
+			...prevState,
+			loading: true,
+			shouldClean: true,
+			error: "error1",
+			total: 5,
+		};
+
+		filterlist.manualOnError(new LoadListError({}));
+
+		expect(onChangeListStateMethod).toHaveBeenCalledTimes(1);
+
+		expect(filterlist.listState.loading).toBe(false);
+		expect(filterlist.listState.isFirstLoad).toBe(true);
+		expect(filterlist.listState.shouldClean).toBe(false);
+		expect(filterlist.listState.error).toBe(null);
+		expect(filterlist.listState.total).toBe(5);
 	});
 });
 
@@ -2612,6 +2717,22 @@ describe("public methods", () => {
 		expect(nextState.additional).toEqual({
 			count: 5,
 		});
+	});
+
+	test("set total number of pages", () => {
+		const filterlist = new ManualFilterlist({
+			...defaultParams,
+
+			total: 5,
+		});
+
+		filterlist.setTotal(10);
+
+		expect(onChangeListStateMethod).toHaveBeenCalledTimes(1);
+
+		const nextState = filterlist.getListState();
+
+		expect(nextState.total).toBe(10);
 	});
 
 	test("should update item and change additional", () => {

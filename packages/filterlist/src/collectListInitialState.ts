@@ -32,5 +32,6 @@ export const collectListInitialState = <Item, Additional, Error>(
 		appliedFilters: params.appliedFilters || listInitialState.appliedFilters,
 
 		page: params.page || 1,
+		total: params.total,
 	};
 };

@@ -548,6 +548,11 @@ export class Filterlist<Item, Additional, Error> {
 				typeof response.additional !== "undefined"
 					? response.additional
 					: prevListState.additional,
+
+			total:
+				typeof response.total === "number"
+					? response.total
+					: prevListState.total,
 		});
 
 		this.emitEvent(eventTypes.loadItemsSuccess);
@@ -568,6 +573,9 @@ export class Filterlist<Item, Additional, Error> {
 				typeof error.additional !== "undefined"
 					? error.additional
 					: prevListState.additional,
+
+			total:
+				typeof error.total === "number" ? error.total : prevListState.total,
 		});
 
 		this.emitEvent(eventTypes.loadItemsError);
@@ -628,6 +636,13 @@ export class Filterlist<Item, Additional, Error> {
 		});
 
 		this.emitEvent(eventTypes.updateItem);
+	}
+
+	setTotal(total: number | null | undefined) {
+		this.setListState({
+			...this.listState,
+			total,
+		});
 	}
 
 	setListState(nextListState: ListState<Item, Additional, Error>): void {

@@ -92,3 +92,14 @@ test("should set page", () => {
 
 	expect(state.page).toBe(page);
 });
+
+test("should set total", () => {
+	const total = 3;
+
+	const state = collectListInitialState({
+		...defaultParams,
+		total,
+	});
+
+	expect(state.total).toBe(total);
+});

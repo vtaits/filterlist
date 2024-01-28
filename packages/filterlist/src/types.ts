@@ -15,6 +15,7 @@ export type ListState<Item, Additional, Error> = Readonly<{
 	shouldClean: boolean;
 	isFirstLoad: boolean;
 	page: number;
+	total?: number | null;
 }>;
 
 export type Options = Readonly<{
@@ -29,6 +30,7 @@ export type Options = Readonly<{
 export type ItemsLoaderResponse<Item, Additional> = Readonly<{
 	items: readonly Item[];
 	additional?: Additional;
+	total?: number | null;
 }>;
 
 export type ShouldRequest<Item, Additional, Error> = (
@@ -56,6 +58,7 @@ export type Params<Item, Additional, Error> = Readonly<{
 	saveFiltersOnResetAll?: readonly string[];
 	saveItemsWhileLoad?: boolean;
 	page?: number;
+	total?: number | null;
 }>;
 
 export type EventType =
