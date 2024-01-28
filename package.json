@@ -9,12 +9,12 @@
   "license": "MIT",
   "scripts": {
     "start": "storybook dev -p 6006",
-    "build": "yarn workspaces foreach -t run build",
-    "test:ts": "yarn workspaces foreach -p run test:ts",
-    "lint": "yarn workspaces foreach -p run lint",
-    "lint:fix": "biome check examples --apply-unsafe && yarn workspaces foreach -p run lint:fix",
-    "format": "biome format --write examples && yarn workspaces foreach -p run format",
-    "test:unit": "yarn workspaces foreach -p run test:unit",
+    "build": "yarn workspaces foreach --all -t run build",
+    "test:ts": "yarn workspaces foreach --all -p run test:ts",
+    "lint": "yarn workspaces foreach --all -p run lint",
+    "lint:fix": "biome check examples --apply-unsafe && yarn workspaces foreach --all -p run lint:fix",
+    "format": "biome format --write examples && yarn workspaces foreach --all -p run format",
+    "test:unit": "yarn workspaces foreach --all -p run test:unit",
     "test": "yarn lint && yarn test:ts && yarn test:unit",
     "validate": "yarn format && yarn build && yarn test",
     "prepare": "husky install"
@@ -46,6 +46,5 @@
     "styled-components": "^6.1.1",
     "typescript": "^5.2.2",
     "vite": "5.0.12"
-  },
-  "packageManager": "yarn@3.6.3"
+  }
 }
