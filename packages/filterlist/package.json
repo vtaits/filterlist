@@ -16,7 +16,10 @@
       "types": "./dist/index.d.ts"
     }
   },
-  "repository": "git@github.com:vtaits/filterlist.git",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/vtaits/filterlist.git"
+  },
   "author": "Vadim Taits <taizvadim@gmail.com>",
   "license": "MIT",
   "keywords": [
