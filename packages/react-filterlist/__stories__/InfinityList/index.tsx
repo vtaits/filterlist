@@ -46,24 +46,26 @@ export function InfinityList(): ReactElement | null {
       sort,
       appliedFilters,
       loadedPages,
+      pageSize,
     }) => {
       const response = await api.loadUsers({
         ...appliedFilters,
+        pageSize,
         sort: `${sort.param ? `${sort.asc ? '' : '-'}${sort.param}` : ''}`,
         page: loadedPages + 1,
       });
 
       return {
         items: response.users,
-        additional: {
-          count: response.count,
-        },
+        total: response.count,
       };
     },
 
     onChangeLoadParams: (newListState: ListState<User, Additional, unknown>): void => {
       const newQuery = qs.stringify({
         ...newListState.appliedFilters,
+        page: newListState.page,
+        pageSize: newListState.pageSize,
         sort: newListState.sort.param
           ? `${newListState.sort.asc ? '' : '-'}${newListState.sort.param}`
           : null,
@@ -71,12 +73,6 @@ export function InfinityList(): ReactElement | null {
 
       navigate(`${location.pathname}?${newQuery}`);
     },
-
-    resetFiltersTo: {
-      perPage: 10,
-    },
-
-    saveFiltersOnResetAll: ['perPage'],
 
     parseFiltersAndSort: async ({
       location: {
@@ -95,8 +91,6 @@ export function InfinityList(): ReactElement | null {
         name: parsed.name || '',
         email: parsed.email || '',
         city: parsed.city || '',
-        page: parsed.page ? Number(parsed.page) : 1,
-        perPage: parsed.perPage || 10,
       };
 
       return {
@@ -114,6 +108,8 @@ export function InfinityList(): ReactElement | null {
 
         filters: appliedFilters,
         appliedFilters,
+        page: parsed.page ? Number(parsed.page) : 1,
+        pageSize: parsed.pageSize || 10,
       };
     },
 
@@ -129,18 +125,20 @@ export function InfinityList(): ReactElement | null {
       && location.search !== prevProps.location.search,
   });
 
-  const setAndApplyFilter = useCallback((
-    filterName: string,
-    value: any,
-  ): Promise<void> => {
+  const setPage = useCallback((page: number): Promise<void> => {
     if (!filterlist) {
       throw new Error('filterlist is not initialized');
     }
 
-    return filterlist.setAndApplyFilter(
-      filterName,
-      value,
-    );
+    return filterlist.setPage(page);
+  }, [filterlist]);
+
+  const setPageSize = useCallback((pageSize: number | null | undefined): Promise<void> => {
+    if (!filterlist) {
+      throw new Error('filterlist is not initialized');
+    }
+
+    return filterlist.setPageSize(pageSize);
   }, [filterlist]);
 
   const setFilterValue = useCallback((
@@ -230,32 +228,33 @@ export function InfinityList(): ReactElement | null {
   }
 
   const {
-    additional,
     items,
     loading,
-
+    page,
+    pageSize,
     sort,
-
+    total,
     filters,
-    appliedFilters,
   } = listState;
 
   return (
     <Page
       listState={listState}
       filters={filters}
-      appliedFilters={appliedFilters}
+      page={page}
+      pageSize={pageSize}
       sort={sort}
       items={items}
-      additional={additional}
       loading={loading}
       setFilterValue={setFilterValue}
       resetFilter={resetFilter}
       applyFilter={applyFilter}
-      setAndApplyFilter={setAndApplyFilter}
       resetAllFilters={resetAllFilters}
       reload={reload}
+      setPage={setPage}
+      setPageSize={setPageSize}
       setSorting={setSorting}
+      total={total}
       isInfinity
       loadMore={loadMore}
     />

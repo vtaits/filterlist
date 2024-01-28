@@ -15,27 +15,26 @@ import type { Additional, User } from "../types";
 
 import type { ListState, Sort } from "../../packages/filterlist/src/types";
 
-type PageProps = {
-	readonly listState: ListState<User, Additional, unknown>;
-	readonly filters: Readonly<Record<string, unknown>>;
-	readonly appliedFilters: Readonly<Record<string, unknown>>;
-	readonly sort: Sort;
-	readonly items: readonly User[];
-	readonly additional?: Additional;
-	readonly loading: boolean;
-	readonly setFilterValue: (filterName: string, value: unknown) => void;
-	readonly resetFilter: (filterName: string) => Promise<void>;
-	readonly applyFilter: (filterName: string) => Promise<void>;
-	readonly setAndApplyFilter: (
-		filterName: string,
-		value: unknown,
-	) => Promise<void>;
-	readonly resetAllFilters: () => Promise<void>;
-	readonly reload: () => Promise<void>;
-	readonly setSorting: (param: string) => void;
-	readonly isInfinity?: boolean;
-	readonly loadMore?: () => void;
-};
+type PageProps = Readonly<{
+	listState: ListState<User, Additional, unknown>;
+	filters: Readonly<Record<string, unknown>>;
+	page: number;
+	pageSize?: number | null;
+	sort: Sort;
+	items: readonly User[];
+	total?: number | null;
+	loading: boolean;
+	setFilterValue: (filterName: string, value: unknown) => void;
+	resetFilter: (filterName: string) => Promise<void>;
+	applyFilter: (filterName: string) => Promise<void>;
+	setPage: (page: number) => Promise<void>;
+	setPageSize: (pageSize: number | null | undefined) => Promise<void>;
+	resetAllFilters: () => Promise<void>;
+	reload: () => Promise<void>;
+	setSorting: (param: string) => void;
+	isInfinity?: boolean;
+	loadMore?: () => void;
+}>;
 
 const StyledWrapper = styled.div({
 	display: "flex",
@@ -79,33 +78,26 @@ const StyledBottomBlock = styled.div({
 export function Page({
 	listState,
 	filters,
-	appliedFilters,
+	page,
+	pageSize: pageSizeProp = null,
 	sort,
 	items,
-	additional = undefined,
+	total = undefined,
 	loading,
 	resetAllFilters,
 	reload,
 	setFilterValue,
 	resetFilter,
 	applyFilter,
-	setAndApplyFilter,
+	setPage,
+	setPageSize,
 	setSorting,
 	isInfinity = false,
 	loadMore = undefined,
 }: PageProps): ReactElement {
-	const onPageChange = useCallback(
-		(page: number): void => {
-			setAndApplyFilter("page", page);
-		},
-		[setAndApplyFilter],
-	);
-
 	const { loadedPages } = listState;
 
-	const perPage = typeof filters.perPage === "number" ? filters.perPage : 10;
-	const page =
-		typeof appliedFilters.page === "number" ? appliedFilters.page : 1;
+	const pageSize = pageSizeProp || 10;
 
 	return (
 		<StyledWrapper>
@@ -120,7 +112,7 @@ export function Page({
 				/>
 
 				<StyledTotalCountBlock>
-					{additional && <TotalCount count={additional.count} />}
+					{total && <TotalCount count={total} />}
 				</StyledTotalCountBlock>
 
 				<Table items={items} sort={sort} setSorting={setSorting} />
@@ -133,8 +125,8 @@ export function Page({
 							type="button"
 							onClick={loadMore}
 							disabled={
-								!additional ||
-								Math.ceil(additional.count / perPage) === loadedPages
+								!total ||
+								Math.ceil(total / pageSize) === loadedPages
 							}
 						>
 							Load more
@@ -142,19 +134,19 @@ export function Page({
 					) : (
 						<>
 							<div>
-								{additional && additional.count > 0 && (
+								{total && total > 0 && (
 									<Paginator
 										page={page}
-										pageCount={Math.ceil(additional.count / perPage)}
-										onPageChange={onPageChange}
+										pageCount={Math.ceil(total / pageSize)}
+										onPageChange={setPage}
 									/>
 								)}
 							</div>
 
 							<ItemsPerPage
-								name="perPage"
-								value={perPage}
-								setAndApplyFilter={setAndApplyFilter}
+								name="pageSize"
+								value={pageSize}
+								setPageSize={setPageSize}
 							/>
 						</>
 					)}

@@ -14,7 +14,7 @@ import {
   useLocation,
 } from 'react-router-dom';
 
-import { Filterlist, type ListState, eventTypes } from '@vtaits/filterlist';
+import { Filterlist, type ListState, eventTypes, UpdateStateParams } from '@vtaits/filterlist';
 
 import { Page } from '../../../../examples/ui/Page';
 import * as api from '../../../../examples/api';
@@ -29,11 +29,7 @@ import type {
   Sort,
 } from '../../src/types';
 
-const getStateFromSearch = (search: string): {
-  sort: Sort;
-  filters: Record<string, string | number>;
-  appliedFilters: Record<string, string | number>;
-} => {
+const getStateFromSearch = (search: string): UpdateStateParams => {
   const parsed: Record<string, any> = qs.parse(search, {
     ignoreQueryPrefix: true,
   });
@@ -46,8 +42,6 @@ const getStateFromSearch = (search: string): {
     name: parsed.name || '',
     email: parsed.email || '',
     city: parsed.city || '',
-    page: parsed.page ? Number(parsed.page) : 1,
-    perPage: parsed.perPage || 10,
   };
 
   return {
@@ -64,23 +58,27 @@ const getStateFromSearch = (search: string): {
 
     filters: appliedFilters,
     appliedFilters,
+    page: parsed.page ? Number(parsed.page) : 1,
+    pageSize: parsed.pageSize || 10,
   };
 };
 
 const loadItems: ItemsLoader<User, Additional, unknown> = async ({
   sort,
   appliedFilters,
+  page,
+  pageSize,
 }) => {
   const response = await api.loadUsers({
     ...appliedFilters,
+    page,
+    pageSize,
     sort: `${sort.param ? `${sort.asc ? '' : '-'}${sort.param}` : ''}`,
   });
 
   return {
     items: response.users,
-    additional: {
-      count: response.count,
-    },
+    total: response.count,
   };
 };
 
@@ -97,19 +95,10 @@ export function AllFeatures(): ReactElement {
     const stateFromSearch = getStateFromSearch(search);
 
     return new Filterlist({
-      alwaysResetFilters: {
-        page: 1,
-      },
-
-      resetFiltersTo: {
-        perPage: 10,
-      },
-
-      saveFiltersOnResetAll: ['perPage'],
-
       loadItems,
-
       ...stateFromSearch,
+      page: stateFromSearch.page ? Number(stateFromSearch.page) : 1,
+      pageSize: stateFromSearch.pageSize ? Number(stateFromSearch.pageSize) : 10,
     });
   });
 
@@ -128,6 +117,8 @@ export function AllFeatures(): ReactElement {
   const onChangeListState = useCallback((newListState: ListState<User, Additional, unknown>) => {
     const newQuery = qs.stringify({
       ...newListState.appliedFilters,
+      page: newListState.page,
+      pageSize: newListState.pageSize,
       sort: newListState.sort.param
         ? `${newListState.sort.asc ? '' : '-'}${newListState.sort.param}`
         : null,
@@ -152,13 +143,13 @@ export function AllFeatures(): ReactElement {
     }
   }, [navigationType, location.search]);
 
-  const setAndApplyFilter = useCallback((
-    filterName: string,
-    value: any,
-  ) => filterlist.setAndApplyFilter(
-    filterName,
-    value,
-  ), []);
+  const setPage = useCallback((
+    page: number,
+  ) => filterlist.setPage(page), [filterlist]);
+
+  const setPageSize = useCallback((
+    pageSize: number | null | undefined,
+  ) => filterlist.setPageSize(pageSize), [filterlist]);
 
   const setFilterValue = useCallback((
     filterName: string,
@@ -174,48 +165,49 @@ export function AllFeatures(): ReactElement {
   ) => filterlist.setSorting(
     paramName,
     asc,
-  ), []);
+  ), [filterlist]);
 
-  const resetAllFilters = useCallback(() => filterlist.resetAllFilters(), []);
+  const resetAllFilters = useCallback(() => filterlist.resetAllFilters(), [filterlist]);
 
-  const reload = useCallback(() => filterlist.reload(), []);
+  const reload = useCallback(() => filterlist.reload(), [filterlist]);
 
   const resetFilter = useCallback((
     filterName: string,
   ) => filterlist.resetFilter(
     filterName,
-  ), []);
+  ), [filterlist]);
 
   const applyFilter = useCallback((
     filterName: string,
   ) => filterlist.applyFilter(
     filterName,
-  ), []);
+  ), [filterlist]);
 
   const {
-    additional,
     items,
     loading,
-
-    sort,
-
+    total,
+    page,
+    pageSize,
+     sort,
     filters,
-    appliedFilters,
   } = listState;
 
   return (
     <Page
       listState={listState}
       filters={filters}
-      appliedFilters={appliedFilters}
+      page={page}
+      pageSize={pageSize}
       sort={sort}
       items={items}
-      additional={additional}
+      total={total}
       loading={loading}
       setFilterValue={setFilterValue}
       resetFilter={resetFilter}
       applyFilter={applyFilter}
-      setAndApplyFilter={setAndApplyFilter}
+      setPage={setPage}
+      setPageSize={setPageSize}
       resetAllFilters={resetAllFilters}
       reload={reload}
       setSorting={setSorting}

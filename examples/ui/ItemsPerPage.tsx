@@ -30,19 +30,19 @@ const StyledSelect = styled.select({
 type ItemsPerPageProps = Readonly<{
 	name: string;
 	value: number;
-	setAndApplyFilter: (filterName: string, value: unknown) => void;
+	setPageSize: (pageSize: number | null | undefined) => Promise<void>;
 }>;
 
 function ItemsPerPageInner({
 	name,
 	value,
-	setAndApplyFilter,
+	setPageSize,
 }: ItemsPerPageProps): ReactElement {
 	const onChange = useCallback(
 		(event: SyntheticEvent) => {
-			setAndApplyFilter(name, Number((event.target as HTMLInputElement).value));
+			setPageSize(Number((event.target as HTMLInputElement).value));
 		},
-		[name, setAndApplyFilter],
+		[name, setPageSize],
 	);
 
 	return (
