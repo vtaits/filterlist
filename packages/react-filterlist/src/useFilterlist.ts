@@ -5,7 +5,11 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { Filterlist, eventTypes } from "@vtaits/filterlist";
-import type { ItemsLoader, ListState } from "@vtaits/filterlist";
+import type {
+	ItemsLoader,
+	ListState,
+	UpdateStateParams,
+} from "@vtaits/filterlist";
 
 import isPromise from "is-promise";
 
@@ -18,7 +22,6 @@ import type {
 	AsyncParsedFiltersAndSort,
 	OnChangeLoadParams,
 	Params,
-	ParsedFiltersAndSort,
 } from "./types";
 
 type SyncListState = () => void;
@@ -48,7 +51,7 @@ const getFilterlistOptions = <Item, Additional, Error, FiltersAndSortData>(
 
 		return {
 			...params,
-			...(parseResult as ParsedFiltersAndSort),
+			...(parseResult as UpdateStateParams),
 			loadItems,
 		};
 	}
@@ -97,7 +100,7 @@ const initFilterlist = <Item, Additional, Error, FiltersAndSortData>(
 	);
 };
 
-const useFilterlist = <Item, Additional, Error, FiltersAndSortData>(
+export const useFilterlist = <Item, Additional, Error, FiltersAndSortData>(
 	params: Params<Item, Additional, Error, FiltersAndSortData>,
 	inputs: readonly unknown[] = [],
 ): [
@@ -232,5 +235,3 @@ const useFilterlist = <Item, Additional, Error, FiltersAndSortData>(
 
 	return [listState, filterlistRef.current || null];
 };
-
-export default useFilterlist;

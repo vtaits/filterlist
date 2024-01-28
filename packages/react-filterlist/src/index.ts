@@ -1,3 +1,3 @@
-export { default as useFilterlist } from "./useFilterlist";
+export { useFilterlist } from "./useFilterlist";
 
 export * from "./types";

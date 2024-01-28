@@ -58,9 +58,17 @@ export type Params<Item, Additional, Error> = Readonly<{
 	resetFiltersTo?: Readonly<Record<string, unknown>>;
 	saveFiltersOnResetAll?: readonly string[];
 	saveItemsWhileLoad?: boolean;
-	page?: number;
+	page?: number | null;
 	pageSize?: number | null;
 	total?: number | null;
+}>;
+
+export type UpdateStateParams = Readonly<{
+	filters?: Record<string, unknown>;
+	appliedFilters?: Record<string, unknown>;
+	sort?: Sort;
+	page?: number | null;
+	pageSize?: number | null;
 }>;
 
 export type EventType =

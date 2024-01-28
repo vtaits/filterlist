@@ -17,7 +17,7 @@ import type {
 	Options,
 	Params,
 	ShouldRequest,
-	Sort,
+	UpdateStateParams,
 } from "./types";
 
 export class Filterlist<Item, Additional, Error> {
@@ -477,11 +477,9 @@ export class Filterlist<Item, Additional, Error> {
 		filters,
 		appliedFilters,
 		sort,
-	}: {
-		filters?: Record<string, unknown>;
-		appliedFilters?: Record<string, unknown>;
-		sort?: Sort;
-	}): Promise<void> {
+		page,
+		pageSize,
+	}: UpdateStateParams): Promise<void> {
 		const prevListState = this.listState;
 		const stateBeforeChange = this.getListStateBeforeChange();
 
@@ -491,6 +489,8 @@ export class Filterlist<Item, Additional, Error> {
 			filters: filters || stateBeforeChange.filters,
 			appliedFilters: appliedFilters || stateBeforeChange.appliedFilters,
 			sort: sort || stateBeforeChange.sort,
+			page: page || stateBeforeChange.page,
+			pageSize: pageSize || stateBeforeChange.pageSize,
 		});
 
 		this.emitEvent(eventTypes.setFiltersAndSorting);

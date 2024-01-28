@@ -2277,7 +2277,7 @@ describe("public methods", () => {
 		expect(requestItemsMethod).toHaveBeenCalledTimes(1);
 	});
 
-	test("should set filters and sorting", async () => {
+	test("should update state and request", async () => {
 		const filterlist = new ManualFilterlist({
 			...defaultParams,
 
@@ -2316,6 +2316,9 @@ describe("public methods", () => {
 			additional: {
 				count: 3,
 			},
+
+			page: 3,
+			pageSize: 20,
 		};
 
 		filterlist.listState = nextState;
@@ -2337,6 +2340,9 @@ describe("public methods", () => {
 				param: "testParam2",
 				asc: true,
 			},
+
+			page: 5,
+			pageSize: 30,
 		});
 
 		expect(onChangeListStateMethod).toHaveBeenCalledTimes(1);
@@ -2358,6 +2364,9 @@ describe("public methods", () => {
 				param: "testParam2",
 				asc: true,
 			},
+
+			page: 5,
+			pageSize: 30,
 		};
 
 		expect(filterlist.listState).toEqual(expectedListState);
@@ -2407,6 +2416,9 @@ describe("public methods", () => {
 			additional: {
 				count: 3,
 			},
+
+			page: 3,
+			pageSize: 20,
 		};
 
 		filterlist.listState = nextState;
@@ -2417,6 +2429,8 @@ describe("public methods", () => {
 			filters: undefined,
 			appliedFilters: undefined,
 			sort: undefined,
+			page: undefined,
+			pageSize: undefined,
 		});
 
 		expect(onChangeListStateMethod).toHaveBeenCalledTimes(1);

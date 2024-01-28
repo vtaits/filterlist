@@ -12,9 +12,10 @@ import {
   useLocation,
 } from 'react-router-dom';
 
-import { type ParsedFiltersAndSort, useFilterlist } from '@vtaits/react-filterlist';
+import { useFilterlist } from '@vtaits/react-filterlist';
 import type {
   ListState,
+  UpdateStateParams,
 } from '@vtaits/filterlist';
 
 import { Page } from '../../../../examples/ui/Page';
@@ -83,7 +84,7 @@ export function UseFilterlist(): ReactElement | null {
       location: {
         search,
       },
-    }): Promise<ParsedFiltersAndSort> => {
+    }): Promise<UpdateStateParams> => {
       const parsed: Record<string, any> = qs.parse(search, {
         ignoreQueryPrefix: true,
       });
