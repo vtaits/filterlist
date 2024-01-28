@@ -1,7 +1,7 @@
 {
   "type": "module",
   "name": "@vtaits/react-filterlist",
-  "version": "0.4.0-alpha.1",
+  "version": "1.0.0",
   "description": "React wrapper above @vtaits/filterlist",
   "files": [
     "dist"
@@ -38,7 +38,7 @@
     "prepare": "yarn build"
   },
   "peerDependencies": {
-    "@vtaits/filterlist": "^0.3.0",
+    "@vtaits/filterlist": "^0.3.0 || ^1.0.0",
     "react": "^16.14.0 || ^17.0.0 || ^18.0.0"
   },
   "devDependencies": {
@@ -47,7 +47,7 @@
     "@types/qs": "^6.9.11",
     "@types/react": "^18.2.48",
     "@vitejs/plugin-react": "^4.2.1",
-    "@vtaits/filterlist": "^0.3.0",
+    "@vtaits/filterlist": "^1.0.0",
     "@vtaits/react-router-dom-fake-browser": "^1.0.0",
     "qs": "^6.11.2",
     "react": "^18.2.0",
