@@ -2,7 +2,7 @@
 # Manual changes might be lost - proceed with caution!
 
 __metadata:
-  version: 8
+  version: 6
   cacheKey: 10c0
 
 "@ampproject/remapping@npm:^2.2.0":
@@ -4213,22 +4213,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vtaits/filterlist@npm:^1.0.0, @vtaits/filterlist@workspace:packages/filterlist":
+"@vtaits/filterlist@^1.0.0, @vtaits/filterlist@workspace:packages/filterlist":
   version: 0.0.0-use.local
   resolution: "@vtaits/filterlist@workspace:packages/filterlist"
   dependencies:
-    "@biomejs/biome": "npm:^1.5.3"
-    "@storybook/react": "npm:^7.6.10"
-    "@types/qs": "npm:^6.9.11"
-    "@types/react": "npm:^18.2.48"
-    "@vtaits/react-router-dom-fake-browser": "npm:^1.0.0"
-    mitt: "npm:^3.0.1"
-    qs: "npm:^6.11.2"
-    react: "npm:^18.2.0"
-    react-router-dom: "npm:^6.21.3"
-    tsup: "npm:^8.0.1"
-    typescript: "npm:^5.3.3"
-    vitest: "npm:^1.2.2"
+    "@biomejs/biome": ^1.5.3
+    "@storybook/react": ^7.6.10
+    "@types/qs": ^6.9.11
+    "@types/react": ^18.2.48
+    "@vtaits/react-router-dom-fake-browser": ^1.0.0
+    mitt: ^3.0.1
+    qs: ^6.11.2
+    react: ^18.2.0
+    react-router-dom: ^6.21.3
+    tsup: ^8.0.1
+    typescript: ^5.3.3
+    vitest: ^1.2.2
   languageName: unknown
   linkType: soft
 
@@ -4251,22 +4251,22 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@vtaits/react-filterlist@workspace:packages/react-filterlist"
   dependencies:
-    "@biomejs/biome": "npm:^1.5.3"
-    "@storybook/react": "npm:^7.6.10"
-    "@types/qs": "npm:^6.9.11"
-    "@types/react": "npm:^18.2.48"
-    "@vitejs/plugin-react": "npm:^4.2.1"
-    "@vtaits/filterlist": "npm:^1.0.0"
-    "@vtaits/react-router-dom-fake-browser": "npm:^1.0.0"
-    is-promise: "npm:^4.0.0"
-    qs: "npm:^6.11.2"
-    react: "npm:^18.2.0"
-    react-dom: "npm:^18.2.0"
-    react-router-dom: "npm:^6.21.3"
-    tsup: "npm:^8.0.1"
-    typescript: "npm:^5.3.3"
-    use-latest: "npm:^1.2.1"
-    vitest: "npm:^1.2.2"
+    "@biomejs/biome": ^1.5.3
+    "@storybook/react": ^7.6.10
+    "@types/qs": ^6.9.11
+    "@types/react": ^18.2.48
+    "@vitejs/plugin-react": ^4.2.1
+    "@vtaits/filterlist": ^1.0.0
+    "@vtaits/react-router-dom-fake-browser": ^1.0.0
+    is-promise: ^4.0.0
+    qs: ^6.11.2
+    react: ^18.2.0
+    react-dom: ^18.2.0
+    react-router-dom: ^6.21.3
+    tsup: ^8.0.1
+    typescript: ^5.3.3
+    use-latest: ^1.2.1
+    vitest: ^1.2.2
   peerDependencies:
     "@vtaits/filterlist": ^0.3.0 || ^1.0.0
     react: ^16.14.0 || ^17.0.0 || ^18.0.0
@@ -6325,9 +6325,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fsevents@patch:fsevents@npm%3A^2.3.2#optional!builtin<compat/fsevents>, fsevents@patch:fsevents@npm%3A~2.3.2#optional!builtin<compat/fsevents>, fsevents@patch:fsevents@npm%3A~2.3.3#optional!builtin<compat/fsevents>":
+"fsevents@patch:fsevents@npm%3A^2.3.2#~builtin<compat/fsevents>, fsevents@patch:fsevents@npm%3A~2.3.2#~builtin<compat/fsevents>, fsevents@patch:fsevents@npm%3A~2.3.3#~builtin<compat/fsevents>":
   version: 2.3.3
-  resolution: "fsevents@patch:fsevents@npm%3A2.3.3#optional!builtin<compat/fsevents>::version=2.3.3&hash=df0bf1"
+  resolution: "fsevents@patch:fsevents@npm%3A2.3.3#~builtin<compat/fsevents>::version=2.3.3&hash=df0bf1"
   dependencies:
     node-gyp: "npm:latest"
   conditions: os=darwin
@@ -6832,9 +6832,9 @@ __metadata:
   linkType: hard
 
 "ip@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "ip@npm:2.0.0"
-  checksum: 8d186cc5585f57372847ae29b6eba258c68862055e18a75cc4933327232cb5c107f89800ce29715d542eef2c254fbb68b382e780a7414f9ee7caf60b7a473958
+  version: 2.0.1
+  resolution: "ip@npm:2.0.1"
+  checksum: 8/d765c9fd212b8a99023a4cde6a558a054c298d640fec1020567494d257afd78ca77e37126b1a3ef0e053646ced79a816bf50621d38d5e768cdde0431fa3b0d35
   languageName: node
   linkType: hard
 
@@ -9225,16 +9225,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"resolve@patch:resolve@npm%3A^1.10.0#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.14.2#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.22.1#optional!builtin<compat/resolve>":
+"resolve@patch:resolve@npm%3A^1.10.0#~builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.14.2#~builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.22.1#~builtin<compat/resolve>":
   version: 1.22.8
-  resolution: "resolve@patch:resolve@npm%3A1.22.8#optional!builtin<compat/resolve>::version=1.22.8&hash=c3c19d"
+  resolution: "resolve@patch:resolve@npm%3A1.22.8#~builtin<compat/resolve>::version=1.22.8&hash=c3c19d"
   dependencies:
     is-core-module: "npm:^2.13.0"
     path-parse: "npm:^1.0.7"
     supports-preserve-symlinks-flag: "npm:^1.0.0"
   bin:
     resolve: bin/resolve
-  checksum: 0446f024439cd2e50c6c8fa8ba77eaa8370b4180f401a96abf3d1ebc770ac51c1955e12764cde449fde3fff480a61f84388e3505ecdbab778f4bef5f8212c729
+  checksum: 8/5479b7d431cacd5185f8db64bfcb7286ae5e31eb299f4c4f404ad8aa6098b77599563ac4257cb2c37a42f59dfc06a1bec2bcf283bb448f319e37f0feb9a09847
   languageName: node
   linkType: hard
 
@@ -9367,35 +9367,35 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "root-workspace-0b6124@workspace:."
   dependencies:
-    "@biomejs/biome": "npm:^1.5.3"
-    "@faker-js/faker": "npm:^8.4.0"
-    "@fortawesome/fontawesome-svg-core": "npm:^6.5.1"
-    "@fortawesome/free-solid-svg-icons": "npm:^6.5.1"
-    "@fortawesome/react-fontawesome": "npm:^0.2.0"
-    "@storybook/addon-essentials": "npm:^7.6.10"
-    "@storybook/addon-interactions": "npm:^7.6.10"
-    "@storybook/addon-links": "npm:^7.6.10"
-    "@storybook/blocks": "npm:^7.6.10"
-    "@storybook/builder-vite": "npm:^7.6.10"
-    "@storybook/manager-api": "npm:^7.6.10"
-    "@storybook/react": "npm:^7.6.10"
-    "@storybook/react-vite": "npm:^7.6.10"
-    "@storybook/testing-library": "npm:^0.2.2"
-    "@types/gh-pages": "npm:^6"
-    "@types/react": "npm:^18.2.48"
-    "@vitejs/plugin-react": "npm:^4.2.1"
-    "@vtaits/react-paginator": "npm:^2.0.0"
-    "@vtaits/react-router-dom-fake-browser": "npm:^1.0.0"
-    gh-pages: "npm:^6.1.1"
-    husky: "npm:^9.0.6"
-    react: "npm:^18.2.0"
-    react-dom: "npm:^18.2.0"
-    react-is: "npm:^18.2.0"
-    storybook: "npm:^7.6.10"
-    styled-components: "npm:^6.1.8"
-    typedoc: "npm:^0.25.7"
-    typescript: "npm:^5.3.3"
-    vite: "npm:5.0.12"
+    "@biomejs/biome": ^1.5.3
+    "@faker-js/faker": ^8.4.0
+    "@fortawesome/fontawesome-svg-core": ^6.5.1
+    "@fortawesome/free-solid-svg-icons": ^6.5.1
+    "@fortawesome/react-fontawesome": ^0.2.0
+    "@storybook/addon-essentials": ^7.6.10
+    "@storybook/addon-interactions": ^7.6.10
+    "@storybook/addon-links": ^7.6.10
+    "@storybook/blocks": ^7.6.10
+    "@storybook/builder-vite": ^7.6.10
+    "@storybook/manager-api": ^7.6.10
+    "@storybook/react": ^7.6.10
+    "@storybook/react-vite": ^7.6.10
+    "@storybook/testing-library": ^0.2.2
+    "@types/gh-pages": ^6
+    "@types/react": ^18.2.48
+    "@vitejs/plugin-react": ^4.2.1
+    "@vtaits/react-paginator": ^2.0.0
+    "@vtaits/react-router-dom-fake-browser": ^1.0.0
+    gh-pages: ^6.1.1
+    husky: ^9.0.6
+    react: ^18.2.0
+    react-dom: ^18.2.0
+    react-is: ^18.2.0
+    storybook: ^7.6.10
+    styled-components: ^6.1.8
+    typedoc: ^0.25.7
+    typescript: ^5.3.3
+    vite: 5.0.12
   languageName: unknown
   linkType: soft
 
@@ -10354,13 +10354,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@npm%3A^5.3.3#optional!builtin<compat/typescript>":
+"typescript@patch:typescript@^5.3.3#~builtin<compat/typescript>":
   version: 5.3.3
-  resolution: "typescript@patch:typescript@npm%3A5.3.3#optional!builtin<compat/typescript>::version=5.3.3&hash=e012d7"
+  resolution: "typescript@patch:typescript@npm%3A5.3.3#~builtin<compat/typescript>::version=5.3.3&hash=e012d7"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: 1d0a5f4ce496c42caa9a30e659c467c5686eae15d54b027ee7866744952547f1be1262f2d40de911618c242b510029d51d43ff605dba8fb740ec85ca2d3f9500
+  checksum: 8/4e604a9e107ce0c23b16a2f8d79d0531d4d8fe9ebbb7a8c395c66998c39892f0e0a071ef0b0d4e66420a8ec2b8d6cfd9cdb29ba24f25b37cba072e9282376df9
   languageName: node
   linkType: hard
 
