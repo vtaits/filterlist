@@ -141,7 +141,6 @@ export function Page({
 							</div>
 
 							<ItemsPerPage
-								name="pageSize"
 								value={pageSize}
 								setPageSize={setPageSize}
 							/>

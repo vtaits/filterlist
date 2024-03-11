@@ -1,6 +1,6 @@
 import type {
-	ListState,
 	Params as BaseParams,
+	ListState,
 	UpdateStateParams,
 } from "@vtaits/filterlist";
 

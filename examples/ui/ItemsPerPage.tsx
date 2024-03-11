@@ -28,13 +28,11 @@ const StyledSelect = styled.select({
 });
 
 type ItemsPerPageProps = Readonly<{
-	name: string;
 	value: number;
 	setPageSize: (pageSize: number | null | undefined) => Promise<void>;
 }>;
 
 function ItemsPerPageInner({
-	name,
 	value,
 	setPageSize,
 }: ItemsPerPageProps): ReactElement {
@@ -42,7 +40,7 @@ function ItemsPerPageInner({
 		(event: SyntheticEvent) => {
 			setPageSize(Number((event.target as HTMLInputElement).value));
 		},
-		[name, setPageSize],
+		[setPageSize],
 	);
 
 	return (

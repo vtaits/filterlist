@@ -44,16 +44,16 @@
     "mitt": "^3.0.1"
   },
   "devDependencies": {
-    "@biomejs/biome": "^1.5.3",
-    "@storybook/react": "^7.6.10",
-    "@types/qs": "^6.9.11",
-    "@types/react": "^18.2.48",
+    "@biomejs/biome": "^1.6.0",
+    "@storybook/react": "^8.0.0",
+    "@types/qs": "^6.9.12",
+    "@types/react": "^18.2.64",
     "@vtaits/react-router-dom-fake-browser": "^1.0.0",
-    "qs": "^6.11.2",
+    "qs": "^6.12.0",
     "react": "^18.2.0",
-    "react-router-dom": "^6.21.3",
-    "tsup": "^8.0.1",
-    "typescript": "^5.3.3",
-    "vitest": "^1.2.2"
+    "react-router-dom": "^6.22.3",
+    "tsup": "^8.0.2",
+    "typescript": "^5.4.2",
+    "vitest": "^1.3.1"
   }
 }
