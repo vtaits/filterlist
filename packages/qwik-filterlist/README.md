@@ -1,35 +1,32 @@
-[![NPM](https://img.shields.io/npm/v/@vtaits/react-filterlist.svg)](https://www.npmjs.com/package/@vtaits/react-filterlist)
-![dependencies status](https://img.shields.io/librariesio/release/npm/@vtaits/react-filterlist)
-[![Types](https://img.shields.io/npm/types/@vtaits/react-filterlist.svg)](https://www.npmjs.com/package/@vtaits/react-filterlist)
+[![NPM](https://img.shields.io/npm/v/@vtaits/qwik-filterlist.svg)](https://www.npmjs.com/package/@vtaits/qwik-filterlist)
+![dependencies status](https://img.shields.io/librariesio/release/npm/@vtaits/qwik-filterlist)
+[![Types](https://img.shields.io/npm/types/@vtaits/qwik-filterlist.svg)](https://www.npmjs.com/package/@vtaits/qwik-filterlist)
 
-# @vtaits/react-filterlist
+# @vtaits/qwik-filterlist
 
-React wrapper above [@vtaits/filterlist](https://www.npmjs.com/package/@vtaits/filterlist).
-
-## Sandbox examples
-
-- Table with filters: [demo](https://kto5e.csb.app/), [source](https://codesandbox.io/s/example-kto5e)
+Qwik wrapper above [@vtaits/filterlist](https://www.npmjs.com/package/@vtaits/filterlist).
 
 ## Installation
 
 ```
-npm install @vtaits/filterlist @vtaits/react-filterlist --save
+npm install @vtaits/filterlist @vtaits/qwik-filterlist --save
 ```
 
 or
 
 ```
-yarn add @vtaits/filterlist @vtaits/react-filterlist
+yarn add @vtaits/filterlist @vtaits/qwik-filterlist
 ```
 
 ## Simple examples
 
 ```typescript
-import { useFilterlist } from '@vtaits/react-filterlist';
+import { $, component$ } from "@builder.io/qwik";
+import { useFilterlist } from "@vtaits/qwik-filterlist";
 
-function List() {
+const List = component(() => {
   const [listState, filterlist] = useFilterlist({
-    loadItems: async () => {
+    loadItems$: $(async () => {
       const response = await fetch('/cars');
       const cars = await response.json();
 
@@ -37,14 +34,14 @@ function List() {
         items: cars,
 				total: cars.length,
       };
-    },
+    }),
   });
 
   const {
     items,
     loading,
     total,
-  } = listState;
+  } = listState.value;
 
   return (
     <div>
@@ -66,11 +63,11 @@ function List() {
               owner,
               color,
             }) => (
-              <tr key={ id }>
-                <td>{ id }</td>
-                <td>{ brand }</td>
-                <td>{ owner }</td>
-                <td>{ color }</td>
+              <tr key={id}>
+                <td>{id}</td>
+                <td>{brand}</td>
+                <td>{owner}</td>
+                <td>{color}</td>
               </tr>
             ))
           }
@@ -92,23 +89,24 @@ function List() {
       }
     </div>
   );
-};
+});
 ```
 
 ## Api
 
 ```typescript
-import { useFilterlist } from '@vtaits/react-filterlist';
+import { useFilterlist } from "@vtaits/qwik-filterlist";
 
 // ...
 
 const [listState, filterlist] = useFilterlist({
   ...options,
-  parseFiltersAndSort,
+  loadItems$,
+  parseFiltersAndSort$,
   filtersAndSortData,
   shouldRecount,
   isRecountAsync,
-  onChangeLoadParams,
+  onChangeLoadParams$,
   canInit,
 });
 ```
@@ -119,7 +117,7 @@ const [listState, filterlist] = useFilterlist({
 
 - **options** - options of [@vtaits/filterlist](https://www.npmjs.com/package/@vtaits/filterlist)
 
-- **parseFiltersAndSort** - function, receives `filtersAndSortData` as first argument, should return params for call `filtersAndSortData` method of [@vtaits/filterlist](https://www.npmjs.com/package/@vtaits/filterlist)
+- **parseFiltersAndSort$** - QRL function, receives `filtersAndSortData` as first argument, should return params for call `filtersAndSortData` method of [@vtaits/filterlist](https://www.npmjs.com/package/@vtaits/filterlist)
 
 - **filtersAndSortData** - see above
 
@@ -127,6 +125,6 @@ const [listState, filterlist] = useFilterlist({
 
 - **isRecountAsync** - boolean, is `parseFiltersAndSort` async, false by default
 
-- **onChangeLoadParams** - function, callback of `changeLoadParams` event of [@vtaits/filterlist](https://www.npmjs.com/package/@vtaits/filterlist)
+- **onChangeLoadParams$** - QRL function, callback of `changeLoadParams` event of [@vtaits/filterlist](https://www.npmjs.com/package/@vtaits/filterlist)
 
 - **canInit** - boolean, filterlist will not be initialized until `canInit` is `true`

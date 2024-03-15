@@ -14,6 +14,8 @@ Util for creating lists with filters, sotring, paginatinon, endless scroll etc.
 
 - [Integration with react](https://github.com/vtaits/filterlist/tree/master/packages/react-filterlist)
 
+- [Integration with qwik](https://github.com/vtaits/filterlist/tree/master/packages/qwik-filterlist)
+
 ## Local development
 
 Repository is using [yarn berry](https://yarnpkg.com/getting-started).

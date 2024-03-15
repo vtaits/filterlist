@@ -4,7 +4,8 @@
   "version": "1.0.0",
   "description": "Qwik wrapper above @vtaits/filterlist",
   "files": [
-    "dist"
+    "lib",
+    "lib-types"
   ],
   "main": "./lib/index.qwik.mjs",
   "qwik": "./lib/index.qwik.mjs",
@@ -27,7 +28,7 @@
     "filter",
     "sort",
     "pagination",
-    "react"
+    "qwik"
   ],
   "scripts": {
     "build": "yarn build:lib && yarn build:types",
