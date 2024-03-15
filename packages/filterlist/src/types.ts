@@ -1,5 +1,3 @@
-import type { LoadListError } from "./errors";
-
 export type Sort = Readonly<{
 	param?: string | null;
 	asc: boolean;

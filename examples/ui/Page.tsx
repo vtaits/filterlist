@@ -1,4 +1,5 @@
-import { type ReactElement, useCallback } from "react";
+/** @jsxImportSource react */
+import type { ReactElement } from "react";
 
 import styled from "styled-components";
 
@@ -31,7 +32,7 @@ type PageProps = Readonly<{
 	setPageSize: (pageSize: number | null | undefined) => Promise<void>;
 	resetAllFilters: () => Promise<void>;
 	reload: () => Promise<void>;
-	setSorting: (param: string) => void;
+	setSorting: (param: string, asc?: boolean) => void;
 	isInfinity?: boolean;
 	loadMore?: () => void;
 }>;
@@ -131,7 +132,7 @@ export function Page({
 					) : (
 						<>
 							<div>
-								{total && total > 0 && (
+								{typeof total === "number" && total > 0 && (
 									<Paginator
 										page={page}
 										pageCount={Math.ceil(total / pageSize)}
@@ -140,10 +141,7 @@ export function Page({
 								)}
 							</div>
 
-							<ItemsPerPage
-								value={pageSize}
-								setPageSize={setPageSize}
-							/>
+							<ItemsPerPage value={pageSize} setPageSize={setPageSize} />
 						</>
 					)}
 				</StyledBottomBlock>

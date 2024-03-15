@@ -1,3 +1,4 @@
+/** @jsxImportSource react */
 import { type ReactElement, type ReactNode, memo, useCallback } from "react";
 
 import styled from "styled-components";

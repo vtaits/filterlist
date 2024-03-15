@@ -26,7 +26,6 @@ import type {
 
 import type {
   ItemsLoader,
-  Sort,
 } from '../../src/types';
 
 const getStateFromSearch = (search: string): UpdateStateParams => {

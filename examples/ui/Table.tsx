@@ -1,3 +1,4 @@
+/** @jsxImportSource react */
 import { type ReactElement, memo } from "react";
 
 import styled from "styled-components";
@@ -23,11 +24,11 @@ const StyledTd = styled.td({
 	},
 });
 
-type TableProps = {
-	readonly sort: Sort;
-	readonly items: readonly User[];
-	readonly setSorting: (param: string) => void;
-};
+type TableProps = Readonly<{
+	sort: Sort;
+	items: readonly User[];
+	setSorting: (param: string) => void;
+}>;
 
 function TableInner({ sort, items, setSorting }: TableProps): ReactElement {
 	return (
@@ -73,7 +74,7 @@ function TableInner({ sort, items, setSorting }: TableProps): ReactElement {
 			</thead>
 
 			<tbody>
-				{items.map(({ id, name, email, city }: User) => (
+				{items.map(({ id, name, email, city }) => (
 					<tr key={id}>
 						<StyledTd>{id}</StyledTd>
 						<StyledTd>{name}</StyledTd>

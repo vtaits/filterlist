@@ -1,3 +1,4 @@
+/** @jsxImportSource react */
 import type { ReactElement } from "react";
 
 import styled from "styled-components";
@@ -22,14 +23,14 @@ const StyledResetWrapper = styled.div({
 	gap: 20,
 });
 
-type FiltersProps = {
-	readonly filters: Readonly<Record<string, unknown>>;
-	readonly setFilterValue: (filterName: string, value: unknown) => void;
-	readonly resetFilter: (filterName: string) => Promise<void>;
-	readonly applyFilter: (filterName: string) => Promise<void>;
-	readonly resetAllFilters: () => Promise<void>;
-	readonly reload: () => Promise<void>;
-};
+type FiltersProps = Readonly<{
+	filters: Readonly<Record<string, unknown>>;
+	setFilterValue: (filterName: string, value: unknown) => void;
+	resetFilter: (filterName: string) => Promise<void>;
+	applyFilter: (filterName: string) => Promise<void>;
+	resetAllFilters: () => Promise<void>;
+	reload: () => Promise<void>;
+}>;
 
 export function Filters({
 	filters,

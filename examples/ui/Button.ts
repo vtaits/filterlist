@@ -1,3 +1,4 @@
+/** @jsxImportSource react */
 import styled from "styled-components";
 
 type ButtonType = "default" | "danger";

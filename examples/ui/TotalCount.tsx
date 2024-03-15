@@ -1,3 +1,4 @@
+/** @jsxImportSource react */
 import type { ReactElement } from "react";
 
 import styled from "styled-components";

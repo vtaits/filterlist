@@ -1,0 +1,34 @@
+{
+  "name": "qwik-filterlist-example",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "serve dist",
+    "lint": "biome check src",
+    "lint:fix": "biome check src --apply-unsafe",
+    "format": "biome format src --write",
+    "test:ts": "tsc --noEmit",
+    "test:unit": "echo pass",
+    "test:unit:dev": "echo pass",
+    "test": "echo pass"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.6.1",
+    "serve": "^14.2.1",
+    "typescript": "^5.2.2",
+    "vite": "^5.1.6"
+  },
+  "dependencies": {
+    "@builder.io/qwik": "^1.5.1",
+    "@builder.io/qwik-react": "^0.5.4",
+    "@fortawesome/free-solid-svg-icons": "^6.5.1",
+    "@fortawesome/react-fontawesome": "^0.2.0",
+    "@vtaits/filterlist": "^1.0.0",
+    "@vtaits/qwik-filterlist": "^1.0.0",
+    "@vtaits/react-paginator": "^2.0.0",
+    "clsx": "^2.1.0"
+  }
+}
