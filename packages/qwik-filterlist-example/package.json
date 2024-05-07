@@ -16,19 +16,19 @@
     "test": "echo pass"
   },
   "devDependencies": {
-    "@biomejs/biome": "^1.6.1",
-    "serve": "^14.2.1",
-    "typescript": "^5.2.2",
-    "vite": "^5.1.7"
+    "@biomejs/biome": "^1.7.3",
+    "serve": "^14.2.3",
+    "typescript": "^5.4.5",
+    "vite": "^5.2.11"
   },
   "dependencies": {
-    "@builder.io/qwik": "^1.5.1",
+    "@builder.io/qwik": "1.5.2",
     "@builder.io/qwik-react": "^0.5.4",
-    "@fortawesome/free-solid-svg-icons": "^6.5.1",
+    "@fortawesome/free-solid-svg-icons": "^6.5.2",
     "@fortawesome/react-fontawesome": "^0.2.0",
     "@vtaits/filterlist": "^1.0.0",
     "@vtaits/qwik-filterlist": "^1.0.0",
     "@vtaits/react-paginator": "^2.0.0",
-    "clsx": "^2.1.0"
+    "clsx": "^2.1.1"
   }
 }
