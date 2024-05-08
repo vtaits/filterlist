@@ -48,6 +48,7 @@ export type ListState<Item, Additional, Error> = Readonly<{
 
 export type Options = Readonly<{
 	autoload: boolean;
+	debounceTimeout?: number;
 	isDefaultSortAsc: boolean;
 	alwaysResetFilters: Readonly<Record<string, unknown>>;
 	resetFiltersTo: Readonly<Record<string, unknown>>;
@@ -126,6 +127,10 @@ export type Params<Item, Additional, Error> = Readonly<{
 	 * @default true
 	 */
 	autoload?: boolean;
+	/**
+	 * debounce timeout to prevent extra requests
+	 */
+	debounceTimeout?: number;
 	/**
 	 * default `asc` param after change sorting column
 	 *

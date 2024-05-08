@@ -1,14 +1,11 @@
 import mitt from "mitt";
 import type { Emitter } from "mitt";
-
+import sleep from "sleep-promise";
+import { arrayInsert } from "./arrayInsert";
 import { collectListInitialState } from "./collectListInitialState";
 import { collectOptions } from "./collectOptions";
-
-import { arrayInsert } from "./arrayInsert";
-
 import { LoadListError } from "./errors";
 import * as eventTypes from "./eventTypes";
-
 import type {
 	EventType,
 	ItemsLoader,
@@ -564,6 +561,16 @@ export class Filterlist<Item, Additional, Error> {
 
 		const nextRequestId = this.requestId + 1;
 		++this.requestId;
+
+		const { debounceTimeout } = this.options;
+
+		if (debounceTimeout) {
+			await sleep(debounceTimeout);
+		}
+
+		if (this.requestId !== nextRequestId) {
+			return;
+		}
 
 		this.emitEvent(eventTypes.requestItems);
 

@@ -1,12 +1,13 @@
+import sleep from "sleep-promise";
 import { afterEach, describe, expect, test, vi } from "vitest";
-
 import { Filterlist } from "./Filterlist";
-
 import { collectListInitialState } from "./collectListInitialState";
 import { collectOptions } from "./collectOptions";
 import { LoadListError } from "./errors";
 import * as eventTypes from "./eventTypes";
 import type { ItemsLoaderResponse, ListState } from "./types";
+
+vi.mock("sleep-promise");
 
 // biome-ignore lint/suspicious/noExplicitAny: stub for any filterlist
 const testListState: ListState<any, any, any> = {
@@ -345,6 +346,51 @@ describe("requestItems", () => {
 		await filterlist.manualRequestItems(testListState);
 
 		expect(onRequestItems).toHaveBeenCalledTimes(1);
+	});
+
+	test("should not debounce requests", async () => {
+		const filterlist = new ManualFilterlist({
+			...defaultParams,
+		});
+
+		const onRequestItems = vi.fn(() => {
+			callsSequence.push("onRequestItems");
+		});
+
+		filterlist.emitter.on(eventTypes.requestItems, onRequestItems);
+
+		await Promise.all([
+			filterlist.manualRequestItems(testListState),
+			filterlist.manualRequestItems(testListState),
+		]);
+
+		expect(onRequestItems).toHaveBeenCalledTimes(2);
+
+		expect(sleep).toHaveBeenCalledTimes(0);
+	});
+
+	test("should debounce requests", async () => {
+		const filterlist = new ManualFilterlist({
+			...defaultParams,
+			debounceTimeout: 100,
+		});
+
+		const onRequestItems = vi.fn(() => {
+			callsSequence.push("onRequestItems");
+		});
+
+		filterlist.emitter.on(eventTypes.requestItems, onRequestItems);
+
+		await Promise.all([
+			filterlist.manualRequestItems(testListState),
+			filterlist.manualRequestItems(testListState),
+		]);
+
+		expect(onRequestItems).toHaveBeenCalledTimes(1);
+
+		expect(sleep).toHaveBeenCalledTimes(2);
+		expect(sleep).toHaveBeenNthCalledWith(1, 100);
+		expect(sleep).toHaveBeenNthCalledWith(2, 100);
 	});
 
 	test("should request items successfully", async () => {

@@ -3656,6 +3656,7 @@ __metadata:
     qs: "npm:^6.12.1"
     react: "npm:^18.3.1"
     react-router-dom: "npm:^6.23.0"
+    sleep-promise: "npm:^9.1.0"
     tsup: "npm:^8.0.2"
     typescript: "npm:^5.4.5"
     vitest: "npm:^1.6.0"
@@ -8733,6 +8734,7 @@ __metadata:
     react: "npm:^18.3.1"
     react-dom: "npm:^18.3.1"
     react-is: "npm:^18.3.1"
+    serve: "npm:^14.2.3"
     storybook: "npm:^8.0.10"
     styled-components: "npm:^6.1.9"
     typedoc: "npm:^0.25.13"
@@ -8999,6 +9001,13 @@ __metadata:
   version: 3.0.0
   resolution: "slash@npm:3.0.0"
   checksum: 10/94a93fff615f25a999ad4b83c9d5e257a7280c90a32a7cb8b4a87996e4babf322e469c42b7f649fd5796edd8687652f3fb452a86dc97a816f01113183393f11c
+  languageName: node
+  linkType: hard
+
+"sleep-promise@npm:^9.1.0":
+  version: 9.1.0
+  resolution: "sleep-promise@npm:9.1.0"
+  checksum: 10/6b5e214dacacd72c5491b3be7313027c264426488b64c2b1beab6bd59e2ef493720c69facf1dba7d4003482e3b2379d3fc0e9a8894a5993d9c61b2e9ba3fff54
   languageName: node
   linkType: hard
 

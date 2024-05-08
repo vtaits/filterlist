@@ -22,6 +22,7 @@
     "validate": "yarn format && yarn build && yarn test",
     "upload:docs": "gh-pages -d docs",
     "build:docs": "typedoc ./docs-entry.ts",
+    "start:docs": "serve ./docs",
     "deploy:docs": "yarn build:docs && yarn upload:docs",
     "prepare": "husky install"
   },
@@ -50,6 +51,7 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-is": "^18.3.1",
+    "serve": "^14.2.3",
     "storybook": "^8.0.10",
     "styled-components": "^6.1.9",
     "typedoc": "^0.25.13",

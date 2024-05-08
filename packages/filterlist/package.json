@@ -41,7 +41,8 @@
     "prepare": "yarn build"
   },
   "dependencies": {
-    "mitt": "^3.0.1"
+    "mitt": "^3.0.1",
+    "sleep-promise": "^9.1.0"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.7.3",

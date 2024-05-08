@@ -1,3 +1,9 @@
+## 1.1.0
+
+### New features
+
+* Added param `debounceTimeout`
+
 ## 1.0.0 (28 jan 2024)
 
 ### New features
