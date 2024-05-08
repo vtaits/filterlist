@@ -1,3 +1,9 @@
+## 1.2.0 (08 may 2024)
+
+### Improvement
+
+* Support `@vtaits/filterlist@^1.1.0`
+
 ## 1.1.0 (08 may 2024)
 
 ### New features

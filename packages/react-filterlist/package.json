@@ -1,7 +1,7 @@
 {
   "type": "module",
   "name": "@vtaits/react-filterlist",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "React wrapper above @vtaits/filterlist",
   "files": [
     "dist"
@@ -50,7 +50,7 @@
     "@types/qs": "^6.9.15",
     "@types/react": "^18.3.1",
     "@vitejs/plugin-react": "^4.2.1",
-    "@vtaits/filterlist": "^1.0.0",
+    "@vtaits/filterlist": "^1.1.0",
     "@vtaits/react-router-dom-fake-browser": "^1.0.0",
     "qs": "^6.12.1",
     "react": "^18.3.1",
