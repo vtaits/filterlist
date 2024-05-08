@@ -9,6 +9,9 @@ import type { ItemsLoaderResponse, ListState } from "./types";
 
 vi.mock("sleep-promise");
 
+vi.spyOn(global, "setTimeout");
+vi.spyOn(global, "clearTimeout");
+
 // biome-ignore lint/suspicious/noExplicitAny: stub for any filterlist
 const testListState: ListState<any, any, any> = {
 	items: ["test"],
@@ -125,12 +128,7 @@ class ManualFilterlist<Item, Additional, Error> extends Filterlist<
 afterEach(() => {
 	callsSequence = [];
 
-	loadItemsOnInitMethod.mockClear();
-	onInitMethod.mockClear();
-	requestItemsMethod.mockClear();
-	onSuccessMethod.mockClear();
-	onErrorMethod.mockClear();
-	onChangeListStateMethod.mockClear();
+	vi.clearAllMocks();
 });
 
 test("should throw an exception if loadItems is not defined", () => {
@@ -391,6 +389,136 @@ describe("requestItems", () => {
 		expect(sleep).toHaveBeenCalledTimes(2);
 		expect(sleep).toHaveBeenNthCalledWith(1, 100);
 		expect(sleep).toHaveBeenNthCalledWith(2, 100);
+	});
+
+	test("clear refresh timeout before request", async () => {
+		const testResponse = {
+			items: [1, 2, 3],
+
+			additional: {
+				count: 3,
+			},
+		};
+
+		const loadItems = vi.fn(() => {
+			expect(clearTimeout).toHaveBeenCalledTimes(1);
+			expect(clearTimeout).toHaveBeenCalledWith(10000);
+
+			callsSequence.push("itemsLoader");
+
+			return testResponse;
+		});
+
+		const filterlist = new ManualFilterlist({
+			...defaultParams,
+			loadItems,
+		});
+
+		filterlist.refreshTimeoutId = 10000 as unknown as ReturnType<
+			typeof setTimeout
+		>;
+
+		const onRequestItems = vi.fn(() => {
+			callsSequence.push("onRequestItems");
+		});
+
+		filterlist.emitter.on(eventTypes.requestItems, onRequestItems);
+
+		await filterlist.manualRequestItems(testListState);
+
+		expect(onRequestItems).toHaveBeenCalledTimes(1);
+
+		expect(clearTimeout).toHaveBeenCalledTimes(1);
+	});
+
+	test("clear refresh timeout after request", async () => {
+		const testResponse = {
+			items: [1, 2, 3],
+
+			additional: {
+				count: 3,
+			},
+		};
+
+		const loadItems = vi.fn(() => {
+			expect(clearTimeout).toHaveBeenCalledTimes(0);
+
+			filterlist.refreshTimeoutId = 10000 as unknown as ReturnType<
+				typeof setTimeout
+			>;
+
+			callsSequence.push("itemsLoader");
+
+			return testResponse;
+		});
+
+		const filterlist = new ManualFilterlist({
+			...defaultParams,
+			loadItems,
+		});
+
+		const onRequestItems = vi.fn(() => {
+			callsSequence.push("onRequestItems");
+		});
+
+		filterlist.emitter.on(eventTypes.requestItems, onRequestItems);
+
+		await filterlist.manualRequestItems(testListState);
+
+		expect(onRequestItems).toHaveBeenCalledTimes(1);
+
+		expect(clearTimeout).toHaveBeenCalledTimes(1);
+		expect(clearTimeout).toHaveBeenCalledWith(10000);
+	});
+
+	test("not set refresh timeout after request if `requestTimeout` is not provided", async () => {
+		const filterlist = new ManualFilterlist({
+			...defaultParams,
+		});
+
+		const onRequestItems = vi.fn(() => {
+			callsSequence.push("onRequestItems");
+		});
+
+		filterlist.emitter.on(eventTypes.requestItems, onRequestItems);
+
+		await filterlist.manualRequestItems(testListState);
+
+		expect(onRequestItems).toHaveBeenCalledTimes(1);
+
+		expect(setTimeout).toHaveBeenCalledTimes(0);
+	});
+
+	test("set refresh timeout after request if `requestTimeout` is provided", async () => {
+		const filterlist = new ManualFilterlist({
+			...defaultParams,
+			refreshTimeout: 5000,
+		});
+
+		vi.mocked(setTimeout).mockReturnValue(
+			10000 as unknown as ReturnType<typeof setTimeout>,
+		);
+
+		const onRequestItems = vi.fn(() => {
+			callsSequence.push("onRequestItems");
+		});
+
+		filterlist.emitter.on(eventTypes.requestItems, onRequestItems);
+
+		await filterlist.manualRequestItems(testListState);
+
+		expect(onRequestItems).toHaveBeenCalledTimes(1);
+
+		expect(filterlist.refreshTimeoutId).toBe(10000);
+
+		expect(setTimeout).toHaveBeenCalledTimes(1);
+		expect(vi.mocked(setTimeout).mock.calls[0][1]).toBe(5000);
+
+		filterlist.reload = vi.fn();
+
+		vi.mocked(setTimeout).mock.calls[0][0]();
+
+		expect(filterlist.reload).toHaveBeenCalledTimes(1);
 	});
 
 	test("should request items successfully", async () => {
@@ -2927,5 +3055,35 @@ describe("public methods", () => {
 		expect(nextState.additional).toEqual({
 			count: 4,
 		});
+	});
+});
+
+describe("destroy", () => {
+	test("clear refresh timeout", () => {
+		const filterlist = new ManualFilterlist({
+			...defaultParams,
+		});
+
+		filterlist.refreshTimeoutId = 10000 as unknown as ReturnType<
+			typeof setTimeout
+		>;
+
+		filterlist.destroy();
+
+		expect(clearTimeout).toHaveBeenCalledTimes(1);
+		expect(clearTimeout).toHaveBeenCalledWith(
+			10000 as unknown as ReturnType<typeof setTimeout>,
+		);
+	});
+
+	test("clear subscriptions", () => {
+		const filterlist = new ManualFilterlist({
+			...defaultParams,
+		});
+
+		filterlist.emitter.on(eventTypes.setFilterValue, () => {});
+		filterlist.destroy();
+
+		expect([...filterlist.emitter.all].length).toBe(0);
 	});
 });

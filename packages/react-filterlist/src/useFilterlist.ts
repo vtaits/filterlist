@@ -226,6 +226,8 @@ export const useFilterlist = <Item, Additional, Error, FiltersAndSortData>(
 			if (filterlistRef.current) {
 				filterlistRef.current.emitter.off(eventTypes.changeListState);
 				filterlistRef.current.emitter.off(eventTypes.changeLoadParams);
+
+				filterlistRef.current.destroy();
 			}
 
 			filterlistRef.current = undefined;

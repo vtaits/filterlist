@@ -3,6 +3,8 @@
 ### New features
 
 * Added param `debounceTimeout`
+* Added param `refreshTimeout`
+* Added `destroy` method
 
 ## 1.0.0 (28 jan 2024)
 

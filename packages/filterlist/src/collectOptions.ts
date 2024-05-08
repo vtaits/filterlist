@@ -5,6 +5,7 @@ export const defaultOptions: Options = {
 	autoload: true,
 	debounceTimeout: undefined,
 	isDefaultSortAsc: true,
+	refreshTimeout: undefined,
 	resetFiltersTo: {},
 	saveFiltersOnResetAll: [],
 	saveItemsWhileLoad: false,
@@ -29,6 +30,8 @@ export const collectOptions = <Item, Additional, Error>(
 
 	alwaysResetFilters:
 		params.alwaysResetFilters || defaultOptions.alwaysResetFilters,
+
+	refreshTimeout: params.refreshTimeout,
 
 	resetFiltersTo: params.resetFiltersTo || defaultOptions.resetFiltersTo,
 

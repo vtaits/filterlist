@@ -5,17 +5,13 @@ import {
   useCallback,
   useSyncExternalStore,
 } from 'react';
-
 import qs from 'qs';
-
 import {
   useNavigate,
   useNavigationType,
   useLocation,
 } from 'react-router-dom';
-
 import { Filterlist, type ListState, eventTypes, UpdateStateParams } from '@vtaits/filterlist';
-
 import { Page } from '../../../../examples/ui/Page';
 import * as api from '../../../../examples/api';
 
@@ -98,6 +94,7 @@ export function AllFeatures(): ReactElement {
       ...stateFromSearch,
       page: stateFromSearch.page ? Number(stateFromSearch.page) : 1,
       pageSize: stateFromSearch.pageSize ? Number(stateFromSearch.pageSize) : 10,
+      refreshTimeout: 10000,
     });
   });
 

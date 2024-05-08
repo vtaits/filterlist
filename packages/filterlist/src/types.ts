@@ -51,6 +51,7 @@ export type Options = Readonly<{
 	debounceTimeout?: number;
 	isDefaultSortAsc: boolean;
 	alwaysResetFilters: Readonly<Record<string, unknown>>;
+	refreshTimeout?: number;
 	resetFiltersTo: Readonly<Record<string, unknown>>;
 	saveFiltersOnResetAll: readonly string[];
 	saveItemsWhileLoad: boolean;
@@ -163,6 +164,10 @@ export type Params<Item, Additional, Error> = Readonly<{
 	 * initial size of the page
 	 */
 	pageSize?: number | null;
+	/**
+	 * timeout to refresh the list
+	 */
+	refreshTimeout?: number;
 	/**
 	 * total count of items
 	 */

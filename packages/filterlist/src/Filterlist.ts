@@ -1,5 +1,4 @@
-import mitt from "mitt";
-import type { Emitter } from "mitt";
+import mitt, { type Emitter } from "mitt";
 import sleep from "sleep-promise";
 import { arrayInsert } from "./arrayInsert";
 import { collectListInitialState } from "./collectListInitialState";
@@ -26,6 +25,8 @@ export class Filterlist<Item, Additional, Error> {
 
 	itemsLoader: ItemsLoader<Item, Additional, Error>;
 
+	refreshTimeoutId: ReturnType<typeof setTimeout> | null = null;
+
 	shouldRequest?: ShouldRequest<Item, Additional, Error>;
 
 	emitter: Emitter<Record<EventType, ListState<Item, Additional, Error>>>;
@@ -51,6 +52,15 @@ export class Filterlist<Item, Additional, Error> {
 		this.options = collectOptions(params);
 
 		this.onInit();
+	}
+
+	destroy() {
+		if (this.refreshTimeoutId) {
+			clearTimeout(this.refreshTimeoutId);
+			this.refreshTimeoutId = null;
+		}
+
+		this.emitter.all.clear();
 	}
 
 	getListStateBeforeReload(): ListState<Item, Additional, Error> {
@@ -572,6 +582,11 @@ export class Filterlist<Item, Additional, Error> {
 			return;
 		}
 
+		if (this.refreshTimeoutId) {
+			clearTimeout(this.refreshTimeoutId);
+			this.refreshTimeoutId = null;
+		}
+
 		this.emitEvent(eventTypes.requestItems);
 
 		let response: ItemsLoaderResponse<Item, Additional> | undefined;
@@ -584,6 +599,19 @@ export class Filterlist<Item, Additional, Error> {
 
 		if (this.requestId !== nextRequestId) {
 			return;
+		}
+
+		const { refreshTimeout } = this.options;
+
+		if (this.refreshTimeoutId) {
+			clearTimeout(this.refreshTimeoutId);
+			this.refreshTimeoutId = null;
+		}
+
+		if (refreshTimeout) {
+			this.refreshTimeoutId = setTimeout(() => {
+				this.reload();
+			}, refreshTimeout);
 		}
 
 		if (error) {
