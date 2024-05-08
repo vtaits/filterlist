@@ -4,25 +4,20 @@ import React, {
   useCallback,
   useEffect,
 } from 'react';
-
 import qs from 'qs';
-
 import {
   type Location,
   useNavigate,
   useNavigationType,
   useLocation,
 } from 'react-router-dom';
-
 import { useFilterlist } from '@vtaits/react-filterlist';
 import type {
   ListState,
   UpdateStateParams,
 } from '@vtaits/filterlist';
-
 import { Page } from '../../../../examples/ui/Page';
 import * as api from '../../../../examples/api';
-
 import type {
   User,
   Additional,

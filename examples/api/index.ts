@@ -44,7 +44,7 @@ export const loadUsers = async (params: Params): Promise<Response> => {
 				}
 
 				return desc ? 1 : -1;
-		  })
+			})
 		: users;
 
 	const filteredUsers = sortedUsers.filter((user) => {

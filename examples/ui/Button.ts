@@ -37,13 +37,13 @@ export const Button = styled.button<ButtonProps>(
 				: {
 						backgroundColor: baseColor,
 						color: "#fff",
-				  },
+					},
 
 			"&:active": disabled
 				? undefined
 				: {
 						opacity: 0.75,
-				  },
+					},
 		};
 	},
 );

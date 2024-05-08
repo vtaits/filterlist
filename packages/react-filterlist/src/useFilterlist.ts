@@ -2,27 +2,24 @@
  * TO DO: add tests
  */
 
-import { useCallback, useEffect, useRef, useState } from "react";
-
 import { Filterlist, eventTypes } from "@vtaits/filterlist";
 import type {
 	ItemsLoader,
 	ListState,
 	UpdateStateParams,
 } from "@vtaits/filterlist";
-
 import isPromise from "is-promise";
-
+import { useCallback, useEffect, useRef, useState } from "react";
 import useLatest from "use-latest";
-
 import { defaultShouldRecount } from "./defaultShouldRecount";
-
 import type {
 	AsyncParams,
 	AsyncParsedFiltersAndSort,
 	OnChangeLoadParams,
 	Params,
+	UseFilterReturn,
 } from "./types";
+import { useFilter } from "./useFilter";
 
 type SyncListState = () => void;
 
@@ -106,6 +103,9 @@ export const useFilterlist = <Item, Additional, Error, FiltersAndSortData>(
 ): [
 	ListState<Item, Additional, Error> | null,
 	Filterlist<Item, Additional, Error> | null,
+	{
+		useBoundFilter: <Value>(filterName: string) => UseFilterReturn<Value>;
+	},
 ] => {
 	const {
 		parseFiltersAndSort = null,
@@ -233,5 +233,21 @@ export const useFilterlist = <Item, Additional, Error, FiltersAndSortData>(
 		};
 	}, [...inputs, canInit]);
 
-	return [listState, filterlistRef.current || null];
+	const useBoundFilter = useCallback(
+		<Value>(filterName: string) =>
+			useFilter<Value, Item, Additional, Error>(
+				listState,
+				filterlistRef.current || null,
+				filterName,
+			),
+		[listState],
+	);
+
+	return [
+		listState,
+		filterlistRef.current || null,
+		{
+			useBoundFilter,
+		},
+	];
 };

@@ -32,3 +32,12 @@ export type Params<Item, Additional, Error, FiltersAndSortData> = Readonly<
 export type AsyncParams<Item, Additional, Error, FiltersAndSortData> = Promise<
 	Params<Item, Additional, Error, FiltersAndSortData>
 >;
+
+export type UseFilterReturn<Value> = Readonly<{
+	setFilterValue: (value: Value) => void;
+	setAndApplyFilter: (value: Value) => void;
+	applyFilter: () => void;
+	resetFilter: () => void;
+	value: Value | null;
+	appliedValue: Value | null;
+}>;

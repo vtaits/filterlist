@@ -1,3 +1,10 @@
+## 1.1.0 (08 may 2024)
+
+### New features
+
+* Added `useFilter` hook
+* Added `useBoundFilter` hook to the result of `useFilterlist`
+
 ## 1.0.0 (28 jan 2024)
 
 ### Typings
