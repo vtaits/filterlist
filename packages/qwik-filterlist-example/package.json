@@ -16,16 +16,16 @@
     "test": "echo pass"
   },
   "devDependencies": {
-    "@biomejs/biome": "^1.7.3",
+    "@biomejs/biome": "^1.8.2",
     "serve": "^14.2.3",
-    "typescript": "^5.4.5",
-    "vite": "^5.2.11"
+    "typescript": "5.4.5",
+    "vite": "^5.3.1"
   },
   "dependencies": {
     "@builder.io/qwik": "1.5.2",
     "@builder.io/qwik-react": "^0.5.4",
     "@fortawesome/free-solid-svg-icons": "^6.5.2",
-    "@fortawesome/react-fontawesome": "^0.2.0",
+    "@fortawesome/react-fontawesome": "^0.2.2",
     "@vtaits/filterlist": "^1.0.0",
     "@vtaits/qwik-filterlist": "^1.0.0",
     "@vtaits/react-paginator": "^2.0.0",
