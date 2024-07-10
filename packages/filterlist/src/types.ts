@@ -5,17 +5,9 @@ export type Sort = Readonly<{
 
 export type ListState<Item, Additional, Error> = Readonly<{
 	/**
-	 * sorting state of the list
-	 */
-	sort: Sort;
-	/**
 	 * current filters state on page (intermediate inputs values etc.)
 	 */
 	filters: Record<string, unknown>;
-	/**
-	 * applied filters
-	 */
-	appliedFilters: Record<string, unknown>;
 	/**
 	 * is list loading at this moment
 	 */
@@ -41,9 +33,20 @@ export type ListState<Item, Additional, Error> = Readonly<{
 	 * is the first load after initialization
 	 */
 	isFirstLoad: boolean;
+	total?: number | null;
+}>;
+
+export type RequestParams = Readonly<{
+	/**
+	 * applied filters
+	 */
+	appliedFilters: Record<string, unknown>;
 	page: number;
 	pageSize?: number | null;
-	total?: number | null;
+	/**
+	 * sorting state of the list
+	 */
+	sort: Sort;
 }>;
 
 export type Options = Readonly<{
@@ -90,6 +93,7 @@ export type ShouldRequest<Item, Additional, Error> = (
  * @throws {LoadListError} if an error occured during load items
  */
 export type ItemsLoader<Item, Additional, Error> = (
+	requestParams: RequestParams,
 	prevListState: ListState<Item, Additional, Error>,
 ) =>
 	| ItemsLoaderResponse<Item, Additional>
@@ -182,28 +186,30 @@ export type UpdateStateParams = Readonly<{
 	pageSize?: number | null;
 }>;
 
-export type EventType =
-	| "loadMore"
-	| "setFilterValue"
-	| "applyFilter"
-	| "setAndApplyFilter"
-	| "resetFilter"
-	| "setFiltersValues"
-	| "applyFilters"
-	| "setAndApplyFilters"
-	| "setPage"
-	| "setPageSize"
-	| "resetFilters"
-	| "resetAllFilters"
-	| "reload"
-	| "setSorting"
-	| "resetSorting"
-	| "updateStateAndRequest"
-	| "changeLoadParams"
-	| "insertItem"
-	| "deleteItem"
-	| "updateItem"
-	| "requestItems"
-	| "loadItemsSuccess"
-	| "loadItemsError"
-	| "changeListState";
+export enum EventType {
+	loadMore = 0,
+	setFilterValue = 1,
+	applyFilter = 2,
+	setAndApplyFilter = 3,
+	resetFilter = 4,
+	setFiltersValues = 5,
+	applyFilters = 6,
+	setAndApplyFilters = 7,
+	setPage = 8,
+	setPageSize = 9,
+	resetFilters = 10,
+	resetAllFilters = 11,
+	reload = 12,
+	setSorting = 13,
+	resetSorting = 14,
+	updateStateAndRequest = 15,
+	changeLoadParams = 16,
+	insertItem = 17,
+	deleteItem = 18,
+	updateItem = 19,
+	requestItems = 20,
+	loadItemsSuccess = 21,
+	loadItemsError = 22,
+	changeListState = 23,
+	changeRequestParams = 24,
+}

@@ -2,10 +2,11 @@
  * TO DO: add tests
  */
 
-import { Filterlist, eventTypes } from "@vtaits/filterlist";
+import { EventType, Filterlist } from "@vtaits/filterlist";
 import type {
 	ItemsLoader,
 	ListState,
+	RequestParams,
 	UpdateStateParams,
 } from "@vtaits/filterlist";
 import isPromise from "is-promise";
@@ -66,8 +67,8 @@ const createFilterlist = <Item, Additional, Error, FiltersAndSortData>(
 ): Filterlist<Item, Additional, Error> => {
 	const filterlist = new Filterlist<Item, Additional, Error>(options);
 
-	filterlist.emitter.on(eventTypes.changeListState, syncListState);
-	filterlist.emitter.on(eventTypes.changeLoadParams, onChangeLoadParams);
+	filterlist.emitter.on(EventType.changeListState, syncListState);
+	filterlist.emitter.on(EventType.changeLoadParams, onChangeLoadParams);
 
 	return filterlist;
 };
@@ -101,6 +102,7 @@ export const useFilterlist = <Item, Additional, Error, FiltersAndSortData>(
 	params: Params<Item, Additional, Error, FiltersAndSortData>,
 	inputs: readonly unknown[] = [],
 ): [
+	RequestParams | null,
 	ListState<Item, Additional, Error> | null,
 	Filterlist<Item, Additional, Error> | null,
 	{
@@ -119,8 +121,9 @@ export const useFilterlist = <Item, Additional, Error, FiltersAndSortData>(
 	const loadItemsRef = useLatest(loadItems);
 
 	const loadItemsProxy: ItemsLoader<Item, Additional, Error> = (
+		nextRequestParams,
 		nextListState,
-	) => loadItemsRef.current(nextListState);
+	) => loadItemsRef.current(nextRequestParams, nextListState);
 
 	const onChangeLoadParamsRef = useLatest(onChangeLoadParams);
 
@@ -138,13 +141,19 @@ export const useFilterlist = <Item, Additional, Error, FiltersAndSortData>(
 
 	const setListStateRef =
 		useRef<
-			(nextListState: ListState<Item, Additional, Error> | null) => void
+			(
+				nextListState: [
+					RequestParams | null,
+					ListState<Item, Additional, Error> | null,
+				],
+			) => void
 		>();
 
 	const syncListState = (): void => {
-		setListStateRef.current?.(
+		setListStateRef.current?.([
+			filterlistRef.current ? filterlistRef.current.requestParams : null,
 			filterlistRef.current ? filterlistRef.current.getListState() : null,
-		);
+		]);
 	};
 
 	const initFilterlistInComponent = (isInEffect: boolean): void => {
@@ -164,7 +173,10 @@ export const useFilterlist = <Item, Additional, Error, FiltersAndSortData>(
 						filterlistRef.current = filterlist;
 						isInitInProgressRef.current = false;
 
-						setListStateRef.current?.(filterlist.getListState());
+						setListStateRef.current?.([
+							filterlist.requestParams,
+							filterlist.getListState(),
+						]);
 					},
 				);
 			} else {
@@ -185,13 +197,12 @@ export const useFilterlist = <Item, Additional, Error, FiltersAndSortData>(
 		initFilterlistInComponent(false);
 	}
 
-	const [listState, setListStateHandler] = useState<ListState<
-		Item,
-		Additional,
-		Error
-	> | null>(
+	const [[requestParams, listState], setListStateHandler] = useState<
+		[RequestParams | null, ListState<Item, Additional, Error> | null]
+	>([
+		filterlistRef.current ? filterlistRef.current.requestParams : null,
 		filterlistRef.current ? filterlistRef.current.getListState() : null,
-	);
+	]);
 	setListStateRef.current = setListStateHandler;
 
 	const filtersAndSortDataRef = useRef(filtersAndSortData);
@@ -224,8 +235,8 @@ export const useFilterlist = <Item, Additional, Error, FiltersAndSortData>(
 
 		return () => {
 			if (filterlistRef.current) {
-				filterlistRef.current.emitter.off(eventTypes.changeListState);
-				filterlistRef.current.emitter.off(eventTypes.changeLoadParams);
+				filterlistRef.current.emitter.off(EventType.changeListState);
+				filterlistRef.current.emitter.off(EventType.changeLoadParams);
 
 				// Support older versions
 				filterlistRef.current?.destroy();
@@ -236,17 +247,20 @@ export const useFilterlist = <Item, Additional, Error, FiltersAndSortData>(
 		};
 	}, [...inputs, canInit]);
 
+	// biome-ignore lint/correctness/useExhaustiveDependencies: bug
 	const useBoundFilter = useCallback(
 		<Value>(filterName: string) =>
 			useFilter<Value, Item, Additional, Error>(
+				requestParams,
 				listState,
 				filterlistRef.current || null,
 				filterName,
 			),
-		[listState],
+		[requestParams, listState],
 	);
 
 	return [
+		requestParams,
 		listState,
 		filterlistRef.current || null,
 		{

@@ -1,8 +1,9 @@
-import type { Filterlist, ListState } from "@vtaits/filterlist";
+import type { Filterlist, ListState, RequestParams } from "@vtaits/filterlist";
 import { useCallback, useMemo } from "react";
 import type { UseFilterReturn } from "./types";
 
 export function useFilter<Value, Item, Additional, Error>(
+	requestParams: RequestParams | null,
 	listState: ListState<Item, Additional, Error> | null,
 	filterlist: Filterlist<Item, Additional, Error> | null,
 	name: string,
@@ -54,12 +55,12 @@ export function useFilter<Value, Item, Additional, Error>(
 	}, [listState, name]);
 
 	const appliedValue = useMemo(() => {
-		if (!listState) {
+		if (!requestParams) {
 			return null;
 		}
 
-		return listState.appliedFilters[name] as Value;
-	}, [listState, name]);
+		return requestParams.appliedFilters[name] as Value;
+	}, [requestParams, name]);
 
 	return {
 		setFilterValue,
