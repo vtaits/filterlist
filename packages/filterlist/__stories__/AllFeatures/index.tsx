@@ -11,7 +11,7 @@ import {
   useNavigationType,
   useLocation,
 } from 'react-router-dom';
-import { Filterlist, type ListState, eventTypes, UpdateStateParams } from '@vtaits/filterlist';
+import { Filterlist, type ListState, EventType, UpdateStateParams } from '@vtaits/filterlist';
 import { Page } from '../../../../examples/ui/Page';
 import * as api from '../../../../examples/api';
 
@@ -100,23 +100,37 @@ export function AllFeatures(): ReactElement {
 
   const listState = useSyncExternalStore(
     (callback) => {
-      filterlist.emitter.on(eventTypes.changeListState, callback);
+      filterlist.emitter.on(EventType.changeListState, callback);
 
       return () => {
-        filterlist.emitter.off(eventTypes.changeListState, callback);
+        filterlist.emitter.off(EventType.changeListState, callback);
       };
     },
 
     () => filterlist.getListState(),
   );
 
-  const onChangeListState = useCallback((newListState: ListState<User, Additional, unknown>) => {
+  const requestParams = useSyncExternalStore(
+    (callback) => {
+      filterlist.emitter.on(EventType.changeListState, callback);
+
+      return () => {
+        filterlist.emitter.off(EventType.changeListState, callback);
+      };
+    },
+
+    () => filterlist.getRequestParams(),
+  );
+
+  const onChangeListState = useCallback(() => {
+    const nextRequestParams = filterlist.getRequestParams();
+
     const newQuery = qs.stringify({
-      ...newListState.appliedFilters,
-      page: newListState.page,
-      pageSize: newListState.pageSize,
-      sort: newListState.sort.param
-        ? `${newListState.sort.asc ? '' : '-'}${newListState.sort.param}`
+      ...nextRequestParams.appliedFilters,
+      page: nextRequestParams.page,
+      pageSize: nextRequestParams.pageSize,
+      sort: nextRequestParams.sort.param
+        ? `${nextRequestParams.sort.asc ? '' : '-'}${nextRequestParams.sort.param}`
         : null,
     });
 
@@ -124,10 +138,10 @@ export function AllFeatures(): ReactElement {
   }, [navigate]);
 
   useEffect(() => {
-    filterlist.emitter.on(eventTypes.changeLoadParams, onChangeListState);
+    filterlist.emitter.on(EventType.changeLoadParams, onChangeListState);
 
     return () => {
-      filterlist.emitter.off(eventTypes.changeLoadParams, onChangeListState);
+      filterlist.emitter.off(EventType.changeLoadParams, onChangeListState);
     };
   }, []);
 
@@ -180,17 +194,21 @@ export function AllFeatures(): ReactElement {
   ), [filterlist]);
 
   const {
+    page,
+    pageSize,
+    sort,
+  } = requestParams;
+
+  const {
     items,
     loading,
     total,
-    page,
-    pageSize,
-     sort,
     filters,
   } = listState;
 
   return (
     <Page
+      requestParams={requestParams}
       listState={listState}
       filters={filters}
       page={page}

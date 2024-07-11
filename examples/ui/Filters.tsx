@@ -26,9 +26,9 @@ const StyledResetWrapper = styled.div({
 type FiltersProps = Readonly<{
 	filters: Readonly<Record<string, unknown>>;
 	setFilterValue: (filterName: string, value: unknown) => void;
-	resetFilter: (filterName: string) => Promise<void>;
-	applyFilter: (filterName: string) => Promise<void>;
-	resetAllFilters: () => Promise<void>;
+	resetFilter: (filterName: string) => void;
+	applyFilter: (filterName: string) => void;
+	resetAllFilters: () => void;
 	reload: () => Promise<void>;
 }>;
 

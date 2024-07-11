@@ -18,11 +18,11 @@ type PageProps = Readonly<{
 	listState: ListState<User, Additional, unknown>;
 	requestParams: RequestParams;
 	setFilterValue$: QRL<(filterName: string, value: unknown) => void>;
-	resetFilter$: QRL<(filterName: string) => Promise<void>>;
-	applyFilter$: QRL<(filterName: string) => Promise<void>>;
-	setPage$: QRL<(page: number) => Promise<void>>;
-	setPageSize$: QRL<(pageSize: number | null | undefined) => Promise<void>>;
-	resetAllFilters$: QRL<() => Promise<void>>;
+	resetFilter$: QRL<(filterName: string) => void>;
+	applyFilter$: QRL<(filterName: string) => void>;
+	setPage$: QRL<(page: number) => void>;
+	setPageSize$: QRL<(pageSize: number | null | undefined) => void>;
+	resetAllFilters$: QRL<() => void>;
 	reload$: QRL<() => Promise<void>>;
 	setSorting$: QRL<(param: string, asc?: boolean) => void>;
 	isInfinity?: boolean;

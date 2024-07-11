@@ -183,7 +183,7 @@ export const useFilterlist = <Item, Additional, Error, FiltersAndSortData>(
 	}
 
 	const requestParams = useSignal<RequestParams | null>(
-		filterlistRef.value ? filterlistRef.value.requestParams : null,
+		filterlistRef.value ? filterlistRef.value.getRequestParams() : null,
 	);
 
 	const listState = useSignal<ListState<Item, Additional, Error> | null>(

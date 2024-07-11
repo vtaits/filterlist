@@ -79,15 +79,6 @@ export type ItemsLoaderResponse<Item, Additional> = Readonly<{
 }>;
 
 /**
- * @param prevState list state of the previous request
- * @param nextState current list state
- */
-export type ShouldRequest<Item, Additional, Error> = (
-	prevState: ListState<Item, Additional, Error>,
-	nextState: ListState<Item, Additional, Error>,
-) => boolean;
-
-/**
  * function that loads items into the list
  *
  * @throws {LoadListError} if an error occured during load items
@@ -100,10 +91,6 @@ export type ItemsLoader<Item, Additional, Error> = (
 	| Promise<ItemsLoaderResponse<Item, Additional>>;
 
 export type Params<Item, Additional, Error> = Readonly<{
-	/**
-	 * invoked before requests. If returns `false`, request will be prevented
-	 */
-	shouldRequest?: ShouldRequest<Item, Additional, Error>;
 	/**
 	 * function that loads items into the list
 	 *
@@ -213,3 +200,11 @@ export enum EventType {
 	changeListState = 23,
 	changeRequestParams = 24,
 }
+
+export type DataStoreListener = (nextValue: RequestParams) => void;
+
+export type DataStore = {
+	getValue: () => RequestParams;
+	setValue: (nextValue: Partial<RequestParams>) => void;
+	subscribe: (listener: DataStoreListener) => () => void;
+};

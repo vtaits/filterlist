@@ -50,8 +50,8 @@ type StringFilterProps = Readonly<{
 	name: string;
 	value?: unknown;
 	setFilterValue: (filterName: string, value: unknown) => void;
-	resetFilter: (filterName: string) => Promise<void>;
-	applyFilter: (filterName: string) => Promise<void>;
+	resetFilter: (filterName: string) => void;
+	applyFilter: (filterName: string) => void;
 }>;
 
 function StringFilterInner({

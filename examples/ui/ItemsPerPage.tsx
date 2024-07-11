@@ -30,7 +30,7 @@ const StyledSelect = styled.select({
 
 type ItemsPerPageProps = Readonly<{
 	value: number;
-	setPageSize: (pageSize: number | null | undefined) => Promise<void>;
+	setPageSize: (pageSize: number | null | undefined) => void;
 }>;
 
 function ItemsPerPageInner({

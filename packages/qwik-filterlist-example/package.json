@@ -8,7 +8,7 @@
     "build": "tsc && vite build",
     "preview": "serve dist",
     "lint": "biome check src",
-    "lint:fix": "biome check src --apply-unsafe",
+    "lint:fix": "biome check src --write --unsafe",
     "format": "biome format src --write",
     "test:ts": "tsc --noEmit",
     "test:unit": "echo pass",
@@ -16,10 +16,10 @@
     "test": "echo pass"
   },
   "devDependencies": {
-    "@biomejs/biome": "^1.8.2",
+    "@biomejs/biome": "^1.8.3",
     "serve": "^14.2.3",
     "typescript": "5.4.5",
-    "vite": "^5.3.1"
+    "vite": "^5.3.3"
   },
   "dependencies": {
     "@builder.io/qwik": "1.5.2",

@@ -151,7 +151,7 @@ export const useFilterlist = <Item, Additional, Error, FiltersAndSortData>(
 
 	const syncListState = (): void => {
 		setListStateRef.current?.([
-			filterlistRef.current ? filterlistRef.current.requestParams : null,
+			filterlistRef.current ? filterlistRef.current.getRequestParams() : null,
 			filterlistRef.current ? filterlistRef.current.getListState() : null,
 		]);
 	};
@@ -174,7 +174,7 @@ export const useFilterlist = <Item, Additional, Error, FiltersAndSortData>(
 						isInitInProgressRef.current = false;
 
 						setListStateRef.current?.([
-							filterlist.requestParams,
+							filterlist.getRequestParams(),
 							filterlist.getListState(),
 						]);
 					},
@@ -200,7 +200,7 @@ export const useFilterlist = <Item, Additional, Error, FiltersAndSortData>(
 	const [[requestParams, listState], setListStateHandler] = useState<
 		[RequestParams | null, ListState<Item, Additional, Error> | null]
 	>([
-		filterlistRef.current ? filterlistRef.current.requestParams : null,
+		filterlistRef.current ? filterlistRef.current.getRequestParams() : null,
 		filterlistRef.current ? filterlistRef.current.getListState() : null,
 	]);
 	setListStateRef.current = setListStateHandler;

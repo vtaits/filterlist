@@ -14,9 +14,14 @@ import { TotalCount } from "./TotalCount";
 
 import type { Additional, User } from "../types";
 
-import type { ListState, Sort } from "../../packages/filterlist/src/types";
+import type {
+	ListState,
+	RequestParams,
+	Sort,
+} from "../../packages/filterlist/src/types";
 
 type PageProps = Readonly<{
+	requestParams: RequestParams;
 	listState: ListState<User, Additional, unknown>;
 	filters: Readonly<Record<string, unknown>>;
 	page: number;
@@ -26,11 +31,11 @@ type PageProps = Readonly<{
 	total?: number | null;
 	loading: boolean;
 	setFilterValue: (filterName: string, value: unknown) => void;
-	resetFilter: (filterName: string) => Promise<void>;
-	applyFilter: (filterName: string) => Promise<void>;
-	setPage: (page: number) => Promise<void>;
-	setPageSize: (pageSize: number | null | undefined) => Promise<void>;
-	resetAllFilters: () => Promise<void>;
+	resetFilter: (filterName: string) => void;
+	applyFilter: (filterName: string) => void;
+	setPage: (page: number) => void;
+	setPageSize: (pageSize: number | null | undefined) => void;
+	resetAllFilters: () => void;
 	reload: () => Promise<void>;
 	setSorting: (param: string, asc?: boolean) => void;
 	isInfinity?: boolean;
@@ -77,6 +82,7 @@ const StyledBottomBlock = styled.div({
 });
 
 export function Page({
+	requestParams,
 	listState,
 	filters,
 	page,
@@ -153,6 +159,12 @@ export function Page({
 				</StyledListStateTitle>
 
 				<StyledListState>{JSON.stringify(listState, null, 2)}</StyledListState>
+
+				<StyledListStateTitle>Current erquest params:</StyledListStateTitle>
+
+				<StyledListState>
+					{JSON.stringify(requestParams, null, 2)}
+				</StyledListState>
 			</StyledListStateWrapper>
 		</StyledWrapper>
 	);
