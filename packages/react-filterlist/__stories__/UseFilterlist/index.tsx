@@ -106,7 +106,7 @@ export function UseFilterlist(): ReactElement | null {
         filters: appliedFilters,
         appliedFilters,
         page: parsed.page ? Number(parsed.page) : 1,
-        pageSize: parsed.pageSize || 10,
+        pageSize: (parsed.pageSize && Number(parsed.pageSize)) || 10,
       };
     },
 

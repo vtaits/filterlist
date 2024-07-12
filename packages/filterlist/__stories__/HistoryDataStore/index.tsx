@@ -5,12 +5,11 @@ import {
   useCallback,
   useSyncExternalStore,
 } from 'react';
-import qs from 'qs';
 import {
   useNavigate,
   useLocation,
 } from 'react-router-dom';
-import { Filterlist, EventType, RequestParams } from '@vtaits/filterlist';
+import { Filterlist, EventType } from '@vtaits/filterlist';
 import { createEmitter, createStringBasedDataStore } from '@vtaits/filterlist/datastore/string';
 import { Page } from '../../../../examples/ui/Page';
 import * as api from '../../../../examples/api';

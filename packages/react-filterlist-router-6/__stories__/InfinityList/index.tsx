@@ -1,63 +1,40 @@
-import React, {
-  type ReactElement,
-  useState,
-  useCallback,
-  useEffect,
-} from 'react';
-import qs from 'qs';
 import {
-  type Location,
-  useNavigate,
-  useNavigationType,
-  useLocation,
-} from 'react-router-dom';
+  type ReactElement,
+  useCallback,
+} from 'react';
 import { useFilterlist } from '@vtaits/react-filterlist';
-import type {
-  UpdateStateParams,
-} from '@vtaits/filterlist';
+import { useCreateDataStore } from '@vtaits/react-filterlist-router-6';
 import { Page } from '../../../../examples/ui/Page';
 import * as api from '../../../../examples/api';
 import type {
   User,
 } from '../../../../examples/types';
 
-export function DeferredInit(): ReactElement | null {
-  const [canInit, setCanInit] = useState(false);
-
-  useEffect((): void => {
-    setTimeout((): void => {
-      setCanInit(true);
-    }, 2000);
-  }, []);
-
-  const navigate = useNavigate();
-  const navigationType = useNavigationType();
-  const location = useLocation();
+export function InfinityList(): ReactElement | null {
+  const createDataStore = useCreateDataStore();
 
   const [requestParams, listState, filterlist] = useFilterlist<
-  User,
-  {
-    count: number,
-  },
-  never,
-  {
-    navigationType: string;
-    location: Location;
-  }
+    User,
+    {
+      count: number,
+    },
+    never,
+    unknown
   >({
-    canInit,
+    createDataStore,
 
     loadItems: async ({
       sort,
       appliedFilters,
-      page,
       pageSize,
+    }, {
+      loadedPages,
     }) => {
       const response = await api.loadUsers({
         ...appliedFilters,
-        page,
         pageSize,
         sort: `${sort.param ? `${sort.asc ? '' : '-'}${sort.param}` : ''}`,
+        page: loadedPages + 1,
       });
 
       return {
@@ -65,73 +42,6 @@ export function DeferredInit(): ReactElement | null {
         total: response.count,
       };
     },
-
-    onChangeLoadParams: (): void => {
-      if (filterlist) {
-        const nextRequestParams = filterlist.getRequestParams();
-
-        const newQuery = qs.stringify({
-          ...nextRequestParams.appliedFilters,
-          page: nextRequestParams.page,
-          pageSize: nextRequestParams.pageSize,
-          sort: nextRequestParams.sort.param
-            ? `${nextRequestParams.sort.asc ? '' : '-'}${nextRequestParams.sort.param}`
-            : null,
-        });
-  
-        navigate(`${location.pathname}?${newQuery}`);
-      }
-    },
-
-    parseFiltersAndSort: async ({
-      location: {
-        search,
-      },
-    }): Promise<UpdateStateParams> => {
-      const parsed: Record<string, any> = qs.parse(search, {
-        ignoreQueryPrefix: true,
-      });
-
-      const {
-        sort,
-      } = parsed;
-
-      const appliedFilters = {
-        name: parsed.name || '',
-        email: parsed.email || '',
-        city: parsed.city || '',
-      };
-
-      return {
-        sort: {
-          param: sort
-            ? (
-              sort[0] === '-'
-                ? sort.substring(1, sort.length)
-                : sort
-            )
-            : 'id',
-
-          asc: !sort || sort[0] === '-',
-        },
-
-        filters: appliedFilters,
-        appliedFilters,
-        page: parsed.page ? Number(parsed.page) : 1,
-        pageSize: (parsed.pageSize && Number(parsed.pageSize)) || 10,
-      };
-    },
-
-    filtersAndSortData: {
-      navigationType,
-      location,
-    },
-
-    shouldRecount: ({
-      navigationType: navigationTypeParam,
-      location,
-    }, prevProps) => navigationTypeParam === 'POP'
-      && location.search !== prevProps.location.search,
   });
 
   const setPage = useCallback((page: number) => {
@@ -224,6 +134,14 @@ export function DeferredInit(): ReactElement | null {
     );
   }, [filterlist]);
 
+  const loadMore = useCallback(() => {
+    if (!filterlist) {
+      throw new Error('filterlist is not initialized');
+    }
+
+    filterlist.loadMore();
+  }, [filterlist]);
+
   if (!listState || !requestParams) {
     return null;
   }
@@ -256,10 +174,12 @@ export function DeferredInit(): ReactElement | null {
       applyFilter={applyFilter}
       resetAllFilters={resetAllFilters}
       reload={reload}
-      total={total}
       setPage={setPage}
       setPageSize={setPageSize}
       setSorting={setSorting}
+      total={total}
+      isInfinity
+      loadMore={loadMore}
     />
   );
 }

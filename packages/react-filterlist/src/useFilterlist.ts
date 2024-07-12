@@ -68,7 +68,7 @@ const createFilterlist = <Item, Additional, Error, FiltersAndSortData>(
 	const filterlist = new Filterlist<Item, Additional, Error>(options);
 
 	filterlist.emitter.on(EventType.changeListState, syncListState);
-	filterlist.emitter.on(EventType.changeLoadParams, onChangeLoadParams);
+	filterlist.emitter.on(EventType.changeRequestParams, onChangeLoadParams);
 
 	return filterlist;
 };

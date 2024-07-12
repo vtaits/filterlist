@@ -3040,7 +3040,33 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vtaits/react-filterlist@workspace:packages/react-filterlist":
+"@vtaits/react-filterlist-router-6@workspace:packages/react-filterlist-router-6":
+  version: 0.0.0-use.local
+  resolution: "@vtaits/react-filterlist-router-6@workspace:packages/react-filterlist-router-6"
+  dependencies:
+    "@biomejs/biome": "npm:^1.8.3"
+    "@storybook/react": "npm:^8.2.1"
+    "@types/react": "npm:^18.3.3"
+    "@vitejs/plugin-react": "npm:^4.3.1"
+    "@vtaits/filterlist": "npm:^1.1.0"
+    "@vtaits/react-filterlist": "npm:^1.2.0"
+    "@vtaits/react-router-dom-fake-browser": "npm:^1.0.0"
+    react: "npm:^18.3.1"
+    react-dom: "npm:^18.3.1"
+    react-router-dom: "npm:^6.24.1"
+    tsup: "npm:^8.1.0"
+    typescript: "npm:5.4.5"
+    use-latest: "npm:^1.2.1"
+    vitest: "npm:^2.0.2"
+  peerDependencies:
+    "@vtaits/filterlist": ^1.0.0
+    "@vtaits/react-filterlist": ^1.0.0
+    react: ^16.14.0 || ^17.0.0 || ^18.0.0
+    react-router-dom: ^6.0.0
+  languageName: unknown
+  linkType: soft
+
+"@vtaits/react-filterlist@npm:^1.2.0, @vtaits/react-filterlist@workspace:packages/react-filterlist":
   version: 0.0.0-use.local
   resolution: "@vtaits/react-filterlist@workspace:packages/react-filterlist"
   dependencies:

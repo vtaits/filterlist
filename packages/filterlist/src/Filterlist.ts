@@ -803,6 +803,9 @@ export class Filterlist<Item, Additional, Error> {
 	}
 
 	onChangeDataStore = () => {
+		const stateBeforeReload = this.getListStateBeforeReload();
+		this.setListState(stateBeforeReload);
+
 		this.emitEvent(EventType.changeRequestParams);
 
 		this.requestItems();

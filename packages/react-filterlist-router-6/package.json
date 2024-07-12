@@ -1,25 +1,19 @@
 {
   "type": "module",
-  "name": "@vtaits/filterlist",
-  "version": "1.1.0",
-  "description": "Creating lists with filters, sotring, paginatinon, endless scroll etc",
+  "name": "@vtaits/react-filterlist-router-6",
+  "version": "1.0.0",
+  "description": "Integration of `@vtaits/react-filterlist` with `react-router-dom` v6",
   "files": [
-    "dist",
-    "datastore"
+    "dist"
   ],
-  "main": "./dist/core.js",
-  "module": "./dist/esm/core.js",
-  "typings": "dist/core.d.ts",
+  "main": "./dist/index.js",
+  "module": "./dist/esm/index.js",
+  "typings": "dist/index.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/esm/core.js",
-      "require": "./dist/core.js",
-      "types": "./dist/core.d.ts"
-    },
-    "./datastore/string": {
-      "import": "./dist/esm/datastore_string.js",
-      "require": "./dist/datastore_string.js",
-      "types": "./dist/datastore_string.d.ts"
+      "import": "./dist/esm/index.js",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
     }
   },
   "repository": {
@@ -33,12 +27,10 @@
     "filter",
     "sort",
     "pagination",
-    "vanilla"
+    "react"
   ],
   "scripts": {
-    "build": "yarn build:js && yarn build:proxy_directories",
-    "build:js": "tsup",
-    "build:proxy_directories": "exports-fallback -gf",
+    "build": "tsup src/index.ts --sourcemap --format esm,cjs --dts --legacy-output",
     "lint": "biome check src",
     "lint:fix": "biome check src --write --unsafe",
     "format": "biome format src --write",
@@ -48,23 +40,28 @@
     "test": "yarn test:unit",
     "prepare": "yarn build"
   },
-  "dependencies": {
-    "mitt": "^3.0.1",
-    "qs": "^6.12.3",
-    "sleep-promise": "^9.1.0"
+  "peerDependencies": {
+    "@vtaits/filterlist": "^1.0.0",
+    "@vtaits/react-filterlist": "^1.0.0",
+    "react": "^16.14.0 || ^17.0.0 || ^18.0.0",
+    "react-router-dom": "^6.0.0"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.8.3",
     "@storybook/react": "^8.2.1",
-    "@types/qs": "^6.9.15",
     "@types/react": "^18.3.3",
+    "@vitejs/plugin-react": "^4.3.1",
+    "@vtaits/filterlist": "^1.1.0",
+    "@vtaits/react-filterlist": "^1.2.0",
     "@vtaits/react-router-dom-fake-browser": "^1.0.0",
-    "exports-fallback": "^1.0.1",
     "react": "^18.3.1",
+    "react-dom": "^18.3.1",
     "react-router-dom": "^6.24.1",
     "tsup": "^8.1.0",
     "typescript": "5.4.5",
-    "use-latest": "^1.2.1",
     "vitest": "^2.0.2"
+  },
+  "dependencies": {
+    "use-latest": "^1.2.1"
   }
 }
