@@ -5,13 +5,15 @@ export function createDefaultDataStore(initalValue: RequestParams): DataStore {
 	let listeners: DataStoreListener[] = [];
 
 	const setValue = (nextValue: Partial<RequestParams>) => {
+		const prevValue = value;
+
 		value = {
-			...value,
+			...prevValue,
 			...nextValue,
 		};
 
 		for (const listener of listeners) {
-			listener(value);
+			listener(value, prevValue);
 		}
 	};
 

@@ -202,7 +202,10 @@ export enum EventType {
 	changeRequestParams = 24,
 }
 
-export type DataStoreListener = (nextValue: RequestParams) => void;
+export type DataStoreListener = (
+	nextValue: RequestParams,
+	prevValue: RequestParams,
+) => void;
 
 export type DataStore = {
 	getValue: () => RequestParams;

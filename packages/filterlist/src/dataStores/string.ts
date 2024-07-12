@@ -100,11 +100,14 @@ export function createStringBasedDataStore(
 		},
 	};
 
+	let prevValue = getStateFromSearch(getSearch());
+
 	return {
 		getValue: () => {
 			const search = getSearch();
 
 			if (cacheKey !== search) {
+				prevValue = cacheValue;
 				cacheKey = search;
 				cacheValue = getStateFromSearch(search);
 			}
@@ -129,11 +132,12 @@ export function createStringBasedDataStore(
 				const search = getSearch();
 
 				if (cacheKey !== search) {
+					prevValue = cacheValue;
 					cacheKey = search;
 					cacheValue = getStateFromSearch(search);
 				}
 
-				callback(cacheValue);
+				callback(cacheValue, prevValue);
 			};
 
 			emitter.on(listenCallback);

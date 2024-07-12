@@ -802,9 +802,30 @@ export class Filterlist<Item, Additional, Error> {
 		this.dataStore.setValue(nextRequestParams);
 	}
 
-	onChangeDataStore = () => {
+	onChangeDataStore = (nextValue: RequestParams, prevValue: RequestParams) => {
+		const changedFilters = Object.keys({
+			...nextValue.appliedFilters,
+			...prevValue.appliedFilters,
+			...this.listState.filters,
+		}).reduce<Record<string, unknown>>((res, filterKey) => {
+			if (
+				nextValue.appliedFilters[filterKey] !==
+				prevValue.appliedFilters[filterKey]
+			) {
+				res[filterKey] = nextValue.appliedFilters[filterKey];
+			}
+
+			return res;
+		}, {});
+
 		const stateBeforeReload = this.getListStateBeforeReload();
-		this.setListState(stateBeforeReload);
+		this.setListState({
+			...stateBeforeReload,
+			filters: {
+				...stateBeforeReload.filters,
+				...changedFilters,
+			},
+		});
 
 		this.emitEvent(EventType.changeRequestParams);
 
