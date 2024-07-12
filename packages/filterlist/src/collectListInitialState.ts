@@ -34,7 +34,6 @@ export const collectListInitialState = <Item, Additional, Error>(
 				? (params.additional as Additional)
 				: listInitialState.additional,
 
-			filters: params.appliedFilters || listInitialState.filters,
 			total: params.total,
 		},
 	];

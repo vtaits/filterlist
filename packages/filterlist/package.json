@@ -4,16 +4,22 @@
   "version": "1.1.0",
   "description": "Creating lists with filters, sotring, paginatinon, endless scroll etc",
   "files": [
-    "dist"
+    "dist",
+    "datastore"
   ],
-  "main": "./dist/index.js",
-  "module": "./dist/esm/index.js",
-  "typings": "dist/index.d.ts",
+  "main": "./dist/core.js",
+  "module": "./dist/esm/core.js",
+  "typings": "dist/core.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/esm/index.js",
-      "require": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+      "import": "./dist/esm/core.js",
+      "require": "./dist/core.js",
+      "types": "./dist/core.d.ts"
+    },
+    "./datastore/string": {
+      "import": "./dist/esm/datastore_string.js",
+      "require": "./dist/datastore_string.js",
+      "types": "./dist/datastore_string.d.ts"
     }
   },
   "repository": {
@@ -30,7 +36,9 @@
     "vanilla"
   ],
   "scripts": {
-    "build": "tsup src/index.ts --sourcemap --format esm,cjs --dts --legacy-output",
+    "build": "yarn build:js && yarn build:proxy_directories",
+    "build:js": "tsup",
+    "build:proxy_directories": "exports-fallback -gf",
     "lint": "biome check src",
     "lint:fix": "biome check src --write --unsafe",
     "format": "biome format src --write",
@@ -42,6 +50,7 @@
   },
   "dependencies": {
     "mitt": "^3.0.1",
+    "qs": "^6.12.3",
     "sleep-promise": "^9.1.0"
   },
   "devDependencies": {
@@ -50,7 +59,7 @@
     "@types/qs": "^6.9.15",
     "@types/react": "^18.3.3",
     "@vtaits/react-router-dom-fake-browser": "^1.0.0",
-    "qs": "^6.12.3",
+    "exports-fallback": "^1.0.1",
     "react": "^18.3.1",
     "react-router-dom": "^6.24.1",
     "tsup": "^8.1.0",

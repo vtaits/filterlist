@@ -10,9 +10,10 @@ import {
   useNavigate,
   useLocation,
 } from 'react-router-dom';
-import { Filterlist, EventType, RequestParams, DataStore } from '@vtaits/filterlist';
-import { Page } from '/home/vadim/projects/filterlist/examples/ui/Page';
-import * as api from '/home/vadim/projects/filterlist/examples/api';
+import { Filterlist, EventType, RequestParams } from '@vtaits/filterlist';
+import { createEmitter, createStringBasedDataStore } from '@vtaits/filterlist/datastore/string';
+import { Page } from '../../../../examples/ui/Page';
+import * as api from '../../../../examples/api';
 import useLatest from 'use-latest';
 
 import type {
@@ -23,39 +24,6 @@ import type {
 import type {
   ItemsLoader,
 } from '../../src/types';
-import mitt from 'mitt';
-
-function getStateFromSearch(search: string): RequestParams {
-  const parsed: Record<string, any> = qs.parse(search, {
-    ignoreQueryPrefix: true,
-  });
-
-  const {
-    sort,
-  } = parsed;
-
-  const appliedFilters = {
-    name: parsed.name || '',
-    email: parsed.email || '',
-    city: parsed.city || '',
-  };
-
-  return {
-    sort: {
-      param: sort
-        ? (
-          sort[0] === '-'
-            ? sort.substring(1, sort.length)
-            : sort
-        )
-        : 'id',
-      asc: !sort || sort[0] === '-',
-    },
-    appliedFilters,
-    page: parsed.page ? Number(parsed.page) : 1,
-    pageSize: parsed.pageSize || 10,
-  };
-}
 
 const loadItems: ItemsLoader<User, Additional, unknown> = async ({
   sort,
@@ -84,78 +52,26 @@ export function HistoryDataStore(): ReactElement {
     search,
   } = location;
 
-  const [emitter] = useState(() => mitt());
+  const [emitter] = useState(() => createEmitter());
 
   const navigateRef = useLatest(navigate);
   const searchRef = useLatest(location.search);
 
   useEffect(() => {
-    emitter.emit('UPDATE_SEARCH');
+    emitter.emit();
   }, [search]);
 
-  const createDataStore = useCallback((): DataStore => {
-    let cacheKey: string | null = null;
-    let cacheValue: RequestParams = {
-      appliedFilters: {},
-      page: 1,
-      sort: {
-        asc: false,
-      },
-    };
-
-    return {
-      getValue: () => {
-        if (cacheKey !== searchRef.current) {
-          cacheKey = searchRef.current;
-          cacheValue = getStateFromSearch(searchRef.current);
-        }
-
-        return cacheValue;
-      },
-      setValue: (nextRequestParams) => {
-        const newQuery = qs.stringify({
-          ...nextRequestParams.appliedFilters,
-          page: nextRequestParams.page,
-          pageSize: nextRequestParams.pageSize,
-          sort: nextRequestParams.sort?.param
-            ? `${nextRequestParams.sort.asc ? '' : '-'}${nextRequestParams.sort.param}`
-            : null,
-        });
-    
-        navigateRef.current(`/?${newQuery}`);
-      },
-
-      subscribe: (callback) => {
-        const listenCallback = () => {
-          if (cacheKey !== searchRef.current) {
-            cacheKey = searchRef.current;
-            cacheValue = getStateFromSearch(searchRef.current);
-          }
-
-          callback(cacheValue);
-        };
-
-        emitter.on('UPDATE_SEARCH', listenCallback);
-
-        return () => {
-          emitter.off('UPDATE_SEARCH', listenCallback);
-        };
-      },
-    }
-  }, [emitter]);
+  const createDataStore = useCallback(() => createStringBasedDataStore(
+    () => searchRef.current,
+    (nextSearch) => {
+      navigateRef.current(`/?${nextSearch}`)
+    },
+    emitter,
+  ), [emitter, navigateRef, searchRef]);
 
   const [filterlist] = useState(() => {
-    const {
-      search,
-    } = location;
-
-    const stateFromSearch = getStateFromSearch(search);
-
     return new Filterlist({
       loadItems,
-      ...stateFromSearch,
-      page: stateFromSearch.page ? Number(stateFromSearch.page) : 1,
-      pageSize: stateFromSearch.pageSize ? Number(stateFromSearch.pageSize) : 10,
       refreshTimeout: 10000,
       createDataStore,
     });
@@ -175,10 +91,10 @@ export function HistoryDataStore(): ReactElement {
 
   const requestParams = useSyncExternalStore(
     (callback) => {
-      filterlist.emitter.on(EventType.changeListState, callback);
+      filterlist.emitter.on(EventType.changeRequestParams, callback);
 
       return () => {
-        filterlist.emitter.off(EventType.changeListState, callback);
+        filterlist.emitter.off(EventType.changeRequestParams, callback);
       };
     },
 

@@ -52,12 +52,16 @@ export class Filterlist<Item, Additional, Error> {
 		this.requestId = 0;
 
 		const [requestParams, listState] = collectListInitialState(params);
-		this.listState = listState;
 
 		this.dataStore = createDataStore(requestParams);
 		this.dataStoreUnsubscribe = this.dataStore.subscribe(
 			this.onChangeDataStore,
 		);
+
+		this.listState = {
+			...listState,
+			filters: this.dataStore.getValue().appliedFilters,
+		};
 
 		this.options = collectOptions(params);
 
