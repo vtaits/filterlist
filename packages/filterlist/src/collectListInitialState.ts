@@ -29,8 +29,7 @@ export const collectListInitialState = <Item, Additional, Error>(
 					? 1
 					: listInitialState.loadedPages,
 
-			// biome-ignore lint/suspicious/noPrototypeBuiltins: `additional` can be `undefined`
-			additional: params.hasOwnProperty("additional")
+			additional: Object.hasOwn(params, "additional")
 				? (params.additional as Additional)
 				: listInitialState.additional,
 
