@@ -3002,6 +3002,7 @@ __metadata:
     sleep-promise: "npm:^9.1.0"
     tsup: "npm:^8.1.0"
     typescript: "npm:5.4.5"
+    use-latest: "npm:^1.2.1"
     vitest: "npm:^2.0.2"
   languageName: unknown
   linkType: soft

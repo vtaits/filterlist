@@ -9,6 +9,10 @@ export function createDefaultDataStore(initalValue: RequestParams): DataStore {
 			...value,
 			...nextValue,
 		};
+
+		for (const listener of listeners) {
+			listener(value);
+		}
 	};
 
 	return {

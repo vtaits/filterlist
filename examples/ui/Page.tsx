@@ -65,7 +65,7 @@ const StyledListState = styled.pre({
 	boxSizing: "border-box",
 	backgroundColor: "#efefef",
 	width: 600,
-	height: 600,
+	maxHeight: 600,
 	padding: 15,
 	overflow: "auto",
 });
@@ -160,7 +160,7 @@ export function Page({
 
 				<StyledListState>{JSON.stringify(listState, null, 2)}</StyledListState>
 
-				<StyledListStateTitle>Current erquest params:</StyledListStateTitle>
+				<StyledListStateTitle>Current request params:</StyledListStateTitle>
 
 				<StyledListState>
 					{JSON.stringify(requestParams, null, 2)}

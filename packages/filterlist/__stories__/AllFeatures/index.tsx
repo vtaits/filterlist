@@ -1,17 +1,11 @@
 import {
   type ReactElement,
   useState,
-  useEffect,
   useCallback,
   useSyncExternalStore,
 } from 'react';
 import qs from 'qs';
-import {
-  useNavigate,
-  useNavigationType,
-  useLocation,
-} from 'react-router-dom';
-import { Filterlist, type ListState, EventType, UpdateStateParams } from '@vtaits/filterlist';
+import { Filterlist, EventType, UpdateStateParams } from '@vtaits/filterlist';
 import { Page } from '../../../../examples/ui/Page';
 import * as api from '../../../../examples/api';
 
@@ -23,40 +17,6 @@ import type {
 import type {
   ItemsLoader,
 } from '../../src/types';
-
-const getStateFromSearch = (search: string): UpdateStateParams => {
-  const parsed: Record<string, any> = qs.parse(search, {
-    ignoreQueryPrefix: true,
-  });
-
-  const {
-    sort,
-  } = parsed;
-
-  const appliedFilters = {
-    name: parsed.name || '',
-    email: parsed.email || '',
-    city: parsed.city || '',
-  };
-
-  return {
-    sort: {
-      param: sort
-        ? (
-          sort[0] === '-'
-            ? sort.substring(1, sort.length)
-            : sort
-        )
-        : 'id',
-      asc: !sort || sort[0] === '-',
-    },
-
-    filters: appliedFilters,
-    appliedFilters,
-    page: parsed.page ? Number(parsed.page) : 1,
-    pageSize: parsed.pageSize || 10,
-  };
-};
 
 const loadItems: ItemsLoader<User, Additional, unknown> = async ({
   sort,
@@ -78,22 +38,9 @@ const loadItems: ItemsLoader<User, Additional, unknown> = async ({
 };
 
 export function AllFeatures(): ReactElement {
-  const navigate = useNavigate();
-  const navigationType = useNavigationType();
-  const location = useLocation();
-
   const [filterlist] = useState(() => {
-    const {
-      search,
-    } = location;
-
-    const stateFromSearch = getStateFromSearch(search);
-
     return new Filterlist({
       loadItems,
-      ...stateFromSearch,
-      page: stateFromSearch.page ? Number(stateFromSearch.page) : 1,
-      pageSize: stateFromSearch.pageSize ? Number(stateFromSearch.pageSize) : 10,
       refreshTimeout: 10000,
     });
   });
@@ -121,37 +68,6 @@ export function AllFeatures(): ReactElement {
 
     () => filterlist.getRequestParams(),
   );
-
-  const onChangeListState = useCallback(() => {
-    const nextRequestParams = filterlist.getRequestParams();
-
-    const newQuery = qs.stringify({
-      ...nextRequestParams.appliedFilters,
-      page: nextRequestParams.page,
-      pageSize: nextRequestParams.pageSize,
-      sort: nextRequestParams.sort.param
-        ? `${nextRequestParams.sort.asc ? '' : '-'}${nextRequestParams.sort.param}`
-        : null,
-    });
-
-    navigate(`/?${newQuery}`);
-  }, [navigate]);
-
-  useEffect(() => {
-    filterlist.emitter.on(EventType.changeLoadParams, onChangeListState);
-
-    return () => {
-      filterlist.emitter.off(EventType.changeLoadParams, onChangeListState);
-    };
-  }, []);
-
-  useEffect(() => {
-    if (navigationType === 'POP') {
-      const stateFromSearch = getStateFromSearch(location.search);
-
-      filterlist.updateStateAndRequest(stateFromSearch);
-    }
-  }, [navigationType, location.search]);
 
   const setPage = useCallback((
     page: number,

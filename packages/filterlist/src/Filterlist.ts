@@ -22,6 +22,8 @@ export class Filterlist<Item, Additional, Error> {
 
 	dataStore: DataStore;
 
+	dataStoreUnsubscribe: VoidFunction;
+
 	listState: ListState<Item, Additional, Error>;
 
 	options: Options;
@@ -53,6 +55,9 @@ export class Filterlist<Item, Additional, Error> {
 		this.listState = listState;
 
 		this.dataStore = createDataStore(requestParams);
+		this.dataStoreUnsubscribe = this.dataStore.subscribe(
+			this.onChangeDataStore,
+		);
 
 		this.options = collectOptions(params);
 
@@ -60,6 +65,8 @@ export class Filterlist<Item, Additional, Error> {
 	}
 
 	destroy() {
+		this.dataStoreUnsubscribe();
+
 		if (this.refreshTimeoutId) {
 			clearTimeout(this.refreshTimeoutId);
 			this.refreshTimeoutId = null;
@@ -789,11 +796,13 @@ export class Filterlist<Item, Additional, Error> {
 
 	setRequestParams(nextRequestParams: RequestParams) {
 		this.dataStore.setValue(nextRequestParams);
+	}
 
+	onChangeDataStore = () => {
 		this.emitEvent(EventType.changeRequestParams);
 
 		this.requestItems();
-	}
+	};
 
 	setListState(nextListState: ListState<Item, Additional, Error>): void {
 		this.listState = nextListState;
