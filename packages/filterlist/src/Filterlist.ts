@@ -35,7 +35,7 @@ export class Filterlist<Item, Additional, Error> {
 	constructor(params: Params<Item, Additional, Error>) {
 		this.emitter = mitt();
 
-		const { loadItems } = params;
+		const { createDataStore = createDefaultDataStore, loadItems } = params;
 
 		if (!loadItems) {
 			throw new Error("loadItems is required");
@@ -52,7 +52,7 @@ export class Filterlist<Item, Additional, Error> {
 		const [requestParams, listState] = collectListInitialState(params);
 		this.listState = listState;
 
-		this.dataStore = createDefaultDataStore(requestParams);
+		this.dataStore = createDataStore(requestParams);
 
 		this.options = collectOptions(params);
 

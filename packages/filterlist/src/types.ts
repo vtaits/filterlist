@@ -91,6 +91,7 @@ export type ItemsLoader<Item, Additional, Error> = (
 	| Promise<ItemsLoaderResponse<Item, Additional>>;
 
 export type Params<Item, Additional, Error> = Readonly<{
+	createDataStore?: (initalValue: RequestParams) => DataStore;
 	/**
 	 * function that loads items into the list
 	 *
