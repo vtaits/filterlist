@@ -55,7 +55,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^1.8.3",
-    "@storybook/react": "^8.2.1",
+    "@storybook/react": "^8.2.2",
     "@types/qs": "^6.9.15",
     "@types/react": "^18.3.3",
     "@vtaits/react-router-dom-fake-browser": "^1.0.0",
