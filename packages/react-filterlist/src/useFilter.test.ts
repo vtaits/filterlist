@@ -1,4 +1,8 @@
-import { type Filterlist, listInitialState } from "@vtaits/filterlist";
+import {
+	type Filterlist,
+	initialRequestParams,
+	listInitialState,
+} from "@vtaits/filterlist";
 import { useCallback, useMemo } from "react";
 import { afterEach, describe, expect, test, vi } from "vitest";
 import { useFilter } from "./useFilter";
@@ -12,7 +16,7 @@ afterEach(() => {
 });
 
 describe("not inited", () => {
-	const filter = useFilter(null, null, "test");
+	const filter = useFilter(null, null, null, "test");
 
 	test("setFilterValue", () => {
 		filter.setFilterValue("foo");
@@ -49,12 +53,15 @@ describe("inited", () => {
 
 	const filter = useFilter(
 		{
+			...initialRequestParams,
+			appliedFilters: {
+				test: "baz",
+			},
+		},
+		{
 			...listInitialState,
 			filters: {
 				test: "bar",
-			},
-			appliedFilters: {
-				test: "baz",
 			},
 		},
 		filterlist,
