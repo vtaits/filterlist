@@ -3,6 +3,7 @@ import { expect, test } from "vitest";
 import { collectListInitialState } from "./collectListInitialState";
 import { listInitialState } from "./listInitialState";
 
+import { initialRequestParams } from "./initialRequestParams";
 import type { ItemsLoaderResponse } from "./types";
 
 const defaultParams = {
@@ -12,7 +13,10 @@ const defaultParams = {
 };
 
 test("should return listInitialState", () => {
-	expect(collectListInitialState(defaultParams)).toEqual(listInitialState);
+	expect(collectListInitialState(defaultParams)).toEqual([
+		initialRequestParams,
+		listInitialState,
+	]);
 });
 
 test("should set initial sort", () => {
@@ -25,7 +29,7 @@ test("should set initial sort", () => {
 		},
 	});
 
-	expect(state.sort).toEqual({
+	expect(state[0].sort).toEqual({
 		param: "param",
 		asc: false,
 	});
@@ -44,8 +48,8 @@ test("should set initial filters", () => {
 		appliedFilters: filters,
 	});
 
-	expect(state.filters).toEqual(filters);
-	expect(state.appliedFilters).toEqual(filters);
+	expect(state[1].filters).toEqual({});
+	expect(state[0].appliedFilters).toEqual(filters);
 });
 
 test("should set additional", () => {
@@ -57,7 +61,7 @@ test("should set additional", () => {
 		},
 	});
 
-	expect(state.additional).toEqual({
+	expect(state[1].additional).toEqual({
 		count: 0,
 	});
 });
@@ -67,7 +71,7 @@ test("should no set additional (null by default)", () => {
 		...defaultParams,
 	});
 
-	expect(state.additional).toEqual(null);
+	expect(state[1].additional).toEqual(null);
 });
 
 test("should set items", () => {
@@ -78,8 +82,8 @@ test("should set items", () => {
 		items,
 	});
 
-	expect(state.items).toBe(items);
-	expect(state.loadedPages).toBe(1);
+	expect(state[1].items).toBe(items);
+	expect(state[1].loadedPages).toBe(1);
 });
 
 test("should set page", () => {
@@ -90,7 +94,7 @@ test("should set page", () => {
 		page,
 	});
 
-	expect(state.page).toBe(page);
+	expect(state[0].page).toBe(page);
 });
 
 test("should set pageSize", () => {
@@ -101,7 +105,7 @@ test("should set pageSize", () => {
 		pageSize,
 	});
 
-	expect(state.pageSize).toBe(pageSize);
+	expect(state[0].pageSize).toBe(pageSize);
 });
 
 test("should set total", () => {
@@ -112,5 +116,5 @@ test("should set total", () => {
 		total,
 	});
 
-	expect(state.total).toBe(total);
+	expect(state[1].total).toBe(total);
 });
