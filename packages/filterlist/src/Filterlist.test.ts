@@ -1,7 +1,12 @@
 import { describe, expect, test, vi } from "vitest";
-import type { ItemsLoader } from "../dist/core";
 import { Filterlist } from "./Filterlist";
-import type { DataStore, DataStoreListener, RequestParams } from "./types";
+import { LoadListError } from "./errors";
+import type {
+	DataStore,
+	DataStoreListener,
+	ItemsLoader,
+	RequestParams,
+} from "./types";
 
 export function createAsyncDataStore(initalValue: RequestParams): DataStore {
 	let value = initalValue;
@@ -15,9 +20,11 @@ export function createAsyncDataStore(initalValue: RequestParams): DataStore {
 			...nextValue,
 		};
 
+		const currentValue = value;
+
 		for (const listener of listeners) {
 			setTimeout(() => {
-				listener(value, prevValue);
+				listener(currentValue, prevValue);
 			});
 		}
 	};
@@ -163,6 +170,41 @@ describe.each([
 			expect(listState.items).toEqual([4, 5, 6]);
 			expect(listState.total).toBe(2000);
 		});
+
+		test("load failed", async () => {
+			const loadItems = vi
+				.fn<ItemsLoader<unknown, unknown, unknown>>()
+				.mockRejectedValue(
+					new LoadListError({
+						error: "test error",
+						additional: {
+							baz: "qux",
+						},
+						total: 123,
+					}),
+				);
+
+			const filterlist = new Filterlist({
+				createDataStore,
+				loadItems,
+			});
+
+			expect(filterlist.getListState().loading).toBe(true);
+
+			await vi.waitFor(() => {
+				expect(loadItems).toHaveBeenCalledTimes(1);
+			});
+
+			const listState = filterlist.getListState();
+
+			expect(filterlist.getListState().loading).toBe(false);
+			expect(listState.additional).toEqual({
+				baz: "qux",
+			});
+			expect(listState.error).toBe("test error");
+			expect(listState.items).toEqual([]);
+			expect(listState.total).toBe(123);
+		});
 	});
 
 	test("set total", async () => {
@@ -210,36 +252,786 @@ describe.each([
 	});
 
 	describe("load items methods", () => {
-		test.todo("loadMore", () => {});
+		test("loadMore", async () => {
+			const loadItems = vi
+				.fn<ItemsLoader<unknown, unknown, unknown>>()
+				.mockResolvedValueOnce({
+					items: [1, 2, 3],
+				})
+				.mockResolvedValueOnce({
+					items: [4, 5, 6],
+				});
 
-		test.todo("applyFilter", () => {});
+			const filterlist = new Filterlist({
+				createDataStore,
+				loadItems,
+			});
 
-		test.todo("setAndApplyFilter", () => {});
+			expect(filterlist.getListState().loadedPages).toEqual(0);
 
-		test.todo("resetFilter", () => {});
+			await vi.waitFor(() => {
+				expect(loadItems).toHaveBeenCalledTimes(1);
+			});
 
-		test.todo("applyFilters", () => {});
+			filterlist.loadMore();
 
-		test.todo("setAndApplyFilters", () => {});
+			expect(filterlist.getListState().loadedPages).toEqual(1);
 
-		test.todo("setPage", () => {});
+			await vi.waitFor(() => {
+				expect(loadItems).toHaveBeenCalledTimes(2);
+			});
 
-		test.todo("setPageSize", () => {});
+			expect(filterlist.getListState().items).toEqual([1, 2, 3, 4, 5, 6]);
+			expect(filterlist.getListState().loadedPages).toEqual(2);
 
-		test.todo("resetFilters", () => {});
+			const [_requestParams, requestListState] = loadItems.mock.calls[1];
 
-		test.todo("resetAllFilters", () => {});
+			expect(requestListState.items).toEqual([1, 2, 3]);
+		});
 
-		test.todo("setSorting", () => {});
+		test("applyFilter", async () => {
+			const loadItems = vi
+				.fn<ItemsLoader<unknown, unknown, unknown>>()
+				.mockResolvedValueOnce({
+					items: [1, 2, 3],
+				})
+				.mockResolvedValueOnce({
+					items: [4, 5, 6],
+				});
 
-		test.todo("resetSorting", () => {});
+			const filterlist = new Filterlist({
+				createDataStore,
+				loadItems,
+			});
 
-		test.todo("reload", () => {});
+			expect(filterlist.getListState().loadedPages).toEqual(0);
+
+			await vi.waitFor(() => {
+				expect(loadItems).toHaveBeenCalledTimes(1);
+			});
+
+			expect(filterlist.getListState().loadedPages).toEqual(1);
+
+			filterlist.setFilterValue("foo", "bar");
+			filterlist.applyFilter("foo");
+
+			await vi.waitFor(() => {
+				expect(loadItems).toHaveBeenCalledTimes(2);
+			});
+
+			expect(filterlist.getListState().items).toEqual([4, 5, 6]);
+			expect(filterlist.getListState().loadedPages).toEqual(1);
+
+			const [requestParams, requestListState] = loadItems.mock.calls[1];
+
+			expect(requestParams.appliedFilters).toEqual({
+				foo: "bar",
+			});
+
+			expect(requestListState.items).toEqual([]);
+		});
+
+		test("setAndApplyFilter", async () => {
+			const loadItems = vi
+				.fn<ItemsLoader<unknown, unknown, unknown>>()
+				.mockResolvedValueOnce({
+					items: [1, 2, 3],
+				})
+				.mockResolvedValueOnce({
+					items: [4, 5, 6],
+				});
+
+			const filterlist = new Filterlist({
+				createDataStore,
+				loadItems,
+			});
+
+			expect(filterlist.getListState().loadedPages).toEqual(0);
+
+			await vi.waitFor(() => {
+				expect(loadItems).toHaveBeenCalledTimes(1);
+			});
+
+			expect(filterlist.getListState().loadedPages).toEqual(1);
+
+			filterlist.setAndApplyFilter("foo", "bar");
+
+			await vi.waitFor(() => {
+				expect(loadItems).toHaveBeenCalledTimes(2);
+			});
+
+			expect(filterlist.getListState().items).toEqual([4, 5, 6]);
+			expect(filterlist.getListState().loadedPages).toEqual(1);
+
+			const [requestParams, requestListState] = loadItems.mock.calls[1];
+
+			expect(requestParams.appliedFilters).toEqual({
+				foo: "bar",
+			});
+
+			expect(requestListState.items).toEqual([]);
+		});
+
+		test("resetFilter", async () => {
+			const loadItems = vi
+				.fn<ItemsLoader<unknown, unknown, unknown>>()
+				.mockResolvedValueOnce({
+					items: [1, 2, 3],
+				})
+				.mockResolvedValueOnce({
+					items: [4, 5, 6],
+				});
+
+			const filterlist = new Filterlist({
+				appliedFilters: {
+					foo: "bar",
+				},
+				createDataStore,
+				loadItems,
+			});
+
+			expect(filterlist.getListState().loadedPages).toEqual(0);
+
+			await vi.waitFor(() => {
+				expect(loadItems).toHaveBeenCalledTimes(1);
+			});
+
+			expect(filterlist.getListState().loadedPages).toEqual(1);
+
+			filterlist.resetFilter("foo");
+
+			await vi.waitFor(() => {
+				expect(loadItems).toHaveBeenCalledTimes(2);
+			});
+
+			expect(filterlist.getListState().items).toEqual([4, 5, 6]);
+			expect(filterlist.getListState().loadedPages).toEqual(1);
+
+			const [requestParams, requestListState] = loadItems.mock.calls[1];
+
+			expect(requestParams.appliedFilters).toEqual({});
+
+			expect(requestListState.items).toEqual([]);
+		});
+
+		test("applyFilters", async () => {
+			const loadItems = vi
+				.fn<ItemsLoader<unknown, unknown, unknown>>()
+				.mockResolvedValueOnce({
+					items: [1, 2, 3],
+				})
+				.mockResolvedValueOnce({
+					items: [4, 5, 6],
+				});
+
+			const filterlist = new Filterlist({
+				createDataStore,
+				loadItems,
+			});
+
+			expect(filterlist.getListState().loadedPages).toEqual(0);
+
+			await vi.waitFor(() => {
+				expect(loadItems).toHaveBeenCalledTimes(1);
+			});
+
+			expect(filterlist.getListState().loadedPages).toEqual(1);
+
+			filterlist.setFiltersValues({
+				foo: "bar",
+				baz: "qux",
+			});
+			filterlist.applyFilters(["foo", "baz"]);
+
+			await vi.waitFor(() => {
+				expect(loadItems).toHaveBeenCalledTimes(2);
+			});
+
+			expect(filterlist.getListState().items).toEqual([4, 5, 6]);
+			expect(filterlist.getListState().loadedPages).toEqual(1);
+
+			const [requestParams, requestListState] = loadItems.mock.calls[1];
+
+			expect(requestParams.appliedFilters).toEqual({
+				foo: "bar",
+				baz: "qux",
+			});
+
+			expect(requestListState.items).toEqual([]);
+		});
+
+		test("setAndApplyFilters", async () => {
+			const loadItems = vi
+				.fn<ItemsLoader<unknown, unknown, unknown>>()
+				.mockResolvedValueOnce({
+					items: [1, 2, 3],
+				})
+				.mockResolvedValueOnce({
+					items: [4, 5, 6],
+				});
+
+			const filterlist = new Filterlist({
+				createDataStore,
+				loadItems,
+			});
+
+			expect(filterlist.getListState().loadedPages).toEqual(0);
+
+			await vi.waitFor(() => {
+				expect(loadItems).toHaveBeenCalledTimes(1);
+			});
+
+			expect(filterlist.getListState().loadedPages).toEqual(1);
+
+			filterlist.setAndApplyFilters({
+				foo: "bar",
+				baz: "qux",
+			});
+
+			await vi.waitFor(() => {
+				expect(loadItems).toHaveBeenCalledTimes(2);
+			});
+
+			expect(filterlist.getListState().items).toEqual([4, 5, 6]);
+			expect(filterlist.getListState().loadedPages).toEqual(1);
+
+			const [requestParams, requestListState] = loadItems.mock.calls[1];
+
+			expect(requestParams.appliedFilters).toEqual({
+				foo: "bar",
+				baz: "qux",
+			});
+
+			expect(requestListState.items).toEqual([]);
+		});
+
+		test("resetFilters", async () => {
+			const loadItems = vi
+				.fn<ItemsLoader<unknown, unknown, unknown>>()
+				.mockResolvedValueOnce({
+					items: [1, 2, 3],
+				})
+				.mockResolvedValueOnce({
+					items: [4, 5, 6],
+				});
+
+			const filterlist = new Filterlist({
+				appliedFilters: {
+					foo: "bar",
+					baz: "qux",
+				},
+				createDataStore,
+				loadItems,
+			});
+
+			expect(filterlist.getListState().loadedPages).toEqual(0);
+
+			await vi.waitFor(() => {
+				expect(loadItems).toHaveBeenCalledTimes(1);
+			});
+
+			expect(filterlist.getListState().loadedPages).toEqual(1);
+
+			filterlist.resetFilters(["foo", "baz"]);
+
+			await vi.waitFor(() => {
+				expect(loadItems).toHaveBeenCalledTimes(2);
+			});
+
+			expect(filterlist.getListState().items).toEqual([4, 5, 6]);
+			expect(filterlist.getListState().loadedPages).toEqual(1);
+
+			const [requestParams, requestListState] = loadItems.mock.calls[1];
+
+			expect(requestParams.appliedFilters).toEqual({});
+
+			expect(requestListState.items).toEqual([]);
+		});
+
+		test("resetAllFilters", async () => {
+			const loadItems = vi
+				.fn<ItemsLoader<unknown, unknown, unknown>>()
+				.mockResolvedValueOnce({
+					items: [1, 2, 3],
+				})
+				.mockResolvedValueOnce({
+					items: [4, 5, 6],
+				});
+
+			const filterlist = new Filterlist({
+				appliedFilters: {
+					foo: "bar",
+					baz: "qux",
+				},
+				createDataStore,
+				loadItems,
+			});
+
+			expect(filterlist.getListState().loadedPages).toEqual(0);
+
+			await vi.waitFor(() => {
+				expect(loadItems).toHaveBeenCalledTimes(1);
+			});
+
+			expect(filterlist.getListState().loadedPages).toEqual(1);
+
+			filterlist.resetAllFilters();
+
+			await vi.waitFor(() => {
+				expect(loadItems).toHaveBeenCalledTimes(2);
+			});
+
+			expect(filterlist.getListState().items).toEqual([4, 5, 6]);
+			expect(filterlist.getListState().loadedPages).toEqual(1);
+
+			const [requestParams, requestListState] = loadItems.mock.calls[1];
+
+			expect(requestParams.appliedFilters).toEqual({});
+
+			expect(requestListState.items).toEqual([]);
+		});
+
+		test("setPage", async () => {
+			const loadItems = vi
+				.fn<ItemsLoader<unknown, unknown, unknown>>()
+				.mockResolvedValueOnce({
+					items: [1, 2, 3],
+				})
+				.mockResolvedValueOnce({
+					items: [4, 5, 6],
+				});
+
+			const filterlist = new Filterlist({
+				createDataStore,
+				loadItems,
+			});
+
+			expect(filterlist.getListState().loadedPages).toEqual(0);
+
+			await vi.waitFor(() => {
+				expect(loadItems).toHaveBeenCalledTimes(1);
+			});
+
+			expect(filterlist.getListState().loadedPages).toEqual(1);
+
+			filterlist.setPage(3);
+
+			await vi.waitFor(() => {
+				expect(loadItems).toHaveBeenCalledTimes(2);
+			});
+
+			expect(filterlist.getListState().items).toEqual([4, 5, 6]);
+			expect(filterlist.getListState().loadedPages).toEqual(1);
+
+			const [requestParams, requestListState] = loadItems.mock.calls[1];
+
+			expect(requestParams.page).toBe(3);
+			expect(requestListState.items).toEqual([]);
+		});
+
+		test("setPageSize", async () => {
+			const loadItems = vi
+				.fn<ItemsLoader<unknown, unknown, unknown>>()
+				.mockResolvedValueOnce({
+					items: [1, 2, 3],
+				})
+				.mockResolvedValueOnce({
+					items: [4, 5, 6],
+				});
+
+			const filterlist = new Filterlist({
+				createDataStore,
+				loadItems,
+			});
+
+			expect(filterlist.getListState().loadedPages).toEqual(0);
+
+			await vi.waitFor(() => {
+				expect(loadItems).toHaveBeenCalledTimes(1);
+			});
+
+			expect(filterlist.getListState().loadedPages).toEqual(1);
+
+			filterlist.setPageSize(30);
+
+			await vi.waitFor(() => {
+				expect(loadItems).toHaveBeenCalledTimes(2);
+			});
+
+			expect(filterlist.getListState().items).toEqual([4, 5, 6]);
+			expect(filterlist.getListState().loadedPages).toEqual(1);
+
+			const [requestParams, requestListState] = loadItems.mock.calls[1];
+
+			expect(requestParams.pageSize).toBe(30);
+			expect(requestListState.items).toEqual([]);
+		});
+
+		describe("setSorting", () => {
+			test("with asc", async () => {
+				const loadItems = vi
+					.fn<ItemsLoader<unknown, unknown, unknown>>()
+					.mockResolvedValueOnce({
+						items: [1, 2, 3],
+					})
+					.mockResolvedValueOnce({
+						items: [4, 5, 6],
+					});
+
+				const filterlist = new Filterlist({
+					createDataStore,
+					loadItems,
+				});
+
+				expect(filterlist.getListState().loadedPages).toEqual(0);
+
+				await vi.waitFor(() => {
+					expect(loadItems).toHaveBeenCalledTimes(1);
+				});
+
+				expect(filterlist.getListState().loadedPages).toEqual(1);
+
+				filterlist.setSorting("id", true);
+
+				await vi.waitFor(() => {
+					expect(loadItems).toHaveBeenCalledTimes(2);
+				});
+
+				expect(filterlist.getListState().items).toEqual([4, 5, 6]);
+				expect(filterlist.getListState().loadedPages).toEqual(1);
+
+				const [requestParams, requestListState] = loadItems.mock.calls[1];
+
+				expect(requestParams.sort).toEqual({
+					param: "id",
+					asc: true,
+				});
+				expect(requestListState.items).toEqual([]);
+			});
+
+			test("without asc", async () => {
+				const loadItems = vi
+					.fn<ItemsLoader<unknown, unknown, unknown>>()
+					.mockResolvedValueOnce({
+						items: [1, 2, 3],
+					})
+					.mockResolvedValueOnce({
+						items: [4, 5, 6],
+					});
+
+				const filterlist = new Filterlist({
+					createDataStore,
+					loadItems,
+					sort: {
+						param: "test",
+						asc: false,
+					},
+				});
+
+				expect(filterlist.getListState().loadedPages).toEqual(0);
+
+				await vi.waitFor(() => {
+					expect(loadItems).toHaveBeenCalledTimes(1);
+				});
+
+				expect(filterlist.getListState().loadedPages).toEqual(1);
+
+				filterlist.setSorting("id");
+
+				await vi.waitFor(() => {
+					expect(loadItems).toHaveBeenCalledTimes(2);
+				});
+
+				expect(filterlist.getListState().items).toEqual([4, 5, 6]);
+				expect(filterlist.getListState().loadedPages).toEqual(1);
+
+				const [requestParams, requestListState] = loadItems.mock.calls[1];
+
+				expect(requestParams.sort).toEqual({
+					param: "id",
+					asc: true,
+				});
+				expect(requestListState.items).toEqual([]);
+			});
+
+			test("toggle asc", async () => {
+				const loadItems = vi
+					.fn<ItemsLoader<unknown, unknown, unknown>>()
+					.mockResolvedValueOnce({
+						items: [1, 2, 3],
+					})
+					.mockResolvedValueOnce({
+						items: [4, 5, 6],
+					});
+
+				const filterlist = new Filterlist({
+					createDataStore,
+					loadItems,
+					sort: {
+						param: "id",
+						asc: true,
+					},
+				});
+
+				expect(filterlist.getListState().loadedPages).toEqual(0);
+
+				await vi.waitFor(() => {
+					expect(loadItems).toHaveBeenCalledTimes(1);
+				});
+
+				expect(filterlist.getListState().loadedPages).toEqual(1);
+
+				filterlist.setSorting("id");
+
+				await vi.waitFor(() => {
+					expect(loadItems).toHaveBeenCalledTimes(2);
+				});
+
+				expect(filterlist.getListState().items).toEqual([4, 5, 6]);
+				expect(filterlist.getListState().loadedPages).toEqual(1);
+
+				const [requestParams, requestListState] = loadItems.mock.calls[1];
+
+				expect(requestParams.sort).toEqual({
+					param: "id",
+					asc: false,
+				});
+				expect(requestListState.items).toEqual([]);
+			});
+		});
+
+		test("resetSorting", async () => {
+			const loadItems = vi
+				.fn<ItemsLoader<unknown, unknown, unknown>>()
+				.mockResolvedValueOnce({
+					items: [1, 2, 3],
+				})
+				.mockResolvedValueOnce({
+					items: [4, 5, 6],
+				});
+
+			const filterlist = new Filterlist({
+				createDataStore,
+				loadItems,
+				sort: {
+					param: "id",
+					asc: true,
+				},
+			});
+
+			expect(filterlist.getListState().loadedPages).toEqual(0);
+
+			await vi.waitFor(() => {
+				expect(loadItems).toHaveBeenCalledTimes(1);
+			});
+
+			expect(filterlist.getListState().loadedPages).toEqual(1);
+
+			filterlist.resetSorting();
+
+			await vi.waitFor(() => {
+				expect(loadItems).toHaveBeenCalledTimes(2);
+			});
+
+			expect(filterlist.getListState().items).toEqual([4, 5, 6]);
+			expect(filterlist.getListState().loadedPages).toEqual(1);
+
+			const [requestParams, requestListState] = loadItems.mock.calls[1];
+
+			expect(requestParams.sort).toEqual({
+				param: null,
+				asc: true,
+			});
+			expect(requestListState.items).toEqual([]);
+		});
+
+		test("reload", async () => {
+			const loadItems = vi
+				.fn<ItemsLoader<unknown, unknown, unknown>>()
+				.mockResolvedValueOnce({
+					items: [1, 2, 3],
+				})
+				.mockResolvedValueOnce({
+					items: [4, 5, 6],
+				});
+
+			const filterlist = new Filterlist({
+				createDataStore,
+				loadItems,
+				appliedFilters: {
+					foo: "bar",
+				},
+				page: 3,
+				pageSize: 20,
+				sort: {
+					param: "id",
+					asc: true,
+				},
+			});
+
+			expect(filterlist.getListState().loadedPages).toEqual(0);
+
+			await vi.waitFor(() => {
+				expect(loadItems).toHaveBeenCalledTimes(1);
+			});
+
+			expect(filterlist.getListState().loadedPages).toEqual(1);
+
+			filterlist.reload();
+
+			await vi.waitFor(() => {
+				expect(loadItems).toHaveBeenCalledTimes(2);
+			});
+
+			expect(filterlist.getListState().items).toEqual([4, 5, 6]);
+			expect(filterlist.getListState().loadedPages).toEqual(1);
+
+			const [requestParams, requestListState] = loadItems.mock.calls[1];
+
+			expect(requestParams).toEqual({
+				appliedFilters: {
+					foo: "bar",
+				},
+				page: 3,
+				pageSize: 20,
+				sort: {
+					param: "id",
+					asc: true,
+				},
+			});
+			expect(requestListState.items).toEqual([]);
+		});
+	});
+
+	describe("reset page", () => {
+		test("on filter change", async () => {
+			const loadItems = vi
+				.fn<ItemsLoader<unknown, unknown, unknown>>()
+				.mockResolvedValueOnce({
+					items: [1, 2, 3],
+				})
+				.mockResolvedValueOnce({
+					items: [4, 5, 6],
+				});
+
+			const filterlist = new Filterlist({
+				createDataStore,
+				loadItems,
+				page: 3,
+				pageSize: 20,
+			});
+
+			expect(filterlist.getListState().loadedPages).toEqual(0);
+
+			await vi.waitFor(() => {
+				expect(loadItems).toHaveBeenCalledTimes(1);
+			});
+
+			expect(filterlist.getListState().loadedPages).toEqual(1);
+
+			filterlist.setAndApplyFilters({});
+
+			await vi.waitFor(() => {
+				expect(loadItems).toHaveBeenCalledTimes(2);
+			});
+
+			expect(filterlist.getListState().items).toEqual([4, 5, 6]);
+			expect(filterlist.getListState().loadedPages).toEqual(1);
+
+			const [requestParams, requestListState] = loadItems.mock.calls[1];
+
+			expect(requestParams.page).toBe(1);
+			expect(requestParams.pageSize).toBe(20);
+			expect(requestListState.items).toEqual([]);
+		});
+
+		test("on sort change", async () => {
+			const loadItems = vi
+				.fn<ItemsLoader<unknown, unknown, unknown>>()
+				.mockResolvedValueOnce({
+					items: [1, 2, 3],
+				})
+				.mockResolvedValueOnce({
+					items: [4, 5, 6],
+				});
+
+			const filterlist = new Filterlist({
+				createDataStore,
+				loadItems,
+				page: 3,
+				pageSize: 20,
+			});
+
+			expect(filterlist.getListState().loadedPages).toEqual(0);
+
+			await vi.waitFor(() => {
+				expect(loadItems).toHaveBeenCalledTimes(1);
+			});
+
+			expect(filterlist.getListState().loadedPages).toEqual(1);
+
+			filterlist.resetSorting();
+
+			await vi.waitFor(() => {
+				expect(loadItems).toHaveBeenCalledTimes(2);
+			});
+
+			expect(filterlist.getListState().items).toEqual([4, 5, 6]);
+			expect(filterlist.getListState().loadedPages).toEqual(1);
+
+			const [requestParams, requestListState] = loadItems.mock.calls[1];
+
+			expect(requestParams.page).toBe(1);
+			expect(requestParams.pageSize).toBe(20);
+			expect(requestListState.items).toEqual([]);
+		});
+
+		test("on page size change", async () => {
+			const loadItems = vi
+				.fn<ItemsLoader<unknown, unknown, unknown>>()
+				.mockResolvedValueOnce({
+					items: [1, 2, 3],
+				})
+				.mockResolvedValueOnce({
+					items: [4, 5, 6],
+				});
+
+			const filterlist = new Filterlist({
+				createDataStore,
+				loadItems,
+				page: 3,
+				pageSize: 20,
+			});
+
+			expect(filterlist.getListState().loadedPages).toEqual(0);
+
+			await vi.waitFor(() => {
+				expect(loadItems).toHaveBeenCalledTimes(1);
+			});
+
+			expect(filterlist.getListState().loadedPages).toEqual(1);
+
+			filterlist.setPageSize(50);
+
+			await vi.waitFor(() => {
+				expect(loadItems).toHaveBeenCalledTimes(2);
+			});
+
+			expect(filterlist.getListState().items).toEqual([4, 5, 6]);
+			expect(filterlist.getListState().loadedPages).toEqual(1);
+
+			const [requestParams, requestListState] = loadItems.mock.calls[1];
+
+			expect(requestParams.page).toBe(1);
+			expect(requestParams.pageSize).toBe(50);
+			expect(requestListState.items).toEqual([]);
+		});
 	});
 
 	describe("change internal state methods", () => {
 		test("setTotal", () => {
 			const filterlist = new Filterlist({
+				createDataStore,
 				loadItems: vi.fn().mockResolvedValue({
 					items: [],
 				}),
@@ -250,36 +1042,366 @@ describe.each([
 			expect(filterlist.getListState().total).toBe(50);
 		});
 
-		test.todo("insertItem", () => {});
+		test("insertItem", async () => {
+			const filterlist = new Filterlist({
+				createDataStore,
+				loadItems: vi.fn().mockResolvedValue({
+					items: [1, 2, 3],
+				}),
+			});
 
-		test.todo("deleteItem", () => {});
+			await vi.waitFor(() => {
+				expect(filterlist.getListState().items.length).toBeGreaterThan(0);
+			});
 
-		test.todo("updateItem", () => {});
+			filterlist.insertItem(2, 4);
+
+			expect(filterlist.getListState().items).toEqual([1, 2, 4, 3]);
+		});
+
+		test("deleteItem", async () => {
+			const filterlist = new Filterlist({
+				createDataStore,
+				loadItems: vi.fn().mockResolvedValue({
+					items: [1, 2, 3],
+				}),
+			});
+
+			await vi.waitFor(() => {
+				expect(filterlist.getListState().items.length).toBeGreaterThan(0);
+			});
+
+			filterlist.deleteItem(1);
+
+			expect(filterlist.getListState().items).toEqual([1, 3]);
+		});
+
+		test("updateItem", async () => {
+			const filterlist = new Filterlist({
+				createDataStore,
+				loadItems: vi.fn().mockResolvedValue({
+					items: [1, 2, 3],
+				}),
+			});
+
+			await vi.waitFor(() => {
+				expect(filterlist.getListState().items.length).toBeGreaterThan(0);
+			});
+
+			filterlist.updateItem(1, 4);
+
+			expect(filterlist.getListState().items).toEqual([1, 4, 3]);
+		});
 	});
 
 	describe("debounce", () => {
-		test.todo.each([
-			{
-				name: "debounced",
+		test("debounced", async () => {
+			const loadItems = vi
+				.fn<ItemsLoader<unknown, unknown, unknown>>()
+				.mockResolvedValue({
+					items: [1, 2, 3],
+				});
+
+			const filterlist = new Filterlist({
+				createDataStore,
 				debounceTimeout: 300,
-			},
-			{
-				name: "not debounced",
-				debounceTimeout: undefined,
-			},
-		])("$name", ({ debounceTimeout }) => {});
+				loadItems,
+			});
+
+			filterlist.setAndApplyFilter("foo", "bar");
+			filterlist.setAndApplyFilter("foo", "baz");
+			filterlist.setAndApplyFilter("foo", "qux");
+
+			await vi.waitFor(() => {
+				expect(loadItems).toHaveBeenCalledTimes(1);
+			});
+
+			const [requestParams] = loadItems.mock.calls[0];
+
+			expect(requestParams.appliedFilters.foo).toBe("qux");
+		});
+
+		test("not debounced", async () => {
+			const loadItems = vi
+				.fn<ItemsLoader<unknown, unknown, unknown>>()
+				.mockResolvedValue({
+					items: [1, 2, 3],
+				})
+				.mockResolvedValue({
+					items: [4, 5, 6],
+				})
+				.mockResolvedValue({
+					items: [7, 8, 9],
+				})
+				.mockResolvedValue({
+					items: [10, 11, 12],
+				});
+
+			const filterlist = new Filterlist({
+				createDataStore,
+				loadItems,
+			});
+
+			setTimeout(() => {
+				filterlist.setAndApplyFilter("foo", "bar");
+			});
+			setTimeout(() => {
+				filterlist.setAndApplyFilter("foo", "baz");
+			});
+			setTimeout(() => {
+				filterlist.setAndApplyFilter("foo", "qux");
+			});
+
+			await vi.waitFor(() => {
+				expect(loadItems).toHaveBeenCalledTimes(4);
+			});
+
+			expect(filterlist.getListState().items).toEqual([10, 11, 12]);
+		});
 	});
 
-	test.todo("auto refresh", () => {
-		test.todo.each([
-			{
-				name: "enabled",
-				refreshTimeout: 300,
-			},
-			{
-				name: "disabled",
-				refreshTimeout: undefined,
-			},
-		])("$name", ({ refreshTimeout }) => {});
+	test("auto refresh", async () => {
+		const loadItems = vi
+			.fn<ItemsLoader<unknown, unknown, unknown>>()
+			.mockResolvedValue({
+				items: [1, 2, 3],
+			})
+			.mockResolvedValue({
+				items: [4, 5, 6],
+			})
+			.mockResolvedValue({
+				items: [7, 8, 9],
+			})
+			.mockResolvedValue({
+				items: [10, 11, 12],
+			});
+
+		const filterlist = new Filterlist({
+			createDataStore,
+			loadItems,
+			refreshTimeout: 150,
+		});
+
+		await vi.waitFor(() => {
+			expect(loadItems).toHaveBeenCalledTimes(4);
+		});
+
+		expect(filterlist.getListState().items).toEqual([10, 11, 12]);
+	});
+
+	describe("save items while loading", () => {
+		test("not save", async () => {
+			const loadItems = vi
+				.fn<ItemsLoader<unknown, unknown, unknown>>()
+				.mockResolvedValueOnce({
+					items: [1, 2, 3],
+				})
+				.mockResolvedValueOnce({
+					items: [4, 5, 6],
+				});
+
+			const filterlist = new Filterlist({
+				createDataStore,
+				loadItems,
+			});
+
+			await vi.waitFor(() => {
+				expect(loadItems).toHaveBeenCalledTimes(1);
+			});
+
+			expect(filterlist.getListState().items).toEqual([1, 2, 3]);
+
+			filterlist.setAndApplyFilter("foo", "bar");
+
+			expect(filterlist.getListState().items).toEqual([]);
+
+			await vi.waitFor(() => {
+				expect(loadItems).toHaveBeenCalledTimes(2);
+			});
+
+			expect(filterlist.getListState().items).toEqual([4, 5, 6]);
+		});
+
+		test("save", async () => {
+			const loadItems = vi
+				.fn<ItemsLoader<unknown, unknown, unknown>>()
+				.mockResolvedValueOnce({
+					items: [1, 2, 3],
+				})
+				.mockResolvedValueOnce({
+					items: [4, 5, 6],
+				});
+
+			const filterlist = new Filterlist({
+				createDataStore,
+				loadItems,
+				saveItemsWhileLoad: true,
+			});
+
+			await vi.waitFor(() => {
+				expect(loadItems).toHaveBeenCalledTimes(1);
+			});
+
+			expect(filterlist.getListState().items).toEqual([1, 2, 3]);
+
+			filterlist.setAndApplyFilter("foo", "bar");
+
+			expect(filterlist.getListState().items).toEqual([1, 2, 3]);
+
+			await vi.waitFor(() => {
+				expect(loadItems).toHaveBeenCalledTimes(2);
+			});
+
+			expect(filterlist.getListState().items).toEqual([4, 5, 6]);
+		});
+	});
+
+	describe("reset values of filters", () => {
+		test("resetFilter", async () => {
+			const loadItems = vi
+				.fn<ItemsLoader<unknown, unknown, unknown>>()
+				.mockResolvedValueOnce({
+					items: [1, 2, 3],
+				})
+				.mockResolvedValueOnce({
+					items: [4, 5, 6],
+				});
+
+			const filterlist = new Filterlist({
+				appliedFilters: {
+					foo: "bar",
+				},
+				resetFiltersTo: {
+					foo: "default_foo",
+				},
+				createDataStore,
+				loadItems,
+			});
+
+			expect(filterlist.getListState().loadedPages).toEqual(0);
+
+			await vi.waitFor(() => {
+				expect(loadItems).toHaveBeenCalledTimes(1);
+			});
+
+			expect(filterlist.getListState().loadedPages).toEqual(1);
+
+			filterlist.resetFilter("foo");
+
+			await vi.waitFor(() => {
+				expect(loadItems).toHaveBeenCalledTimes(2);
+			});
+
+			expect(filterlist.getListState().items).toEqual([4, 5, 6]);
+			expect(filterlist.getListState().loadedPages).toEqual(1);
+
+			const [requestParams, requestListState] = loadItems.mock.calls[1];
+
+			expect(requestParams.appliedFilters).toEqual({
+				foo: "default_foo",
+			});
+
+			expect(requestListState.items).toEqual([]);
+		});
+
+		test("resetFilters", async () => {
+			const loadItems = vi
+				.fn<ItemsLoader<unknown, unknown, unknown>>()
+				.mockResolvedValueOnce({
+					items: [1, 2, 3],
+				})
+				.mockResolvedValueOnce({
+					items: [4, 5, 6],
+				});
+
+			const filterlist = new Filterlist({
+				appliedFilters: {
+					foo: "bar",
+					baz: "qux",
+				},
+				resetFiltersTo: {
+					foo: "default_foo",
+					baz: "default_baz",
+				},
+				createDataStore,
+				loadItems,
+			});
+
+			expect(filterlist.getListState().loadedPages).toEqual(0);
+
+			await vi.waitFor(() => {
+				expect(loadItems).toHaveBeenCalledTimes(1);
+			});
+
+			expect(filterlist.getListState().loadedPages).toEqual(1);
+
+			filterlist.resetFilters(["foo", "baz"]);
+
+			await vi.waitFor(() => {
+				expect(loadItems).toHaveBeenCalledTimes(2);
+			});
+
+			expect(filterlist.getListState().items).toEqual([4, 5, 6]);
+			expect(filterlist.getListState().loadedPages).toEqual(1);
+
+			const [requestParams, requestListState] = loadItems.mock.calls[1];
+
+			expect(requestParams.appliedFilters).toEqual({
+				foo: "default_foo",
+				baz: "default_baz",
+			});
+
+			expect(requestListState.items).toEqual([]);
+		});
+
+		test("resetAllFilters", async () => {
+			const loadItems = vi
+				.fn<ItemsLoader<unknown, unknown, unknown>>()
+				.mockResolvedValueOnce({
+					items: [1, 2, 3],
+				})
+				.mockResolvedValueOnce({
+					items: [4, 5, 6],
+				});
+
+			const filterlist = new Filterlist({
+				appliedFilters: {
+					foo: "bar",
+					baz: "qux",
+				},
+				resetFiltersTo: {
+					foo: "default_foo",
+					baz: "default_baz",
+				},
+				createDataStore,
+				loadItems,
+			});
+
+			expect(filterlist.getListState().loadedPages).toEqual(0);
+
+			await vi.waitFor(() => {
+				expect(loadItems).toHaveBeenCalledTimes(1);
+			});
+
+			expect(filterlist.getListState().loadedPages).toEqual(1);
+
+			filterlist.resetAllFilters();
+
+			await vi.waitFor(() => {
+				expect(loadItems).toHaveBeenCalledTimes(2);
+			});
+
+			expect(filterlist.getListState().items).toEqual([4, 5, 6]);
+			expect(filterlist.getListState().loadedPages).toEqual(1);
+
+			const [requestParams, requestListState] = loadItems.mock.calls[1];
+
+			expect(requestParams.appliedFilters).toEqual({
+				foo: "default_foo",
+				baz: "default_baz",
+			});
+
+			expect(requestListState.items).toEqual([]);
+		});
 	});
 });
