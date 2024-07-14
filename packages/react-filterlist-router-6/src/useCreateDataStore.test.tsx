@@ -1,10 +1,10 @@
-import { describe, expect, test, vi } from "vitest";
-import { useFilterlist, type Params } from "@vtaits/react-filterlist";
-import { renderHook, act } from '@testing-library/react-hooks'
-import { useCreateDataStore } from "./useCreateDataStore";
-import { PropsWithChildren } from "react";
+import { act, renderHook } from "@testing-library/react-hooks";
+import type { StringBasedDataStoreOptions } from "@vtaits/filterlist/dist/datastore_string";
+import { type Params, useFilterlist } from "@vtaits/react-filterlist";
+import type { PropsWithChildren } from "react";
 import { MemoryRouter } from "react-router-dom";
-import { StringBasedDataStoreOptions } from "@vtaits/filterlist/dist/datastore_string";
+import { describe, expect, test, vi } from "vitest";
+import { useCreateDataStore } from "./useCreateDataStore";
 
 function useCompositeHook(params: Params<unknown, unknown, unknown, unknown>) {
 	const createDataStore = useCreateDataStore();
@@ -15,9 +15,15 @@ function useCompositeHook(params: Params<unknown, unknown, unknown, unknown>) {
 	});
 }
 
-function setup(params: Params<unknown, unknown, unknown, unknown>, href: string, options: StringBasedDataStoreOptions = {}) {
-	const wrapper = ({ children }: PropsWithChildren) => <MemoryRouter initialEntries={[href]}>{children}</MemoryRouter>
-  const { result } = renderHook(() => useCompositeHook(params), { wrapper });
+function setup(
+	params: Params<unknown, unknown, unknown, unknown>,
+	href: string,
+	options: StringBasedDataStoreOptions = {},
+) {
+	const wrapper = ({ children }: PropsWithChildren) => (
+		<MemoryRouter initialEntries={[href]}>{children}</MemoryRouter>
+	);
+	const { result } = renderHook(() => useCompositeHook(params), { wrapper });
 
 	return result;
 }
@@ -83,11 +89,15 @@ test.each([
 ])(
 	"should parse query correctly: $href",
 	({ href, appliedFilters, page, pageSize, sort, options }) => {
-		const result = setup({
-			loadItems: vi.fn().mockResolvedValue({
-				items: [],
-			}),
-		}, href, options);
+		const result = setup(
+			{
+				loadItems: vi.fn().mockResolvedValue({
+					items: [],
+				}),
+			},
+			href,
+			options,
+		);
 
 		expect(result.current[2]?.getRequestParams()).toEqual({
 			appliedFilters,
@@ -100,11 +110,14 @@ test.each([
 
 describe("should change query", () => {
 	test("only filters", async () => {
-		const result = setup({
-			loadItems: vi.fn().mockResolvedValue({
-				items: [],
-			}),
-		}, "/page");
+		const result = setup(
+			{
+				loadItems: vi.fn().mockResolvedValue({
+					items: [],
+				}),
+			},
+			"/page",
+		);
 
 		result.current[2]?.setAndApplyFilters({
 			foo: "bar",
@@ -119,11 +132,14 @@ describe("should change query", () => {
 	});
 
 	test("all parameters", async () => {
-		const result = setup({
-			loadItems: vi.fn().mockResolvedValue({
-				items: [],
-			}),
-		}, "/page");
+		const result = setup(
+			{
+				loadItems: vi.fn().mockResolvedValue({
+					items: [],
+				}),
+			},
+			"/page",
+		);
 
 		result.current[2]?.setAndApplyFilters({
 			foo: "bar",
@@ -144,11 +160,14 @@ describe("should change query", () => {
 });
 
 test("navigate backward", async () => {
-	const result = setup({
-		loadItems: vi.fn().mockResolvedValue({
-			items: [],
-		}),
-	}, "/page");
+	const result = setup(
+		{
+			loadItems: vi.fn().mockResolvedValue({
+				items: [],
+			}),
+		},
+		"/page",
+	);
 
 	result.current[2]?.setAndApplyFilters({
 		foo: "bar",
