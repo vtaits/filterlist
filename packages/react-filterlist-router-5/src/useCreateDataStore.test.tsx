@@ -1,16 +1,9 @@
 import { renderHook } from "@testing-library/react-hooks";
 import type { StringBasedDataStoreOptions } from "@vtaits/filterlist/dist/datastore_string";
 import { type Params, useFilterlist } from "@vtaits/react-filterlist";
+import type { History, Location } from "history";
 import type { PropsWithChildren } from "react";
-import {
-	type Location,
-	MemoryRouter,
-	type NavigateFunction,
-	Route,
-	Routes,
-	useLocation,
-	useNavigate,
-} from "react-router-dom";
+import { MemoryRouter, Route, useHistory, useLocation } from "react-router-dom";
 import { describe, expect, test, vi } from "vitest";
 import { useCreateDataStore } from "./useCreateDataStore";
 
@@ -26,7 +19,7 @@ function useCompositeHook(
 	});
 }
 
-let globalNavigate: NavigateFunction = () => {};
+let globalHistory: History<unknown> = {} as unknown as History<unknown>;
 
 let globalLocation: Location<unknown> = {
 	state: "",
@@ -37,11 +30,11 @@ let globalLocation: Location<unknown> = {
 };
 
 function TestRouteComponent() {
-	const navigate = useNavigate();
+	const history = useHistory();
 	const location = useLocation();
 
 	globalLocation = location;
-	globalNavigate = navigate;
+	globalHistory = history;
 
 	return null;
 }
@@ -55,9 +48,7 @@ function setup(
 		<MemoryRouter initialEntries={[href]}>
 			{children}
 
-			<Routes>
-				<Route path="page" element={<TestRouteComponent />} />
-			</Routes>
+			<Route path="/page" component={TestRouteComponent} />
 		</MemoryRouter>
 	);
 	const { result } = renderHook(() => useCompositeHook(params, options), {
@@ -228,7 +219,7 @@ test("navigate backward", async () => {
 		expect(globalLocation.search).toBe("?page_size=20&sort=-id");
 	});
 
-	globalNavigate(-1);
+	globalHistory.goBack();
 
 	expect(result.current[2]?.getRequestParams()).toEqual({
 		appliedFilters: {
