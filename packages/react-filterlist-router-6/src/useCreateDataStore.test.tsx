@@ -1,30 +1,25 @@
 import { describe, expect, test, vi } from "vitest";
-import { Filterlist } from "../Filterlist";
-import {
-	type StringBasedDataStoreOptions,
-	createEmitter,
-	createStringBasedDataStore,
-} from "./string";
+import { useFilterlist, type Params } from "@vtaits/react-filterlist";
+import { renderHook, act } from '@testing-library/react-hooks'
+import { useCreateDataStore } from "./useCreateDataStore";
+import { PropsWithChildren } from "react";
+import { MemoryRouter } from "react-router-dom";
+import { StringBasedDataStoreOptions } from "@vtaits/filterlist/dist/datastore_string";
 
-const historyEmitter = createEmitter();
+function useCompositeHook(params: Params<unknown, unknown, unknown, unknown>) {
+	const createDataStore = useCreateDataStore();
 
-window.addEventListener("popstate", () => {
-	historyEmitter.emit();
-});
+	return useFilterlist({
+		...params,
+		createDataStore,
+	});
+}
 
-function makeCreateDataStore(options: StringBasedDataStoreOptions = {}) {
-	const createDataStore = () => {
-		return createStringBasedDataStore(
-			() => window.location.search,
-			(nextSearch) => {
-				window.location.href = `${window.location.pathname}?${nextSearch}`;
-			},
-			historyEmitter,
-			options,
-		);
-	};
+function setup(params: Params<unknown, unknown, unknown, unknown>, href: string, options: StringBasedDataStoreOptions = {}) {
+	const wrapper = ({ children }: PropsWithChildren) => <MemoryRouter initialEntries={[href]}>{children}</MemoryRouter>
+  const { result } = renderHook(() => useCompositeHook(params), { wrapper });
 
-	return createDataStore;
+	return result;
 }
 
 test.each([
@@ -88,16 +83,13 @@ test.each([
 ])(
 	"should parse query correctly: $href",
 	({ href, appliedFilters, page, pageSize, sort, options }) => {
-		window.location.href = href;
-
-		const filterlist = new Filterlist({
-			createDataStore: makeCreateDataStore(options),
+		const result = setup({
 			loadItems: vi.fn().mockResolvedValue({
 				items: [],
 			}),
-		});
+		}, href, options);
 
-		expect(filterlist.getRequestParams()).toEqual({
+		expect(result.current[2]?.getRequestParams()).toEqual({
 			appliedFilters,
 			page,
 			pageSize,
@@ -108,16 +100,13 @@ test.each([
 
 describe("should change query", () => {
 	test("only filters", async () => {
-		window.location.href = "/page";
-
-		const filterlist = new Filterlist({
-			createDataStore: makeCreateDataStore(),
+		const result = setup({
 			loadItems: vi.fn().mockResolvedValue({
 				items: [],
 			}),
-		});
+		}, "/page");
 
-		filterlist.setAndApplyFilters({
+		result.current[2]?.setAndApplyFilters({
 			foo: "bar",
 			baz: "qux",
 		});
@@ -130,22 +119,19 @@ describe("should change query", () => {
 	});
 
 	test("all parameters", async () => {
-		window.location.href = "/page";
-
-		const filterlist = new Filterlist({
-			createDataStore: makeCreateDataStore(),
+		const result = setup({
 			loadItems: vi.fn().mockResolvedValue({
 				items: [],
 			}),
-		});
+		}, "/page");
 
-		filterlist.setAndApplyFilters({
+		result.current[2]?.setAndApplyFilters({
 			foo: "bar",
 			baz: "qux",
 		});
-		filterlist.setPageSize(20);
-		filterlist.setSorting("id", false);
-		filterlist.setPage(3);
+		result.current[2]?.setPageSize(20);
+		result.current[2]?.setSorting("id", false);
+		result.current[2]?.setPage(3);
 
 		await vi.waitFor(() => {
 			expect(window.location.search).toBe(
@@ -158,22 +144,19 @@ describe("should change query", () => {
 });
 
 test("navigate backward", async () => {
-	window.location.href = "/page";
-
-	const filterlist = new Filterlist({
-		createDataStore: makeCreateDataStore(),
+	const result = setup({
 		loadItems: vi.fn().mockResolvedValue({
 			items: [],
 		}),
-	});
+	}, "/page");
 
-	filterlist.setAndApplyFilters({
+	result.current[2]?.setAndApplyFilters({
 		foo: "bar",
 		baz: "qux",
 	});
-	filterlist.setPageSize(20);
-	filterlist.setSorting("id", false);
-	filterlist.setPage(3);
+	result.current[2]?.setPageSize(20);
+	result.current[2]?.setSorting("id", false);
+	result.current[2]?.setPage(3);
 
 	await vi.waitFor(() => {
 		expect(window.location.search).toBe(
@@ -181,7 +164,7 @@ test("navigate backward", async () => {
 		);
 	});
 
-	filterlist.resetFilters(["foo", "baz"]);
+	result.current[2]?.resetFilters(["foo", "baz"]);
 
 	await vi.waitFor(() => {
 		expect(window.location.search).toBe("?page_size=20&sort=-id");
@@ -189,7 +172,7 @@ test("navigate backward", async () => {
 
 	window.location.search = "?foo=bar&baz=qux&page=3&page_size=20&sort=-id";
 
-	expect(filterlist.getRequestParams()).toEqual({
+	expect(result.current[2]?.getRequestParams()).toEqual({
 		appliedFilters: {
 			foo: "bar",
 			baz: "qux",
