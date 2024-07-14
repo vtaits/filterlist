@@ -1,3 +1,9 @@
+## 2.0.0
+
+### Breaking changes
+
+* `eventTypes` -> `EventType`
+
 ## 1.1.0 (08 may 2024)
 
 ### New features

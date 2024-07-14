@@ -41,7 +41,13 @@ export type RequestParams = Readonly<{
 	 * applied filters
 	 */
 	appliedFilters: Record<string, unknown>;
+	/**
+	 * Current page
+	 */
 	page: number;
+	/**
+	 * Number of elements on one response page
+	 */
 	pageSize?: number | null;
 	/**
 	 * sorting state of the list

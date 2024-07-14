@@ -83,7 +83,7 @@ export function createStringBasedDataStore(
 						? sort.substring(1, sort.length)
 						: sort
 					: undefined,
-				asc: !sort || sort[0] === "-",
+				asc: !sort || sort[0] !== "-",
 			},
 			appliedFilters,
 			page: page ? Number(page) : 1,
@@ -117,11 +117,12 @@ export function createStringBasedDataStore(
 		setValue: (nextRequestParams) => {
 			const newQuery = qs.stringify({
 				...nextRequestParams.appliedFilters,
-				[pageKey]: nextRequestParams.page,
+				[pageKey]:
+					nextRequestParams.page === 1 ? undefined : nextRequestParams.page,
 				[pageSizeKey]: nextRequestParams.pageSize,
 				[sortKey]: nextRequestParams.sort?.param
 					? `${nextRequestParams.sort.asc ? "" : "-"}${nextRequestParams.sort.param}`
-					: null,
+					: undefined,
 			});
 
 			setSearch(`${newQuery}`);

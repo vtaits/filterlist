@@ -1,6 +1,5 @@
 [![NPM](https://img.shields.io/npm/v/@vtaits/filterlist.svg)](https://www.npmjs.com/package/@vtaits/filterlist)
 ![dependencies status](https://img.shields.io/librariesio/release/npm/@vtaits/filterlist)
-[![Types](https://img.shields.io/npm/types/@vtaits/filterlist.svg)](https://www.npmjs.com/package/@vtaits/filterlist)
 
 # @vtaits/filterlist
 
@@ -76,9 +75,9 @@ const changePage = (nextPage: number) => {
 `emitter` is the instance of [mitt](https://github.com/developit/mitt).
 
 ```ts
-import { eventTypes } from '@vtaits/filterlist';
+import { EventType } from '@vtaits/filterlist';
 
-filterlist.emitter.on(eventTypes.changeListState, (listState) => {
+filterlist.emitter.on(EventType.changeListState, (listState) => {
   // ...
 });
 ```
