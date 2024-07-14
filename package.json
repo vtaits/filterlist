@@ -15,7 +15,7 @@
     "build": "yarn workspaces foreach --all -t run build",
     "test:ts": "yarn workspaces foreach --all -p run test:ts",
     "lint": "yarn workspaces foreach --all -p run lint",
-    "lint:fix": "biome check examples --apply-unsafe && yarn workspaces foreach --all -p run lint:fix",
+    "lint:fix": "biome check examples --write --unsafe && yarn workspaces foreach --all -p run lint:fix",
     "format": "biome format --write examples && yarn workspaces foreach --all -p run format",
     "test:unit": "yarn workspaces foreach --all -p run test:unit",
     "test": "yarn lint && yarn test:ts && yarn test:unit",
