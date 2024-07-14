@@ -97,6 +97,10 @@ export type ItemsLoader<Item, Additional, Error> = (
 	| Promise<ItemsLoaderResponse<Item, Additional>>;
 
 export type Params<Item, Additional, Error> = Readonly<{
+	/**
+	 * Create data store to store parameters such as currently applied filtes, sorting state, current page and number of items on one page
+	 * @param initalValue Inital parameters based on parameters of filterlist
+	 */
 	createDataStore?: (initalValue: RequestParams) => DataStore;
 	/**
 	 * function that loads items into the list

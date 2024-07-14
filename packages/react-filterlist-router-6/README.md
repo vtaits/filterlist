@@ -5,10 +5,6 @@
 
 Integration of [@vtaits/filterlist](https://www.npmjs.com/package/@vtaits/filterlist) with [react-router-dom](https://reactrouter.com/en/main)
 
-## Sandbox examples
-
-- Table with filters: [demo](https://kto5e.csb.app/), [source](https://codesandbox.io/s/example-kto5e)
-
 ## Installation
 
 ```

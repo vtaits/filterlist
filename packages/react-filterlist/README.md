@@ -1,6 +1,5 @@
 [![NPM](https://img.shields.io/npm/v/@vtaits/react-filterlist.svg)](https://www.npmjs.com/package/@vtaits/react-filterlist)
 ![dependencies status](https://img.shields.io/librariesio/release/npm/@vtaits/react-filterlist)
-[![Types](https://img.shields.io/npm/types/@vtaits/react-filterlist.svg)](https://www.npmjs.com/package/@vtaits/react-filterlist)
 
 # @vtaits/react-filterlist
 
@@ -104,7 +103,7 @@ import { useFilterlist } from '@vtaits/react-filterlist';
 
 // ...
 
-const [listState, filterlist] = useFilterlist({
+const [requestParams, listState, filterlist] = useFilterlist({
   ...options,
   parseFiltersAndSort,
   filtersAndSortData,
@@ -142,7 +141,7 @@ import { useFilterlist, useFilter } from '@vtaits/react-filterlist';
 
 // ...
 
-const [listState, filterlist] = useFilterlist(options);
+const [requestParams, listState, filterlist] = useFilterlist(options);
 
 const {
   setFilterValue,
@@ -186,3 +185,13 @@ setAndApplyFilter('next_value');
 applyFilter();
 resetFilter();
 ```
+
+### Navigator url sync
+
+You can use one of the next integrations:
+
+[react-router v6](https://github.com/vtaits/filterlist/tree/master/packages/react-filterlist-router-6)
+
+[react-router v5](https://github.com/vtaits/filterlist/tree/master/packages/react-filterlist-router-6)
+
+Or use `createDataStore` parameter as described in the [core](https://www.npmjs.com/package/@vtaits/filterlist) package

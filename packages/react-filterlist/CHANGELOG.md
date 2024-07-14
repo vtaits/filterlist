@@ -1,3 +1,17 @@
+## 2.0.0
+
+### Breaking changes
+
+* Changed result of `useFilterlist`, moved `appliedFilters`, `page`, `pageSize`, `sort` to the first element
+
+    ```typescript
+    const [requestParams, listState, filterlist] = useFilterlist({
+        // ...
+    });
+    ```
+
+* Migrate to `@vtaits/filterlist@^2.0.0`
+
 ## 1.2.0 (08 may 2024)
 
 ### Improvement
