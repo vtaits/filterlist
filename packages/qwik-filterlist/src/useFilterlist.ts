@@ -12,10 +12,11 @@ import {
 	useVisibleTask$,
 } from "@builder.io/qwik";
 
-import { Filterlist, eventTypes } from "@vtaits/filterlist";
+import { EventType, Filterlist } from "@vtaits/filterlist";
 import type {
 	ItemsLoader,
 	ListState,
+	RequestParams,
 	UpdateStateParams,
 } from "@vtaits/filterlist";
 
@@ -81,10 +82,10 @@ const createFilterlist = <Item, Additional, Error, FiltersAndSortData>(
 		loadItems: loadItems$,
 	});
 
-	filterlist.emitter.on(eventTypes.changeListState, syncListState);
+	filterlist.emitter.on(EventType.changeListState, syncListState);
 
 	if (onChangeLoadParams$) {
-		filterlist.emitter.on(eventTypes.changeLoadParams, onChangeLoadParams$);
+		filterlist.emitter.on(EventType.changeLoadParams, onChangeLoadParams$);
 	}
 
 	return filterlist;
@@ -121,6 +122,7 @@ export const useFilterlist = <Item, Additional, Error, FiltersAndSortData>(
 		track: Tracker;
 	}) => void,
 ): [
+	Signal<RequestParams | null>,
 	Signal<ListState<Item, Additional, Error> | null>,
 	Filterlist<Item, Additional, Error> | null,
 ] => {
@@ -180,6 +182,10 @@ export const useFilterlist = <Item, Additional, Error, FiltersAndSortData>(
 		initFilterlistInComponent?.(false);
 	}
 
+	const requestParams = useSignal<RequestParams | null>(
+		filterlistRef.value ? filterlistRef.value.getRequestParams() : null,
+	);
+
 	const listState = useSignal<ListState<Item, Additional, Error> | null>(
 		filterlistRef.value ? filterlistRef.value.getListState() : null,
 	);
@@ -218,8 +224,8 @@ export const useFilterlist = <Item, Additional, Error, FiltersAndSortData>(
 
 		return () => {
 			if (filterlistRef.value) {
-				filterlistRef.value.emitter.off(eventTypes.changeListState);
-				filterlistRef.value.emitter.off(eventTypes.changeLoadParams);
+				filterlistRef.value.emitter.off(EventType.changeListState);
+				filterlistRef.value.emitter.off(EventType.changeLoadParams);
 			}
 
 			filterlistRef.value = undefined;
@@ -227,5 +233,5 @@ export const useFilterlist = <Item, Additional, Error, FiltersAndSortData>(
 		};
 	});
 
-	return [listState, filterlistRef.value || null];
+	return [requestParams, listState, filterlistRef.value || null];
 };

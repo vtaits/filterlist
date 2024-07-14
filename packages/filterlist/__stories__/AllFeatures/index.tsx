@@ -1,17 +1,11 @@
 import {
   type ReactElement,
   useState,
-  useEffect,
   useCallback,
   useSyncExternalStore,
 } from 'react';
 import qs from 'qs';
-import {
-  useNavigate,
-  useNavigationType,
-  useLocation,
-} from 'react-router-dom';
-import { Filterlist, type ListState, eventTypes, UpdateStateParams } from '@vtaits/filterlist';
+import { Filterlist, EventType, UpdateStateParams } from '@vtaits/filterlist';
 import { Page } from '../../../../examples/ui/Page';
 import * as api from '../../../../examples/api';
 
@@ -23,40 +17,6 @@ import type {
 import type {
   ItemsLoader,
 } from '../../src/types';
-
-const getStateFromSearch = (search: string): UpdateStateParams => {
-  const parsed: Record<string, any> = qs.parse(search, {
-    ignoreQueryPrefix: true,
-  });
-
-  const {
-    sort,
-  } = parsed;
-
-  const appliedFilters = {
-    name: parsed.name || '',
-    email: parsed.email || '',
-    city: parsed.city || '',
-  };
-
-  return {
-    sort: {
-      param: sort
-        ? (
-          sort[0] === '-'
-            ? sort.substring(1, sort.length)
-            : sort
-        )
-        : 'id',
-      asc: !sort || sort[0] === '-',
-    },
-
-    filters: appliedFilters,
-    appliedFilters,
-    page: parsed.page ? Number(parsed.page) : 1,
-    pageSize: parsed.pageSize || 10,
-  };
-};
 
 const loadItems: ItemsLoader<User, Additional, unknown> = async ({
   sort,
@@ -78,66 +38,36 @@ const loadItems: ItemsLoader<User, Additional, unknown> = async ({
 };
 
 export function AllFeatures(): ReactElement {
-  const navigate = useNavigate();
-  const navigationType = useNavigationType();
-  const location = useLocation();
-
   const [filterlist] = useState(() => {
-    const {
-      search,
-    } = location;
-
-    const stateFromSearch = getStateFromSearch(search);
-
     return new Filterlist({
       loadItems,
-      ...stateFromSearch,
-      page: stateFromSearch.page ? Number(stateFromSearch.page) : 1,
-      pageSize: stateFromSearch.pageSize ? Number(stateFromSearch.pageSize) : 10,
       refreshTimeout: 10000,
     });
   });
 
   const listState = useSyncExternalStore(
     (callback) => {
-      filterlist.emitter.on(eventTypes.changeListState, callback);
+      filterlist.emitter.on(EventType.changeListState, callback);
 
       return () => {
-        filterlist.emitter.off(eventTypes.changeListState, callback);
+        filterlist.emitter.off(EventType.changeListState, callback);
       };
     },
 
     () => filterlist.getListState(),
   );
 
-  const onChangeListState = useCallback((newListState: ListState<User, Additional, unknown>) => {
-    const newQuery = qs.stringify({
-      ...newListState.appliedFilters,
-      page: newListState.page,
-      pageSize: newListState.pageSize,
-      sort: newListState.sort.param
-        ? `${newListState.sort.asc ? '' : '-'}${newListState.sort.param}`
-        : null,
-    });
+  const requestParams = useSyncExternalStore(
+    (callback) => {
+      filterlist.emitter.on(EventType.changeListState, callback);
 
-    navigate(`/?${newQuery}`);
-  }, [navigate]);
+      return () => {
+        filterlist.emitter.off(EventType.changeListState, callback);
+      };
+    },
 
-  useEffect(() => {
-    filterlist.emitter.on(eventTypes.changeLoadParams, onChangeListState);
-
-    return () => {
-      filterlist.emitter.off(eventTypes.changeLoadParams, onChangeListState);
-    };
-  }, []);
-
-  useEffect(() => {
-    if (navigationType === 'POP') {
-      const stateFromSearch = getStateFromSearch(location.search);
-
-      filterlist.updateStateAndRequest(stateFromSearch);
-    }
-  }, [navigationType, location.search]);
+    () => filterlist.getRequestParams(),
+  );
 
   const setPage = useCallback((
     page: number,
@@ -180,17 +110,21 @@ export function AllFeatures(): ReactElement {
   ), [filterlist]);
 
   const {
+    page,
+    pageSize,
+    sort,
+  } = requestParams;
+
+  const {
     items,
     loading,
     total,
-    page,
-    pageSize,
-     sort,
     filters,
   } = listState;
 
   return (
     <Page
+      requestParams={requestParams}
       listState={listState}
       filters={filters}
       page={page}

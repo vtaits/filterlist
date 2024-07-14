@@ -1,0 +1,69 @@
+{
+  "type": "module",
+  "name": "@vtaits/react-filterlist-router-5",
+  "version": "1.0.0",
+  "description": "Integration of `@vtaits/react-filterlist` with `react-router-dom` v5",
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/index.js",
+  "module": "./dist/esm/index.js",
+  "typings": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/esm/index.js",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/vtaits/filterlist.git"
+  },
+  "author": "Vadim Taits <taizvadim@gmail.com>",
+  "license": "MIT",
+  "keywords": [
+    "filterlist",
+    "filter",
+    "sort",
+    "pagination",
+    "react"
+  ],
+  "scripts": {
+    "build": "tsup src/index.ts --sourcemap --format esm,cjs --dts --legacy-output",
+    "lint": "biome check src",
+    "lint:fix": "biome check src --write --unsafe",
+    "format": "biome format src --write",
+    "test:ts": "tsc --noEmit",
+    "test:unit": "vitest run",
+    "test:unit:dev": "vitest",
+    "test": "yarn test:unit",
+    "prepare": "yarn build"
+  },
+  "peerDependencies": {
+    "@vtaits/filterlist": "^1.0.0",
+    "@vtaits/react-filterlist": "^1.0.0",
+    "react": "^16.14.0 || ^17.0.0 || ^18.0.0",
+    "react-router-dom": "^5.0.0"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.8.3",
+    "@testing-library/react-hooks": "^8.0.1",
+    "@types/history": "^4.7.11",
+    "@types/react": "^18.3.3",
+    "@types/react-router-dom": "^5.3.3",
+    "@vitejs/plugin-react": "^4.3.1",
+    "@vtaits/filterlist": "^1.1.0",
+    "@vtaits/react-filterlist": "^1.2.0",
+    "happy-dom": "^14.12.3",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^5.3.4",
+    "tsup": "^8.1.0",
+    "typescript": "5.4.5",
+    "vitest": "^2.0.2"
+  },
+  "dependencies": {
+    "use-latest": "^1.2.1"
+  }
+}

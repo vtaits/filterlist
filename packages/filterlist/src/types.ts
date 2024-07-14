@@ -5,17 +5,9 @@ export type Sort = Readonly<{
 
 export type ListState<Item, Additional, Error> = Readonly<{
 	/**
-	 * sorting state of the list
-	 */
-	sort: Sort;
-	/**
 	 * current filters state on page (intermediate inputs values etc.)
 	 */
 	filters: Record<string, unknown>;
-	/**
-	 * applied filters
-	 */
-	appliedFilters: Record<string, unknown>;
 	/**
 	 * is list loading at this moment
 	 */
@@ -41,9 +33,26 @@ export type ListState<Item, Additional, Error> = Readonly<{
 	 * is the first load after initialization
 	 */
 	isFirstLoad: boolean;
-	page: number;
-	pageSize?: number | null;
 	total?: number | null;
+}>;
+
+export type RequestParams = Readonly<{
+	/**
+	 * applied filters
+	 */
+	appliedFilters: Record<string, unknown>;
+	/**
+	 * Current page
+	 */
+	page: number;
+	/**
+	 * Number of elements on one response page
+	 */
+	pageSize?: number | null;
+	/**
+	 * sorting state of the list
+	 */
+	sort: Sort;
 }>;
 
 export type Options = Readonly<{
@@ -76,20 +85,12 @@ export type ItemsLoaderResponse<Item, Additional> = Readonly<{
 }>;
 
 /**
- * @param prevState list state of the previous request
- * @param nextState current list state
- */
-export type ShouldRequest<Item, Additional, Error> = (
-	prevState: ListState<Item, Additional, Error>,
-	nextState: ListState<Item, Additional, Error>,
-) => boolean;
-
-/**
  * function that loads items into the list
  *
  * @throws {LoadListError} if an error occured during load items
  */
 export type ItemsLoader<Item, Additional, Error> = (
+	requestParams: RequestParams,
 	prevListState: ListState<Item, Additional, Error>,
 ) =>
 	| ItemsLoaderResponse<Item, Additional>
@@ -97,9 +98,10 @@ export type ItemsLoader<Item, Additional, Error> = (
 
 export type Params<Item, Additional, Error> = Readonly<{
 	/**
-	 * invoked before requests. If returns `false`, request will be prevented
+	 * Create data store to store parameters such as currently applied filtes, sorting state, current page and number of items on one page
+	 * @param initalValue Inital parameters based on parameters of filterlist
 	 */
-	shouldRequest?: ShouldRequest<Item, Additional, Error>;
+	createDataStore?: (initalValue: RequestParams) => DataStore;
 	/**
 	 * function that loads items into the list
 	 *
@@ -182,28 +184,41 @@ export type UpdateStateParams = Readonly<{
 	pageSize?: number | null;
 }>;
 
-export type EventType =
-	| "loadMore"
-	| "setFilterValue"
-	| "applyFilter"
-	| "setAndApplyFilter"
-	| "resetFilter"
-	| "setFiltersValues"
-	| "applyFilters"
-	| "setAndApplyFilters"
-	| "setPage"
-	| "setPageSize"
-	| "resetFilters"
-	| "resetAllFilters"
-	| "reload"
-	| "setSorting"
-	| "resetSorting"
-	| "updateStateAndRequest"
-	| "changeLoadParams"
-	| "insertItem"
-	| "deleteItem"
-	| "updateItem"
-	| "requestItems"
-	| "loadItemsSuccess"
-	| "loadItemsError"
-	| "changeListState";
+export enum EventType {
+	loadMore = 0,
+	setFilterValue = 1,
+	applyFilter = 2,
+	setAndApplyFilter = 3,
+	resetFilter = 4,
+	setFiltersValues = 5,
+	applyFilters = 6,
+	setAndApplyFilters = 7,
+	setPage = 8,
+	setPageSize = 9,
+	resetFilters = 10,
+	resetAllFilters = 11,
+	reload = 12,
+	setSorting = 13,
+	resetSorting = 14,
+	updateStateAndRequest = 15,
+	changeLoadParams = 16,
+	insertItem = 17,
+	deleteItem = 18,
+	updateItem = 19,
+	requestItems = 20,
+	loadItemsSuccess = 21,
+	loadItemsError = 22,
+	changeListState = 23,
+	changeRequestParams = 24,
+}
+
+export type DataStoreListener = (
+	nextValue: RequestParams,
+	prevValue: RequestParams,
+) => void;
+
+export type DataStore = {
+	getValue: () => RequestParams;
+	setValue: (nextValue: Partial<RequestParams>) => void;
+	subscribe: (listener: DataStoreListener) => () => void;
+};

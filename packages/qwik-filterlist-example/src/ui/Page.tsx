@@ -1,7 +1,7 @@
 /** @jsxImportSource @builder.io/qwik */
 import { type QRL, component$ } from "@builder.io/qwik";
 import { qwikify$ } from "@builder.io/qwik-react";
-import type { ListState } from "@vtaits/filterlist";
+import type { ListState, RequestParams } from "@vtaits/filterlist";
 import { Paginator as ReactPaginator } from "@vtaits/react-paginator";
 import type { Additional, User } from "../../../../examples/types";
 import buttonStyles from "./Button.module.css";
@@ -16,12 +16,13 @@ const Paginator = qwikify$(ReactPaginator);
 
 type PageProps = Readonly<{
 	listState: ListState<User, Additional, unknown>;
+	requestParams: RequestParams;
 	setFilterValue$: QRL<(filterName: string, value: unknown) => void>;
-	resetFilter$: QRL<(filterName: string) => Promise<void>>;
-	applyFilter$: QRL<(filterName: string) => Promise<void>>;
-	setPage$: QRL<(page: number) => Promise<void>>;
-	setPageSize$: QRL<(pageSize: number | null | undefined) => Promise<void>>;
-	resetAllFilters$: QRL<() => Promise<void>>;
+	resetFilter$: QRL<(filterName: string) => void>;
+	applyFilter$: QRL<(filterName: string) => void>;
+	setPage$: QRL<(page: number) => void>;
+	setPageSize$: QRL<(pageSize: number | null | undefined) => void>;
+	resetAllFilters$: QRL<() => void>;
 	reload$: QRL<() => Promise<void>>;
 	setSorting$: QRL<(param: string, asc?: boolean) => void>;
 	isInfinity?: boolean;
@@ -31,6 +32,7 @@ type PageProps = Readonly<{
 export const Page = component$(
 	({
 		listState,
+		requestParams,
 		resetAllFilters$,
 		reload$,
 		setFilterValue$,
@@ -42,12 +44,11 @@ export const Page = component$(
 		isInfinity = false,
 		loadMore$ = undefined,
 	}: PageProps) => {
+		const { page, pageSize: pageSizeProp = null, sort } = requestParams;
+
 		const {
 			loadedPages,
 			filters,
-			page,
-			pageSize: pageSizeProp = null,
-			sort,
 			items,
 			total = undefined,
 			loading,

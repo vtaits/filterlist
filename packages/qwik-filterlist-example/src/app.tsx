@@ -6,7 +6,7 @@ import type { User } from "../../../examples/types";
 import { Page } from "./ui/Page";
 
 export const App = component$(() => {
-	const [listState, filterlist] = useFilterlist<
+	const [requestParams, listState, filterlist] = useFilterlist<
 		User,
 		{
 			count: number;
@@ -29,13 +29,14 @@ export const App = component$(() => {
 		}),
 	});
 
-	if (!listState.value) {
+	if (!listState.value || !requestParams.value) {
 		return null;
 	}
 
 	return (
 		<Page
 			listState={listState.value}
+			requestParams={requestParams.value}
 			setFilterValue$={(filterName, value) => {
 				if (!filterlist) {
 					throw new Error("filterlist is not initialized");

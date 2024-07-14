@@ -32,7 +32,7 @@
   "scripts": {
     "build": "tsup src/index.ts --sourcemap --format esm,cjs --dts --legacy-output",
     "lint": "biome check src",
-    "lint:fix": "biome check src --apply-unsafe",
+    "lint:fix": "biome check src --write --unsafe",
     "format": "biome format src --write",
     "test:ts": "tsc --noEmit",
     "test:unit": "vitest run",
@@ -45,20 +45,20 @@
     "react": "^16.14.0 || ^17.0.0 || ^18.0.0"
   },
   "devDependencies": {
-    "@biomejs/biome": "^1.8.2",
-    "@storybook/react": "^8.1.10",
+    "@biomejs/biome": "^1.8.3",
+    "@storybook/react": "^8.2.2",
     "@types/qs": "^6.9.15",
     "@types/react": "^18.3.3",
     "@vitejs/plugin-react": "^4.3.1",
     "@vtaits/filterlist": "^1.1.0",
     "@vtaits/react-router-dom-fake-browser": "^1.0.0",
-    "qs": "^6.12.1",
+    "qs": "^6.12.3",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-router-dom": "^6.24.0",
+    "react-router-dom": "^6.24.1",
     "tsup": "^8.1.0",
     "typescript": "5.4.5",
-    "vitest": "^1.6.0"
+    "vitest": "^2.0.2"
   },
   "dependencies": {
     "is-promise": "^4.0.0",

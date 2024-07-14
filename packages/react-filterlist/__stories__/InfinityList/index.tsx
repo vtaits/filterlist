@@ -11,14 +11,12 @@ import {
 } from 'react-router-dom';
 import { useFilterlist } from '@vtaits/react-filterlist';
 import type {
-  ListState,
   UpdateStateParams,
 } from '@vtaits/filterlist';
 import { Page } from '../../../../examples/ui/Page';
 import * as api from '../../../../examples/api';
 import type {
   User,
-  Additional,
 } from '../../../../examples/types';
 
 export function InfinityList(): ReactElement | null {
@@ -26,7 +24,7 @@ export function InfinityList(): ReactElement | null {
   const navigationType = useNavigationType();
   const location = useLocation();
 
-  const [listState, filterlist] = useFilterlist<
+  const [requestParams, listState, filterlist] = useFilterlist<
     User,
     {
       count: number,
@@ -40,8 +38,9 @@ export function InfinityList(): ReactElement | null {
     loadItems: async ({
       sort,
       appliedFilters,
-      loadedPages,
       pageSize,
+    }, {
+      loadedPages,
     }) => {
       const response = await api.loadUsers({
         ...appliedFilters,
@@ -56,17 +55,21 @@ export function InfinityList(): ReactElement | null {
       };
     },
 
-    onChangeLoadParams: (newListState: ListState<User, Additional, unknown>): void => {
-      const newQuery = qs.stringify({
-        ...newListState.appliedFilters,
-        page: newListState.page,
-        pageSize: newListState.pageSize,
-        sort: newListState.sort.param
-          ? `${newListState.sort.asc ? '' : '-'}${newListState.sort.param}`
-          : null,
-      });
+    onChangeLoadParams: () => {
+      if (filterlist) {
+        const nextRequestParams = filterlist.getRequestParams();
 
-      navigate(`${location.pathname}?${newQuery}`);
+        const newQuery = qs.stringify({
+          ...nextRequestParams.appliedFilters,
+          page: nextRequestParams.page,
+          pageSize: nextRequestParams.pageSize,
+          sort: nextRequestParams.sort.param
+            ? `${nextRequestParams.sort.asc ? '' : '-'}${nextRequestParams.sort.param}`
+            : null,
+        });
+  
+        navigate(`${location.pathname}?${newQuery}`);
+      }
     },
 
     parseFiltersAndSort: async ({
@@ -104,7 +107,7 @@ export function InfinityList(): ReactElement | null {
         filters: appliedFilters,
         appliedFilters,
         page: parsed.page ? Number(parsed.page) : 1,
-        pageSize: parsed.pageSize || 10,
+        pageSize: (parsed.pageSize && Number(parsed.pageSize)) || 10,
       };
     },
 
@@ -120,7 +123,7 @@ export function InfinityList(): ReactElement | null {
       && location.search !== prevProps.location.search,
   });
 
-  const setPage = useCallback((page: number): Promise<void> => {
+  const setPage = useCallback((page: number) => {
     if (!filterlist) {
       throw new Error('filterlist is not initialized');
     }
@@ -128,7 +131,7 @@ export function InfinityList(): ReactElement | null {
     return filterlist.setPage(page);
   }, [filterlist]);
 
-  const setPageSize = useCallback((pageSize: number | null | undefined): Promise<void> => {
+  const setPageSize = useCallback((pageSize: number | null | undefined) => {
     if (!filterlist) {
       throw new Error('filterlist is not initialized');
     }
@@ -153,7 +156,7 @@ export function InfinityList(): ReactElement | null {
   const setSorting = useCallback((
     paramName: string,
     asc?: boolean,
-  ): Promise<void> => {
+  ) => {
     if (!filterlist) {
       throw new Error('filterlist is not initialized');
     }
@@ -165,7 +168,7 @@ export function InfinityList(): ReactElement | null {
   }, [filterlist]);
 
   const resetAllFilters = useCallback(
-    (): Promise<void> => {
+    () => {
       if (!filterlist) {
         throw new Error('filterlist is not initialized');
       }
@@ -176,7 +179,7 @@ export function InfinityList(): ReactElement | null {
   );
 
   const reload = useCallback(
-    (): Promise<void> => {
+    () => {
       if (!filterlist) {
         throw new Error('filterlist is not initialized');
       }
@@ -188,7 +191,7 @@ export function InfinityList(): ReactElement | null {
 
   const resetFilter = useCallback((
     filterName: string,
-  ): Promise<void> => {
+  ) => {
     if (!filterlist) {
       throw new Error('filterlist is not initialized');
     }
@@ -200,7 +203,7 @@ export function InfinityList(): ReactElement | null {
 
   const applyFilter = useCallback((
     filterName: string,
-  ): Promise<void> => {
+  ) => {
     if (!filterlist) {
       throw new Error('filterlist is not initialized');
     }
@@ -218,22 +221,26 @@ export function InfinityList(): ReactElement | null {
     filterlist.loadMore();
   }, [filterlist]);
 
-  if (!listState) {
+  if (!listState || !requestParams) {
     return null;
   }
 
   const {
-    items,
-    loading,
     page,
     pageSize,
     sort,
+  } = requestParams;
+
+  const {
+    items,
+    loading,
     total,
     filters,
   } = listState;
 
   return (
     <Page
+      requestParams={requestParams}
       listState={listState}
       filters={filters}
       page={page}

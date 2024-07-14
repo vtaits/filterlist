@@ -3,21 +3,26 @@ import sleep from "sleep-promise";
 import { arrayInsert } from "./arrayInsert";
 import { collectListInitialState } from "./collectListInitialState";
 import { collectOptions } from "./collectOptions";
+import { createDefaultDataStore } from "./createDefaultDataStore";
 import { LoadListError } from "./errors";
-import * as eventTypes from "./eventTypes";
-import type {
+import {
+	type DataStore,
 	EventType,
-	ItemsLoader,
-	ItemsLoaderResponse,
-	ListState,
-	Options,
-	Params,
-	ShouldRequest,
-	UpdateStateParams,
+	type ItemsLoader,
+	type ItemsLoaderResponse,
+	type ListState,
+	type Options,
+	type Params,
+	type RequestParams,
+	type UpdateStateParams,
 } from "./types";
 
 export class Filterlist<Item, Additional, Error> {
 	requestId: number;
+
+	dataStore: DataStore;
+
+	dataStoreUnsubscribe: VoidFunction;
 
 	listState: ListState<Item, Additional, Error>;
 
@@ -27,14 +32,12 @@ export class Filterlist<Item, Additional, Error> {
 
 	refreshTimeoutId: ReturnType<typeof setTimeout> | null = null;
 
-	shouldRequest?: ShouldRequest<Item, Additional, Error>;
-
 	emitter: Emitter<Record<EventType, ListState<Item, Additional, Error>>>;
 
 	constructor(params: Params<Item, Additional, Error>) {
 		this.emitter = mitt();
 
-		const { loadItems, shouldRequest } = params;
+		const { createDataStore = createDefaultDataStore, loadItems } = params;
 
 		if (!loadItems) {
 			throw new Error("loadItems is required");
@@ -45,16 +48,29 @@ export class Filterlist<Item, Additional, Error> {
 		}
 
 		this.itemsLoader = loadItems;
-		this.shouldRequest = shouldRequest;
 
 		this.requestId = 0;
-		this.listState = collectListInitialState(params);
+
+		const [requestParams, listState] = collectListInitialState(params);
+
+		this.dataStore = createDataStore(requestParams);
+		this.dataStoreUnsubscribe = this.dataStore.subscribe(
+			this.onChangeDataStore,
+		);
+
+		this.listState = {
+			...listState,
+			filters: this.dataStore.getValue().appliedFilters,
+		};
+
 		this.options = collectOptions(params);
 
 		this.onInit();
 	}
 
 	destroy() {
+		this.dataStoreUnsubscribe();
+
 		if (this.refreshTimeoutId) {
 			clearTimeout(this.refreshTimeoutId);
 			this.refreshTimeoutId = null;
@@ -76,9 +92,23 @@ export class Filterlist<Item, Additional, Error> {
 
 			items: saveItemsWhileLoad ? prevListState.items : [],
 			loadedPages: saveItemsWhileLoad ? prevListState.loadedPages : 0,
-			page: 1,
 
 			shouldClean: true,
+		};
+	}
+
+	getRequestParamsBeforeChange(): RequestParams {
+		const { alwaysResetFilters } = this.options;
+
+		const requestParams = this.dataStore.getValue();
+
+		return {
+			...requestParams,
+			appliedFilters: {
+				...requestParams.appliedFilters,
+				...alwaysResetFilters,
+			},
+			page: 1,
 		};
 	}
 
@@ -92,11 +122,6 @@ export class Filterlist<Item, Additional, Error> {
 
 			filters: {
 				...stateBeforeReload.filters,
-				...alwaysResetFilters,
-			},
-
-			appliedFilters: {
-				...stateBeforeReload.appliedFilters,
 				...alwaysResetFilters,
 			},
 		};
@@ -125,9 +150,9 @@ export class Filterlist<Item, Additional, Error> {
 			shouldClean: false,
 		});
 
-		this.emitEvent(eventTypes.loadMore);
+		this.emitEvent(EventType.loadMore);
 
-		await this.requestItems(prevListState);
+		await this.requestItems();
 	}
 
 	/**
@@ -144,10 +169,10 @@ export class Filterlist<Item, Additional, Error> {
 			shouldClean: false,
 		});
 
-		this.emitEvent(eventTypes.loadMore);
-		this.emitEvent(eventTypes.changeLoadParams);
+		this.emitEvent(EventType.loadMore);
+		this.emitEvent(EventType.changeLoadParams);
 
-		await this.requestItems(prevListState);
+		await this.requestItems();
 	}
 
 	/**
@@ -166,36 +191,40 @@ export class Filterlist<Item, Additional, Error> {
 			},
 		});
 
-		this.emitEvent(eventTypes.setFilterValue);
+		this.emitEvent(EventType.setFilterValue);
 	}
 
 	/**
 	 * apply intermediate filter value and request
 	 */
-	async applyFilter(filterName: string): Promise<void> {
+	applyFilter(filterName: string) {
 		const prevListState = this.listState;
+
+		const requestParamsBeforeChange = this.getRequestParamsBeforeChange();
+
 		const stateBeforeChange = this.getListStateBeforeChange();
+		this.setListState(stateBeforeChange);
 
-		this.setListState({
-			...stateBeforeChange,
+		this.emitEvent(EventType.applyFilter);
+		this.emitEvent(EventType.changeLoadParams);
 
+		this.setRequestParams({
+			...requestParamsBeforeChange,
 			appliedFilters: {
-				...stateBeforeChange.appliedFilters,
+				...requestParamsBeforeChange.appliedFilters,
 				[filterName]: prevListState.filters[filterName],
 			},
 		});
-
-		this.emitEvent(eventTypes.applyFilter);
-		this.emitEvent(eventTypes.changeLoadParams);
-
-		await this.requestItems(prevListState);
 	}
 
 	/**
 	 * set filter value and request
 	 */
-	async setAndApplyFilter(filterName: string, value: unknown): Promise<void> {
+	setAndApplyFilter(filterName: string, value: unknown) {
 		const prevListState = this.listState;
+
+		const requestParamsBeforeChange = this.getRequestParamsBeforeChange();
+
 		const stateBeforeChange = this.getListStateBeforeChange();
 
 		this.setListState({
@@ -206,47 +235,50 @@ export class Filterlist<Item, Additional, Error> {
 
 				[filterName]: value,
 			},
+		});
 
+		this.emitEvent(EventType.setAndApplyFilter);
+		this.emitEvent(EventType.changeLoadParams);
+
+		this.setRequestParams({
+			...requestParamsBeforeChange,
 			appliedFilters: {
-				...stateBeforeChange.appliedFilters,
+				...requestParamsBeforeChange.appliedFilters,
 				[filterName]: value,
 			},
 		});
-
-		this.emitEvent(eventTypes.setAndApplyFilter);
-		this.emitEvent(eventTypes.changeLoadParams);
-
-		await this.requestItems(prevListState);
 	}
 
 	/**
 	 * reset filter to the corresponding value in `resetFiltersTo` (or `undefined`) and request
 	 */
-	async resetFilter(filterName: string): Promise<void> {
+	resetFilter(filterName: string) {
 		const prevListState = this.listState;
-		const stateBeforeChange = this.getListStateBeforeChange();
 
 		const initialValue = this.options.resetFiltersTo[filterName];
 
+		const requestParamsBeforeChange = this.getRequestParamsBeforeChange();
+
+		const stateBeforeChange = this.getListStateBeforeChange();
+
 		this.setListState({
 			...stateBeforeChange,
-
 			filters: {
 				...prevListState.filters,
-
-				[filterName]: initialValue,
-			},
-
-			appliedFilters: {
-				...stateBeforeChange.appliedFilters,
 				[filterName]: initialValue,
 			},
 		});
 
-		this.emitEvent(eventTypes.resetFilter);
-		this.emitEvent(eventTypes.changeLoadParams);
+		this.emitEvent(EventType.resetFilter);
+		this.emitEvent(EventType.changeLoadParams);
 
-		await this.requestItems(prevListState);
+		this.setRequestParams({
+			...requestParamsBeforeChange,
+			appliedFilters: {
+				...requestParamsBeforeChange.appliedFilters,
+				[filterName]: initialValue,
+			},
+		});
 	}
 
 	/**
@@ -264,14 +296,15 @@ export class Filterlist<Item, Additional, Error> {
 			},
 		});
 
-		this.emitEvent(eventTypes.setFiltersValues);
+		this.emitEvent(EventType.setFiltersValues);
 	}
 
 	/**
 	 * apply multiple intermediate filter values and request
 	 */
-	async applyFilters(filtersNames: string[]): Promise<void> {
+	applyFilters(filtersNames: readonly string[]) {
 		const prevListState = this.listState;
+		const requestParamsBeforeChange = this.getRequestParamsBeforeChange();
 		const stateBeforeChange = this.getListStateBeforeChange();
 
 		const newAppliedFilters = filtersNames.reduce<Record<string, unknown>>(
@@ -283,89 +316,92 @@ export class Filterlist<Item, Additional, Error> {
 			{},
 		);
 
-		this.setListState({
-			...stateBeforeChange,
+		this.setListState(stateBeforeChange);
 
+		this.emitEvent(EventType.applyFilters);
+		this.emitEvent(EventType.changeLoadParams);
+
+		this.setRequestParams({
+			...requestParamsBeforeChange,
 			appliedFilters: {
-				...stateBeforeChange.appliedFilters,
+				...requestParamsBeforeChange.appliedFilters,
 				...newAppliedFilters,
 			},
 		});
-
-		this.emitEvent(eventTypes.applyFilters);
-		this.emitEvent(eventTypes.changeLoadParams);
-
-		await this.requestItems(prevListState);
 	}
 
 	/**
 	 * set multiple filter values and request
 	 */
-	async setAndApplyFilters(values: Record<string, unknown>): Promise<void> {
+	setAndApplyFilters(values: Record<string, unknown>) {
 		const prevListState = this.listState;
+		const requestParamsBeforeChange = this.getRequestParamsBeforeChange();
 		const stateBeforeChange = this.getListStateBeforeChange();
 
 		this.setListState({
 			...stateBeforeChange,
-
 			filters: {
 				...prevListState.filters,
 				...values,
 			},
+		});
 
+		this.emitEvent(EventType.setAndApplyFilters);
+		this.emitEvent(EventType.changeLoadParams);
+
+		this.setRequestParams({
+			...requestParamsBeforeChange,
 			appliedFilters: {
-				...stateBeforeChange.appliedFilters,
+				...requestParamsBeforeChange.appliedFilters,
 				...values,
 			},
 		});
-
-		this.emitEvent(eventTypes.setAndApplyFilters);
-		this.emitEvent(eventTypes.changeLoadParams);
-
-		await this.requestItems(prevListState);
 	}
 
 	/**
 	 * load specific page
 	 */
-	async setPage(page: number): Promise<void> {
+	setPage(page: number) {
 		const prevListState = this.listState;
+		const requestParamsBeforeChange = this.getRequestParamsBeforeChange();
 		const stateBeforeChange = this.getListStateBeforeChange();
 
-		this.setListState({
-			...stateBeforeChange,
+		this.setListState(stateBeforeChange);
+
+		this.emitEvent(EventType.setPage);
+		this.emitEvent(EventType.changeLoadParams);
+
+		this.setRequestParams({
+			...requestParamsBeforeChange,
 			page,
 		});
-
-		this.emitEvent(eventTypes.setPage);
-		this.emitEvent(eventTypes.changeLoadParams);
-
-		await this.requestItems(prevListState);
 	}
 
 	/**
 	 * set number of items on page and request
 	 */
-	async setPageSize(pageSize: number | null | undefined): Promise<void> {
+	setPageSize(pageSize: number | null | undefined) {
 		const prevListState = this.listState;
+		const requestParamsBeforeChange = this.getRequestParamsBeforeChange();
 		const stateBeforeChange = this.getListStateBeforeChange();
 
-		this.setListState({
-			...stateBeforeChange,
+		this.setListState(stateBeforeChange);
+
+		this.emitEvent(EventType.setPageSize);
+		this.emitEvent(EventType.changeLoadParams);
+
+		this.setRequestParams({
+			...requestParamsBeforeChange,
 			pageSize,
 		});
-
-		this.emitEvent(eventTypes.setPageSize);
-		this.emitEvent(eventTypes.changeLoadParams);
-
-		await this.requestItems(prevListState);
 	}
 
 	/**
 	 * reset multiple filters to the corresponding value in `resetFiltersTo` (or `undefined`) and request
 	 */
-	async resetFilters(filtersNames: string[]): Promise<void> {
+	resetFilters(filtersNames: readonly string[]) {
 		const prevListState = this.listState;
+		const requestParamsBeforeChange = this.getRequestParamsBeforeChange();
 		const stateBeforeChange = this.getListStateBeforeChange();
 
 		const { resetFiltersTo } = this.options;
@@ -386,24 +422,27 @@ export class Filterlist<Item, Additional, Error> {
 				...prevListState.filters,
 				...filtersForReset,
 			},
+		});
 
+		this.emitEvent(EventType.resetFilters);
+		this.emitEvent(EventType.changeLoadParams);
+
+		this.setRequestParams({
+			...requestParamsBeforeChange,
 			appliedFilters: {
-				...stateBeforeChange.appliedFilters,
+				...requestParamsBeforeChange.appliedFilters,
 				...filtersForReset,
 			},
 		});
-
-		this.emitEvent(eventTypes.resetFilters);
-		this.emitEvent(eventTypes.changeLoadParams);
-
-		await this.requestItems(prevListState);
 	}
 
 	/**
 	 * reset all of the filters to the corresponding value in `resetFiltersTo` (or `undefined`) and request
 	 */
-	async resetAllFilters(): Promise<void> {
+	resetAllFilters() {
+		const prevRequestParams = this.dataStore.getValue();
 		const prevListState = this.listState;
+		const requestParamsBeforeChange = this.getRequestParamsBeforeChange();
 		const stateBeforeChange = this.getListStateBeforeChange();
 
 		const { resetFiltersTo, saveFiltersOnResetAll, alwaysResetFilters } =
@@ -421,31 +460,31 @@ export class Filterlist<Item, Additional, Error> {
 		const savedAppliedFilters = saveFiltersOnResetAll.reduce<
 			Record<string, unknown>
 		>((res, filterName) => {
-			res[filterName] = prevListState.appliedFilters[filterName];
+			res[filterName] = prevRequestParams.appliedFilters[filterName];
 
 			return res;
 		}, {});
 
 		this.setListState({
 			...stateBeforeChange,
-
 			filters: {
 				...alwaysResetFilters,
 				...resetFiltersTo,
 				...savedFilters,
 			},
+		});
 
+		this.emitEvent(EventType.resetAllFilters);
+		this.emitEvent(EventType.changeLoadParams);
+
+		this.setRequestParams({
+			...requestParamsBeforeChange,
 			appliedFilters: {
 				...alwaysResetFilters,
 				...resetFiltersTo,
 				...savedAppliedFilters,
 			},
 		});
-
-		this.emitEvent(eventTypes.resetAllFilters);
-		this.emitEvent(eventTypes.changeLoadParams);
-
-		await this.requestItems(prevListState);
 	}
 
 	/**
@@ -457,10 +496,10 @@ export class Filterlist<Item, Additional, Error> {
 
 		this.setListState(stateBeforeChange);
 
-		this.emitEvent(eventTypes.reload);
-		this.emitEvent(eventTypes.changeLoadParams);
+		this.emitEvent(EventType.reload);
+		this.emitEvent(EventType.changeLoadParams);
 
-		await this.requestItems(prevState);
+		await this.requestItems();
 	}
 
 	getNextAsc(param: string, asc?: boolean): boolean {
@@ -468,10 +507,10 @@ export class Filterlist<Item, Additional, Error> {
 			return asc;
 		}
 
-		const prevListState = this.listState;
+		const prevRequestParams = this.dataStore.getValue();
 
-		if (prevListState.sort.param === param) {
-			return !prevListState.sort.asc;
+		if (prevRequestParams.sort.param === param) {
+			return !prevRequestParams.sort.asc;
 		}
 
 		return this.options.isDefaultSortAsc;
@@ -486,25 +525,24 @@ export class Filterlist<Item, Additional, Error> {
 	 *
 	 * otherwise, it will be reverse `asc` param from previous state
 	 */
-	async setSorting(param: string, asc?: boolean): Promise<void> {
-		const prevListState = this.listState;
+	setSorting(param: string, asc?: boolean) {
+		const requestParamsBeforeChange = this.getRequestParamsBeforeChange();
 		const stateBeforeChange = this.getListStateBeforeChange();
 
 		const nextAsc = this.getNextAsc(param, asc);
 
-		this.setListState({
-			...stateBeforeChange,
+		this.setListState(stateBeforeChange);
 
+		this.emitEvent(EventType.setSorting);
+		this.emitEvent(EventType.changeLoadParams);
+
+		this.setRequestParams({
+			...requestParamsBeforeChange,
 			sort: {
 				param,
 				asc: nextAsc,
 			},
 		});
-
-		this.emitEvent(eventTypes.setSorting);
-		this.emitEvent(eventTypes.changeLoadParams);
-
-		await this.requestItems(prevListState);
 	}
 
 	/**
@@ -512,63 +550,54 @@ export class Filterlist<Item, Additional, Error> {
 	 *
 	 * sort param will be setted with `null`, asc will be setted with `isDefaultSortAsc` param
 	 */
-	async resetSorting(): Promise<void> {
-		const prevListState = this.listState;
+	resetSorting() {
+		const requestParamsBeforeChange = this.getRequestParamsBeforeChange();
 		const stateBeforeChange = this.getListStateBeforeChange();
 
 		const { isDefaultSortAsc } = this.options;
 
-		this.setListState({
-			...stateBeforeChange,
+		this.setListState(stateBeforeChange);
 
+		this.emitEvent(EventType.resetSorting);
+		this.emitEvent(EventType.changeLoadParams);
+
+		this.setRequestParams({
+			...requestParamsBeforeChange,
 			sort: {
 				param: null,
 				asc: isDefaultSortAsc,
 			},
 		});
-
-		this.emitEvent(eventTypes.resetSorting);
-		this.emitEvent(eventTypes.changeLoadParams);
-
-		await this.requestItems(prevListState);
 	}
 
 	/**
 	 * set filters, applied filters, sorting, page and pageSize and request then
 	 */
-	async updateStateAndRequest(
-		updateStateParams: UpdateStateParams,
-	): Promise<void> {
+	updateStateAndRequest(updateStateParams: UpdateStateParams) {
 		const { filters, appliedFilters, sort, page, pageSize } = updateStateParams;
 
 		const prevListState = this.listState;
+		const requestParamsBeforeChange = this.getRequestParamsBeforeChange();
 		const stateBeforeChange = this.getListStateBeforeChange();
 
 		this.setListState({
 			...stateBeforeChange,
-
 			filters: filters || stateBeforeChange.filters,
-			appliedFilters: appliedFilters || stateBeforeChange.appliedFilters,
-			sort: sort || stateBeforeChange.sort,
-			page: page || stateBeforeChange.page,
-			pageSize: pageSize || stateBeforeChange.pageSize,
 		});
 
-		this.emitEvent(eventTypes.updateStateAndRequest);
+		this.emitEvent(EventType.updateStateAndRequest);
 
-		await this.requestItems(prevListState);
+		this.setRequestParams({
+			...requestParamsBeforeChange,
+			appliedFilters:
+				appliedFilters || requestParamsBeforeChange.appliedFilters,
+			sort: sort || requestParamsBeforeChange.sort,
+			page: page || requestParamsBeforeChange.page,
+			pageSize: pageSize || requestParamsBeforeChange.pageSize,
+		});
 	}
 
-	async requestItems(
-		prevListState: ListState<Item, Additional, Error>,
-	): Promise<void> {
-		if (
-			this.shouldRequest &&
-			!this.shouldRequest(prevListState, this.listState)
-		) {
-			return;
-		}
-
+	async requestItems() {
 		const nextRequestId = this.requestId + 1;
 		++this.requestId;
 
@@ -587,12 +616,15 @@ export class Filterlist<Item, Additional, Error> {
 			this.refreshTimeoutId = null;
 		}
 
-		this.emitEvent(eventTypes.requestItems);
+		this.emitEvent(EventType.requestItems);
 
 		let response: ItemsLoaderResponse<Item, Additional> | undefined;
 		let error: Error | undefined;
 		try {
-			response = await this.itemsLoader(this.listState);
+			response = await this.itemsLoader(
+				this.dataStore.getValue(),
+				this.listState,
+			);
 		} catch (e) {
 			error = e as Error;
 		}
@@ -659,7 +691,7 @@ export class Filterlist<Item, Additional, Error> {
 					: prevListState.total,
 		});
 
-		this.emitEvent(eventTypes.loadItemsSuccess);
+		this.emitEvent(EventType.loadItemsSuccess);
 	}
 
 	onError(error: LoadListError<Error, Additional>): void {
@@ -682,7 +714,7 @@ export class Filterlist<Item, Additional, Error> {
 				typeof error.total === "number" ? error.total : prevListState.total,
 		});
 
-		this.emitEvent(eventTypes.loadItemsError);
+		this.emitEvent(EventType.loadItemsError);
 	}
 
 	/**
@@ -705,7 +737,7 @@ export class Filterlist<Item, Additional, Error> {
 					: prevListState.additional,
 		});
 
-		this.emitEvent(eventTypes.insertItem);
+		this.emitEvent(EventType.insertItem);
 	}
 
 	/**
@@ -727,7 +759,7 @@ export class Filterlist<Item, Additional, Error> {
 					: prevListState.additional,
 		});
 
-		this.emitEvent(eventTypes.deleteItem);
+		this.emitEvent(EventType.deleteItem);
 	}
 
 	/**
@@ -756,7 +788,7 @@ export class Filterlist<Item, Additional, Error> {
 					: prevListState.additional,
 		});
 
-		this.emitEvent(eventTypes.updateItem);
+		this.emitEvent(EventType.updateItem);
 	}
 
 	setTotal(total: number | null | undefined) {
@@ -766,13 +798,51 @@ export class Filterlist<Item, Additional, Error> {
 		});
 	}
 
+	setRequestParams(nextRequestParams: RequestParams) {
+		this.dataStore.setValue(nextRequestParams);
+	}
+
+	onChangeDataStore = (nextValue: RequestParams, prevValue: RequestParams) => {
+		const changedFilters = Object.keys({
+			...nextValue.appliedFilters,
+			...prevValue.appliedFilters,
+			...this.listState.filters,
+		}).reduce<Record<string, unknown>>((res, filterKey) => {
+			if (
+				nextValue.appliedFilters[filterKey] !==
+				prevValue.appliedFilters[filterKey]
+			) {
+				res[filterKey] = nextValue.appliedFilters[filterKey];
+			}
+
+			return res;
+		}, {});
+
+		const stateBeforeReload = this.getListStateBeforeReload();
+		this.setListState({
+			...stateBeforeReload,
+			filters: {
+				...stateBeforeReload.filters,
+				...changedFilters,
+			},
+		});
+
+		this.emitEvent(EventType.changeRequestParams);
+
+		this.requestItems();
+	};
+
 	setListState(nextListState: ListState<Item, Additional, Error>): void {
 		this.listState = nextListState;
 
-		this.emitEvent(eventTypes.changeListState);
+		this.emitEvent(EventType.changeListState);
 	}
 
 	getListState(): ListState<Item, Additional, Error> {
 		return this.listState;
+	}
+
+	getRequestParams(): RequestParams {
+		return this.dataStore.getValue();
 	}
 }

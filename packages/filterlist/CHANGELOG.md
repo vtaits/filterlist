@@ -1,3 +1,14 @@
+## 2.0.0
+
+### New features
+
+* Added `createDataStore` parameter to sync with external stores such as browser history
+
+### Breaking changes
+
+* Changed arguments of `loadItems`
+* `eventTypes` -> `EventType`
+
 ## 1.1.0 (08 may 2024)
 
 ### New features
