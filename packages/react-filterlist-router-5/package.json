@@ -41,8 +41,8 @@
     "prepare": "yarn build"
   },
   "peerDependencies": {
-    "@vtaits/filterlist": "^1.0.0",
-    "@vtaits/react-filterlist": "^1.0.0",
+    "@vtaits/filterlist": "^2.0.0",
+    "@vtaits/react-filterlist": "^2.0.0",
     "react": "^16.14.0 || ^17.0.0 || ^18.0.0",
     "react-router-dom": "^5.0.0"
   },
@@ -53,8 +53,8 @@
     "@types/react": "^18.3.3",
     "@types/react-router-dom": "^5.3.3",
     "@vitejs/plugin-react": "^4.3.1",
-    "@vtaits/filterlist": "^1.1.0",
-    "@vtaits/react-filterlist": "^1.2.0",
+    "@vtaits/filterlist": "^2.0.0",
+    "@vtaits/react-filterlist": "^2.0.0",
     "happy-dom": "^14.12.3",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",

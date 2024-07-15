@@ -26,8 +26,8 @@
     "@builder.io/qwik-react": "^0.5.4",
     "@fortawesome/free-solid-svg-icons": "^6.5.2",
     "@fortawesome/react-fontawesome": "^0.2.2",
-    "@vtaits/filterlist": "^1.0.0",
-    "@vtaits/qwik-filterlist": "^1.0.0",
+    "@vtaits/filterlist": "^2.0.0",
+    "@vtaits/qwik-filterlist": "^2.0.0",
     "@vtaits/react-paginator": "^2.0.0",
     "clsx": "^2.1.1"
   }

@@ -3121,7 +3121,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vtaits/filterlist@npm:^1.0.0, @vtaits/filterlist@npm:^1.1.0, @vtaits/filterlist@workspace:packages/filterlist":
+"@vtaits/filterlist@npm:^2.0.0, @vtaits/filterlist@workspace:packages/filterlist":
   version: 0.0.0-use.local
   resolution: "@vtaits/filterlist@workspace:packages/filterlist"
   dependencies:
@@ -3144,20 +3144,20 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vtaits/qwik-filterlist@npm:^1.0.0, @vtaits/qwik-filterlist@workspace:packages/qwik-filterlist":
+"@vtaits/qwik-filterlist@npm:^2.0.0, @vtaits/qwik-filterlist@workspace:packages/qwik-filterlist":
   version: 0.0.0-use.local
   resolution: "@vtaits/qwik-filterlist@workspace:packages/qwik-filterlist"
   dependencies:
     "@biomejs/biome": "npm:^1.8.3"
     "@builder.io/qwik": "npm:^1.5.3"
-    "@vtaits/filterlist": "npm:^1.0.0"
+    "@vtaits/filterlist": "npm:^2.0.0"
     is-promise: "npm:^4.0.0"
     typescript: "npm:5.4.5"
     vite: "npm:^5.3.3"
     vitest: "npm:^2.0.2"
   peerDependencies:
     "@builder.io/qwik": ^1.5.1
-    "@vtaits/filterlist": ^0.3.0 || ^1.0.0
+    "@vtaits/filterlist": ^2.0.0
   languageName: unknown
   linkType: soft
 
@@ -3186,8 +3186,8 @@ __metadata:
     "@types/react": "npm:^18.3.3"
     "@types/react-router-dom": "npm:^5.3.3"
     "@vitejs/plugin-react": "npm:^4.3.1"
-    "@vtaits/filterlist": "npm:^1.1.0"
-    "@vtaits/react-filterlist": "npm:^1.2.0"
+    "@vtaits/filterlist": "npm:^2.0.0"
+    "@vtaits/react-filterlist": "npm:^2.0.0"
     happy-dom: "npm:^14.12.3"
     react: "npm:^18.3.1"
     react-dom: "npm:^18.3.1"
@@ -3197,8 +3197,8 @@ __metadata:
     use-latest: "npm:^1.2.1"
     vitest: "npm:^2.0.2"
   peerDependencies:
-    "@vtaits/filterlist": ^1.0.0
-    "@vtaits/react-filterlist": ^1.0.0
+    "@vtaits/filterlist": ^2.0.0
+    "@vtaits/react-filterlist": ^2.0.0
     react: ^16.14.0 || ^17.0.0 || ^18.0.0
     react-router-dom: ^5.0.0
   languageName: unknown
@@ -3213,8 +3213,8 @@ __metadata:
     "@testing-library/react-hooks": "npm:^8.0.1"
     "@types/react": "npm:^18.3.3"
     "@vitejs/plugin-react": "npm:^4.3.1"
-    "@vtaits/filterlist": "npm:^1.1.0"
-    "@vtaits/react-filterlist": "npm:^1.2.0"
+    "@vtaits/filterlist": "npm:^2.0.0"
+    "@vtaits/react-filterlist": "npm:^2.0.0"
     "@vtaits/react-router-dom-fake-browser": "npm:^1.0.0"
     happy-dom: "npm:^14.12.3"
     react: "npm:^18.3.1"
@@ -3225,14 +3225,14 @@ __metadata:
     use-latest: "npm:^1.2.1"
     vitest: "npm:^2.0.2"
   peerDependencies:
-    "@vtaits/filterlist": ^1.0.0
-    "@vtaits/react-filterlist": ^1.0.0
+    "@vtaits/filterlist": ^2.0.0
+    "@vtaits/react-filterlist": ^2.0.0
     react: ^16.14.0 || ^17.0.0 || ^18.0.0
     react-router-dom: ^6.0.0
   languageName: unknown
   linkType: soft
 
-"@vtaits/react-filterlist@npm:^1.2.0, @vtaits/react-filterlist@workspace:packages/react-filterlist":
+"@vtaits/react-filterlist@npm:^2.0.0, @vtaits/react-filterlist@workspace:packages/react-filterlist":
   version: 0.0.0-use.local
   resolution: "@vtaits/react-filterlist@workspace:packages/react-filterlist"
   dependencies:
@@ -3241,7 +3241,7 @@ __metadata:
     "@types/qs": "npm:^6.9.15"
     "@types/react": "npm:^18.3.3"
     "@vitejs/plugin-react": "npm:^4.3.1"
-    "@vtaits/filterlist": "npm:^1.1.0"
+    "@vtaits/filterlist": "npm:^2.0.0"
     "@vtaits/react-router-dom-fake-browser": "npm:^1.0.0"
     is-promise: "npm:^4.0.0"
     qs: "npm:^6.12.3"
@@ -3253,7 +3253,7 @@ __metadata:
     use-latest: "npm:^1.2.1"
     vitest: "npm:^2.0.2"
   peerDependencies:
-    "@vtaits/filterlist": ^0.3.0 || ^1.0.0
+    "@vtaits/filterlist": ^2.0.0
     react: ^16.14.0 || ^17.0.0 || ^18.0.0
   languageName: unknown
   linkType: soft
@@ -7243,8 +7243,8 @@ __metadata:
     "@builder.io/qwik-react": "npm:^0.5.4"
     "@fortawesome/free-solid-svg-icons": "npm:^6.5.2"
     "@fortawesome/react-fontawesome": "npm:^0.2.2"
-    "@vtaits/filterlist": "npm:^1.0.0"
-    "@vtaits/qwik-filterlist": "npm:^1.0.0"
+    "@vtaits/filterlist": "npm:^2.0.0"
+    "@vtaits/qwik-filterlist": "npm:^2.0.0"
     "@vtaits/react-paginator": "npm:^2.0.0"
     clsx: "npm:^2.1.1"
     serve: "npm:^14.2.3"

@@ -1,7 +1,7 @@
 {
   "type": "module",
   "name": "@vtaits/qwik-filterlist",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Qwik wrapper above @vtaits/filterlist",
   "files": [
     "lib",
@@ -45,12 +45,12 @@
   },
   "peerDependencies": {
     "@builder.io/qwik": "^1.5.1",
-    "@vtaits/filterlist": "^0.3.0 || ^1.0.0"
+    "@vtaits/filterlist": "^2.0.0"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.8.3",
     "@builder.io/qwik": "^1.5.3",
-    "@vtaits/filterlist": "^1.0.0",
+    "@vtaits/filterlist": "^2.0.0",
     "typescript": "5.4.5",
     "vite": "^5.3.3",
     "vitest": "^2.0.2"
