@@ -141,6 +141,10 @@ export const useFilterlist = <Item, Additional, Error, FiltersAndSortData>(
 		useSignal<NoSerialize<Filterlist<Item, Additional, Error>>>();
 
 	const syncListState = (): void => {
+		requestParams.value = filterlistRef.value
+			? filterlistRef.value.getRequestParams()
+			: null;
+
 		listState.value = filterlistRef.value
 			? filterlistRef.value.getListState()
 			: null;

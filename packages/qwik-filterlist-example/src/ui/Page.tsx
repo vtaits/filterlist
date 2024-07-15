@@ -110,6 +110,12 @@ export const Page = component$(
 					<pre class={styles.listState}>
 						{JSON.stringify(listState, null, 2)}
 					</pre>
+
+					<div class={styles.listStateTitle}>Current request params:</div>
+
+					<pre class={styles.listState}>
+						{JSON.stringify(requestParams, null, 2)}
+					</pre>
 				</div>
 			</div>
 		);

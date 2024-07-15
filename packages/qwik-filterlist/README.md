@@ -32,7 +32,7 @@ const List = component(() => {
 
       return {
         items: cars,
-				total: cars.length,
+        total: cars.length,
       };
     }),
   });
