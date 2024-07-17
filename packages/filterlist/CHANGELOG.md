@@ -1,3 +1,9 @@
+## 2.1.0 (17 jul 2024)
+
+### New features
+
+* Added `setRefreshTimeout` method
+
 ## 2.0.0 (15 jul 2024)
 
 ### New features

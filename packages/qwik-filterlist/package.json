@@ -50,7 +50,7 @@
   "devDependencies": {
     "@biomejs/biome": "^1.8.3",
     "@builder.io/qwik": "^1.5.3",
-    "@vtaits/filterlist": "^2.0.0",
+    "@vtaits/filterlist": "^2.1.0",
     "typescript": "5.4.5",
     "vite": "^5.3.4",
     "vitest": "^2.0.3"
