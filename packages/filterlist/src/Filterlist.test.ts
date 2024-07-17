@@ -1,3 +1,4 @@
+import sleep from "sleep-promise";
 import { describe, expect, test, vi } from "vitest";
 import { Filterlist } from "./Filterlist";
 import { LoadListError } from "./errors";
@@ -42,7 +43,7 @@ export function createAsyncDataStore(initalValue: RequestParams): DataStore {
 	};
 }
 
-describe.each([
+describe.concurrent.each([
 	{ name: "default", createDataStore: undefined },
 	{ name: "async", createDataStore: createAsyncDataStore },
 ])("data store: $name", ({ createDataStore }) => {
@@ -1160,33 +1161,63 @@ describe.each([
 		});
 	});
 
-	test("auto refresh", async () => {
-		const loadItems = vi
-			.fn<ItemsLoader<unknown, unknown, unknown>>()
-			.mockResolvedValue({
-				items: [1, 2, 3],
-			})
-			.mockResolvedValue({
-				items: [4, 5, 6],
-			})
-			.mockResolvedValue({
-				items: [7, 8, 9],
-			})
-			.mockResolvedValue({
-				items: [10, 11, 12],
+	describe("auto refresh", () => {
+		test("disabled", async () => {
+			const loadItems = vi
+				.fn<ItemsLoader<unknown, unknown, unknown>>()
+				.mockResolvedValue({
+					items: [1, 2, 3],
+				})
+				.mockResolvedValue({
+					items: [4, 5, 6],
+				})
+				.mockResolvedValue({
+					items: [7, 8, 9],
+				})
+				.mockResolvedValue({
+					items: [10, 11, 12],
+				});
+
+			const filterlist = new Filterlist({
+				createDataStore,
+				loadItems,
 			});
 
-		const filterlist = new Filterlist({
-			createDataStore,
-			loadItems,
-			refreshTimeout: 150,
+			await sleep(160);
+
+			expect(loadItems).toHaveBeenCalledTimes(1);
+
+			filterlist.destroy();
 		});
 
-		await vi.waitFor(() => {
+		test("enabled", async () => {
+			const loadItems = vi
+				.fn<ItemsLoader<unknown, unknown, unknown>>()
+				.mockResolvedValue({
+					items: [1, 2, 3],
+				})
+				.mockResolvedValue({
+					items: [4, 5, 6],
+				})
+				.mockResolvedValue({
+					items: [7, 8, 9],
+				})
+				.mockResolvedValue({
+					items: [10, 11, 12],
+				});
+
+			const filterlist = new Filterlist({
+				createDataStore,
+				loadItems,
+				refreshTimeout: 50,
+			});
+
+			await sleep(160);
+
 			expect(loadItems).toHaveBeenCalledTimes(4);
-		});
 
-		expect(filterlist.getListState().items).toEqual([10, 11, 12]);
+			filterlist.destroy();
+		});
 	});
 
 	describe("save items while loading", () => {
@@ -1403,5 +1434,36 @@ describe.each([
 
 			expect(requestListState.items).toEqual([]);
 		});
+	});
+
+	test("setRefreshTimeout", async () => {
+		const loadItems = vi
+			.fn<ItemsLoader<unknown, unknown, unknown>>()
+			.mockResolvedValue({
+				items: [],
+			});
+
+		const filterlist = new Filterlist({
+			createDataStore,
+			loadItems,
+		});
+
+		await sleep(50);
+
+		expect(loadItems).toHaveBeenCalledTimes(1);
+		loadItems.mockClear();
+
+		filterlist.setRefreshTimeout(30);
+
+		await sleep(100);
+
+		expect(loadItems).toHaveBeenCalledTimes(3);
+		loadItems.mockClear();
+
+		filterlist.setRefreshTimeout(null);
+
+		expect(loadItems).toHaveBeenCalledTimes(0);
+
+		filterlist.destroy();
 	});
 });

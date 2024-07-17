@@ -67,7 +67,7 @@ function setup(
 	return result;
 }
 
-test.each([
+test.concurrent.each([
 	{
 		href: "/page",
 		appliedFilters: {},
@@ -147,7 +147,7 @@ test.each([
 	},
 );
 
-describe("should change query", () => {
+describe.concurrent("should change query", () => {
 	test("only filters", async () => {
 		const result = setup(
 			{
@@ -198,7 +198,7 @@ describe("should change query", () => {
 	});
 });
 
-test("navigate backward", async () => {
+test.concurrent("navigate backward", async () => {
 	const result = setup(
 		{
 			loadItems: vi.fn().mockResolvedValue({

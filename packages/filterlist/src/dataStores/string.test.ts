@@ -27,7 +27,7 @@ function makeCreateDataStore(options: StringBasedDataStoreOptions = {}) {
 	return createDataStore;
 }
 
-test.each([
+test.concurrent.each([
 	{
 		href: "/page",
 		appliedFilters: {},
@@ -106,7 +106,7 @@ test.each([
 	},
 );
 
-describe("should change query", () => {
+describe.concurrent("should change query", () => {
 	test("only filters", async () => {
 		window.location.href = "/page";
 

@@ -30,6 +30,8 @@ export class Filterlist<Item, Additional, Error> {
 
 	itemsLoader: ItemsLoader<Item, Additional, Error>;
 
+	refreshTimeout?: number;
+
 	refreshTimeoutId: ReturnType<typeof setTimeout> | null = null;
 
 	emitter: Emitter<Record<EventType, ListState<Item, Additional, Error>>>;
@@ -64,6 +66,8 @@ export class Filterlist<Item, Additional, Error> {
 		};
 
 		this.options = collectOptions(params);
+
+		this.refreshTimeout = params.refreshTimeout;
 
 		this.onInit();
 	}
@@ -633,17 +637,15 @@ export class Filterlist<Item, Additional, Error> {
 			return;
 		}
 
-		const { refreshTimeout } = this.options;
-
 		if (this.refreshTimeoutId) {
 			clearTimeout(this.refreshTimeoutId);
 			this.refreshTimeoutId = null;
 		}
 
-		if (refreshTimeout) {
+		if (typeof this.refreshTimeout === "number" && this.refreshTimeout > 0) {
 			this.refreshTimeoutId = setTimeout(() => {
 				this.reload();
-			}, refreshTimeout);
+			}, this.refreshTimeout);
 		}
 
 		if (error) {
@@ -844,5 +846,20 @@ export class Filterlist<Item, Additional, Error> {
 
 	getRequestParams(): RequestParams {
 		return this.dataStore.getValue();
+	}
+
+	setRefreshTimeout(nextValue: number | null | undefined) {
+		this.refreshTimeout = nextValue || undefined;
+
+		if (this.refreshTimeoutId) {
+			clearTimeout(this.refreshTimeoutId);
+			this.refreshTimeoutId = null;
+		}
+
+		if (typeof this.refreshTimeout === "number" && this.refreshTimeout > 0) {
+			this.refreshTimeoutId = setTimeout(() => {
+				this.reload();
+			}, this.refreshTimeout);
+		}
 	}
 }
