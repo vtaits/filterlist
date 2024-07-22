@@ -48,8 +48,8 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^1.8.3",
-    "@storybook/react": "^8.2.4",
-    "@swc/core": "^1.6.13",
+    "@storybook/react": "^8.2.5",
+    "@swc/core": "^1.7.0",
     "@testing-library/react-hooks": "^8.0.1",
     "@types/react": "^18.3.3",
     "@vitejs/plugin-react": "^4.3.1",
@@ -59,10 +59,10 @@
     "happy-dom": "^14.12.3",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-router-dom": "^6.25.0",
-    "tsup": "^8.1.1",
+    "react-router-dom": "^6.25.1",
+    "tsup": "^8.2.2",
     "typescript": "5.4.5",
-    "vitest": "^2.0.3"
+    "vitest": "^2.0.4"
   },
   "dependencies": {
     "use-latest": "^1.2.1"
