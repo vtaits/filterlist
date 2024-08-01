@@ -3,9 +3,9 @@ import {
 	createEmitter,
 	createStringBasedDataStore,
 } from "@vtaits/filterlist/datastore/string";
+import { useLatest } from "@vtaits/use-latest";
 import { useCallback, useEffect, useState } from "react";
 import { useHistory, useLocation } from "react-router-dom";
-import useLatest from "use-latest";
 
 export function useCreateDataStore(options?: StringBasedDataStoreOptions) {
 	const history = useHistory();

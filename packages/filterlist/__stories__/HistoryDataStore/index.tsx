@@ -13,7 +13,7 @@ import { Filterlist, EventType } from '@vtaits/filterlist';
 import { createEmitter, createStringBasedDataStore } from '@vtaits/filterlist/datastore/string';
 import { Page } from '../../../../examples/ui/Page';
 import * as api from '../../../../examples/api';
-import useLatest from 'use-latest';
+import {useLatest} from '@vtaits/use-latest';
 
 import type {
   User,

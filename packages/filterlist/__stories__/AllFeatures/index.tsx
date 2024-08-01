@@ -4,16 +4,13 @@ import {
   useCallback,
   useSyncExternalStore,
 } from 'react';
-import qs from 'qs';
-import { Filterlist, EventType, UpdateStateParams } from '@vtaits/filterlist';
+import { Filterlist, EventType } from '@vtaits/filterlist';
 import { Page } from '../../../../examples/ui/Page';
 import * as api from '../../../../examples/api';
-
 import type {
   User,
   Additional,
 } from '../../../../examples/types';
-
 import type {
   ItemsLoader,
 } from '../../src/types';

@@ -9,9 +9,9 @@ import type {
 	RequestParams,
 	UpdateStateParams,
 } from "@vtaits/filterlist";
+import { useLatest } from "@vtaits/use-latest";
 import isPromise from "is-promise";
 import { useCallback, useEffect, useRef, useState } from "react";
-import useLatest from "use-latest";
 import { defaultShouldRecount } from "./defaultShouldRecount";
 import type {
 	AsyncParams,
