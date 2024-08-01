@@ -2,7 +2,11 @@ import { renderHook } from "@testing-library/react-hooks";
 import type { StringBasedDataStoreOptions } from "@vtaits/filterlist/dist/datastore_string";
 import { type Params, useFilterlist } from "@vtaits/react-filterlist";
 import type { History, Location } from "history";
-import type { PropsWithChildren } from "react";
+import {
+	type MutableRefObject,
+	type PropsWithChildren,
+	createRef,
+} from "react";
 import { MemoryRouter, Route, useHistory, useLocation } from "react-router-dom";
 import { describe, expect, test, vi } from "vitest";
 import { useCreateDataStore } from "./useCreateDataStore";
@@ -19,43 +23,43 @@ function useCompositeHook(
 	});
 }
 
-let globalHistory: History<unknown> = {} as unknown as History<unknown>;
-
-let globalLocation: Location<unknown> = {
-	state: "",
-	hash: "",
-	key: "",
-	pathname: "",
-	search: "",
-};
-
-function TestRouteComponent() {
-	const history = useHistory();
-	const location = useLocation();
-
-	globalLocation = location;
-	globalHistory = history;
-
-	return null;
-}
-
 function setup(
 	params: Params<unknown, unknown, unknown, unknown>,
 	href: string,
 	options: StringBasedDataStoreOptions = {},
 ) {
+	const locationRef = createRef<Location<unknown>>() as MutableRefObject<
+		Location<unknown>
+	>;
+	const historyRef = createRef<History<unknown>>() as MutableRefObject<
+		History<unknown>
+	>;
+
 	const wrapper = ({ children }: PropsWithChildren) => (
 		<MemoryRouter initialEntries={[href]}>
 			{children}
 
-			<Route path="/page" component={TestRouteComponent} />
+			<Route
+				path="/page"
+				render={({ history, location }) => {
+					historyRef.current = history;
+					locationRef.current = location;
+
+					return null;
+				}}
+			/>
 		</MemoryRouter>
 	);
+
 	const { result } = renderHook(() => useCompositeHook(params, options), {
 		wrapper,
 	});
 
-	return result;
+	return {
+		result,
+		historyRef,
+		locationRef,
+	};
 }
 
 test.concurrent.each([
@@ -119,15 +123,19 @@ test.concurrent.each([
 ])(
 	"should parse query correctly: $href",
 	({ href, appliedFilters, page, pageSize, sort, options }) => {
-		const result = setup(
+		const loadItems = vi.fn().mockResolvedValue({
+			items: [],
+		});
+
+		const { result } = setup(
 			{
-				loadItems: vi.fn().mockResolvedValue({
-					items: [],
-				}),
+				loadItems,
 			},
 			href,
 			options,
 		);
+
+		expect(loadItems).toHaveBeenCalledTimes(1);
 
 		expect(result.current[2]?.getRequestParams()).toEqual({
 			appliedFilters,
@@ -140,14 +148,18 @@ test.concurrent.each([
 
 describe.concurrent("should change query", () => {
 	test("only filters", async () => {
-		const result = setup(
+		const loadItems = vi.fn().mockResolvedValue({
+			items: [],
+		});
+
+		const { result, locationRef } = setup(
 			{
-				loadItems: vi.fn().mockResolvedValue({
-					items: [],
-				}),
+				loadItems,
 			},
 			"/page",
 		);
+
+		expect(loadItems).toHaveBeenCalledTimes(1);
 
 		result.current[2]?.setAndApplyFilters({
 			foo: "bar",
@@ -155,21 +167,29 @@ describe.concurrent("should change query", () => {
 		});
 
 		await vi.waitFor(() => {
-			expect(globalLocation.search).toBe("?foo=bar&baz=qux");
+			expect(loadItems).toHaveBeenCalledTimes(2);
 		});
 
-		expect(globalLocation.pathname).toBe("/page");
+		await vi.waitFor(() => {
+			expect(locationRef.current?.search).toBe("?foo=bar&baz=qux");
+		});
+
+		expect(locationRef.current?.pathname).toBe("/page");
 	});
 
 	test("all parameters", async () => {
-		const result = setup(
+		const loadItems = vi.fn().mockResolvedValue({
+			items: [],
+		});
+
+		const { result, locationRef } = setup(
 			{
-				loadItems: vi.fn().mockResolvedValue({
-					items: [],
-				}),
+				loadItems,
 			},
 			"/page",
 		);
+
+		expect(loadItems).toHaveBeenCalledTimes(1);
 
 		result.current[2]?.setAndApplyFilters({
 			foo: "bar",
@@ -180,24 +200,32 @@ describe.concurrent("should change query", () => {
 		result.current[2]?.setPage(3);
 
 		await vi.waitFor(() => {
-			expect(globalLocation.search).toBe(
+			expect(loadItems).toHaveBeenCalledTimes(5);
+		});
+
+		await vi.waitFor(() => {
+			expect(locationRef.current?.search).toBe(
 				"?foo=bar&baz=qux&page=3&page_size=20&sort=-id",
 			);
 		});
 
-		expect(globalLocation.pathname).toBe("/page");
+		expect(locationRef.current?.pathname).toBe("/page");
 	});
 });
 
 test.concurrent("navigate backward", async () => {
-	const result = setup(
+	const loadItems = vi.fn().mockResolvedValue({
+		items: [],
+	});
+
+	const { result, locationRef, historyRef } = setup(
 		{
-			loadItems: vi.fn().mockResolvedValue({
-				items: [],
-			}),
+			loadItems,
 		},
 		"/page",
 	);
+
+	expect(loadItems).toHaveBeenCalledTimes(1);
 
 	result.current[2]?.setAndApplyFilters({
 		foo: "bar",
@@ -208,7 +236,11 @@ test.concurrent("navigate backward", async () => {
 	result.current[2]?.setPage(3);
 
 	await vi.waitFor(() => {
-		expect(globalLocation.search).toBe(
+		expect(loadItems).toHaveBeenCalledTimes(5);
+	});
+
+	await vi.waitFor(() => {
+		expect(locationRef.current?.search).toBe(
 			"?foo=bar&baz=qux&page=3&page_size=20&sort=-id",
 		);
 	});
@@ -216,10 +248,18 @@ test.concurrent("navigate backward", async () => {
 	result.current[2]?.resetFilters(["foo", "baz"]);
 
 	await vi.waitFor(() => {
-		expect(globalLocation.search).toBe("?page_size=20&sort=-id");
+		expect(loadItems).toHaveBeenCalledTimes(6);
 	});
 
-	globalHistory.goBack();
+	await vi.waitFor(() => {
+		expect(locationRef.current?.search).toBe("?page_size=20&sort=-id");
+	});
+
+	historyRef.current?.goBack();
+
+	await vi.waitFor(() => {
+		expect(loadItems).toHaveBeenCalledTimes(7);
+	});
 
 	expect(result.current[2]?.getRequestParams()).toEqual({
 		appliedFilters: {

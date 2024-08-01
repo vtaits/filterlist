@@ -4,7 +4,7 @@ import {
 	createStringBasedDataStore,
 } from "@vtaits/filterlist/datastore/string";
 import { useLatest } from "@vtaits/use-latest";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 
 export function useCreateDataStore(options?: StringBasedDataStoreOptions) {
@@ -17,8 +17,15 @@ export function useCreateDataStore(options?: StringBasedDataStoreOptions) {
 	const pathnameRef = useLatest(pathname);
 	const searchRef = useLatest(search);
 
+	const isInitRef = useRef(true);
+
 	// biome-ignore lint/correctness/useExhaustiveDependencies: trigger on search change
 	useEffect(() => {
+		if (isInitRef.current) {
+			isInitRef.current = false;
+			return;
+		}
+
 		emitter.emit();
 	}, [search]);
 
