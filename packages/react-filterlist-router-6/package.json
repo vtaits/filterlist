@@ -1,7 +1,7 @@
 {
   "type": "module",
   "name": "@vtaits/react-filterlist-router-6",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Integration of `@vtaits/react-filterlist` with `react-router-dom` v6",
   "files": [
     "dist"
@@ -54,7 +54,7 @@
     "@types/react": "^18.3.3",
     "@vitejs/plugin-react": "^4.3.1",
     "@vtaits/filterlist": "^2.1.0",
-    "@vtaits/react-filterlist": "^2.0.0",
+    "@vtaits/react-filterlist": "^2.0.1",
     "@vtaits/react-router-dom-fake-browser": "^1.0.0",
     "happy-dom": "^14.12.3",
     "react": "^18.3.1",
