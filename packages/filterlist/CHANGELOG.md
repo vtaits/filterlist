@@ -3,6 +3,7 @@
 ### New features
 
 * Added `parseOptions` and `stringifyOptions` to string data store
+* Added `setAndApplyEmptyFilters` method
 
 ## 2.1.0 (17 jul 2024)
 

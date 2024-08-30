@@ -363,10 +363,45 @@ export class Filterlist<Item, Additional, Error> {
 	}
 
 	/**
+	 * set multiple filter values that currently `undefined` and request
+	 */
+	setAndApplyEmptyFilters(values: Record<string, unknown>) {
+		const prevListState = this.listState;
+		const requestParamsBeforeChange = this.getRequestParamsBeforeChange();
+		const stateBeforeChange = this.getListStateBeforeChange();
+
+		const filtersForApply = Object.fromEntries(
+			Object.entries(values).filter(
+				([filterName]) =>
+					typeof requestParamsBeforeChange.appliedFilters[filterName] ===
+					"undefined",
+			),
+		);
+
+		this.setListState({
+			...stateBeforeChange,
+			filters: {
+				...prevListState.filters,
+				...filtersForApply,
+			},
+		});
+
+		this.emitEvent(EventType.setAndApplyEmptyFilters);
+		this.emitEvent(EventType.changeLoadParams);
+
+		this.setRequestParams({
+			...requestParamsBeforeChange,
+			appliedFilters: {
+				...requestParamsBeforeChange.appliedFilters,
+				...filtersForApply,
+			},
+		});
+	}
+
+	/**
 	 * load specific page
 	 */
 	setPage(page: number) {
-		const prevListState = this.listState;
 		const requestParamsBeforeChange = this.getRequestParamsBeforeChange();
 		const stateBeforeChange = this.getListStateBeforeChange();
 
@@ -385,7 +420,6 @@ export class Filterlist<Item, Additional, Error> {
 	 * set number of items on page and request
 	 */
 	setPageSize(pageSize: number | null | undefined) {
-		const prevListState = this.listState;
 		const requestParamsBeforeChange = this.getRequestParamsBeforeChange();
 		const stateBeforeChange = this.getListStateBeforeChange();
 
@@ -495,7 +529,6 @@ export class Filterlist<Item, Additional, Error> {
 	 * reload the list in the current state
 	 */
 	async reload(): Promise<void> {
-		const prevState = this.listState;
 		const stateBeforeChange = this.getListStateBeforeChange();
 
 		this.setListState(stateBeforeChange);

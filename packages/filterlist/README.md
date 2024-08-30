@@ -78,7 +78,7 @@ filterlist.emitter.on(eventTypes.changeListState, (nextListState) => {
   document.getElementById('loader').style.display = nextListState.loading ? 'block' : 'none';
 });
 
-// load next chunk of data for the infinite list
+// load next chunk of   for the infinite list
 filterlist.loadMore();
 
 // change runtime value of filter (e.g. on keyboard input)
@@ -104,6 +104,12 @@ filterlist.applyFilters(['foo', 'bar']);
 
 // bulk change values of filters and reload the list
 filterlist.setAndApplyFilters({
+  foo: 'value',
+  bar: ['baz', 'qux'],
+});
+
+// bulk change empty values of filters and reload the list
+filterlist.setAndApplyEmptyFilters({
   foo: 'value',
   bar: ['baz', 'qux'],
 });
@@ -253,6 +259,7 @@ List of event types:
 | setFiltersValues | after call `setFiltersValues` method |
 | applyFilters | after call `applyFilters` method |
 | setAndApplyFilters | after call `setAndApplyFilters` method |
+| setAndApplyEmptyFilters | after call `setAndApplyEmptyFilters` method |
 | setPage | after call `setPage` method |
 | setPageSize | after call `setPageSize` method |
 | resetFilters | after call `resetFilters` method |
