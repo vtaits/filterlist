@@ -30,9 +30,11 @@ export type StringBasedDataStoreOptions = Readonly<{
 	pageKey?: string;
 	pageSizeKey?: string;
 	sortKey?: string;
+	parseOptions?: qs.IParseOptions<qs.BooleanOptional>;
+	stringifyOptions?: qs.IStringifyOptions<qs.BooleanOptional>;
 }>;
 
-function getFirst(arg: qs.ParsedQs[string]) {
+function getFirst(arg: unknown) {
 	if (typeof arg === "string") {
 		return arg;
 	}
@@ -58,11 +60,15 @@ export function createStringBasedDataStore(
 		pageKey = "page",
 		pageSizeKey = "page_size",
 		sortKey = "sort",
+		parseOptions,
+		stringifyOptions,
 	} = options;
 
 	function getStateFromSearch(search: string): RequestParams {
 		const parsed = qs.parse(search, {
 			ignoreQueryPrefix: true,
+			allowEmptyArrays: true,
+			...parseOptions,
 		});
 
 		const {
@@ -115,15 +121,22 @@ export function createStringBasedDataStore(
 			return cacheValue;
 		},
 		setValue: (nextRequestParams) => {
-			const newQuery = qs.stringify({
-				...nextRequestParams.appliedFilters,
-				[pageKey]:
-					nextRequestParams.page === 1 ? undefined : nextRequestParams.page,
-				[pageSizeKey]: nextRequestParams.pageSize,
-				[sortKey]: nextRequestParams.sort?.param
-					? `${nextRequestParams.sort.asc ? "" : "-"}${nextRequestParams.sort.param}`
-					: undefined,
-			});
+			const newQuery = qs.stringify(
+				{
+					...nextRequestParams.appliedFilters,
+					[pageKey]:
+						nextRequestParams.page === 1 ? undefined : nextRequestParams.page,
+					[pageSizeKey]: nextRequestParams.pageSize,
+					[sortKey]: nextRequestParams.sort?.param
+						? `${nextRequestParams.sort.asc ? "" : "-"}${nextRequestParams.sort.param}`
+						: undefined,
+				},
+				{
+					arrayFormat: "repeat",
+					allowEmptyArrays: true,
+					...stringifyOptions,
+				},
+			);
 
 			setSearch(`${newQuery}`);
 		},

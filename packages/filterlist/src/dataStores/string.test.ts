@@ -85,6 +85,41 @@ test.concurrent.each([
 			sortKey: "test_sort",
 		},
 	},
+	{
+		href: "/page?foo[]&bar=abc&bar=123&baz=qux",
+		appliedFilters: {
+			foo: [],
+			bar: ["abc", "123"],
+			baz: "qux",
+		},
+		page: 1,
+		pageSize: undefined,
+		sort: {
+			param: undefined,
+			asc: true,
+		},
+		options: undefined,
+	},
+	{
+		href: "/page?foo[]+bar=abc+bar=123+baz=qux",
+		appliedFilters: {
+			foo: [""],
+			bar: ["abc", "123"],
+			baz: "qux",
+		},
+		page: 1,
+		pageSize: undefined,
+		sort: {
+			param: undefined,
+			asc: true,
+		},
+		options: {
+			parseOptions: {
+				allowEmptyArrays: false,
+				delimiter: "+",
+			},
+		},
+	},
 ])(
 	"should parse query correctly: $href",
 	({ href, appliedFilters, page, pageSize, sort, options }) => {
@@ -107,7 +142,22 @@ test.concurrent.each([
 );
 
 describe.concurrent("should change query", () => {
-	test("only filters", async () => {
+	test.each([
+		{
+			filters: {
+				foo: "bar",
+				baz: "qux",
+			},
+			search: "?foo=bar&baz=qux",
+		},
+		{
+			filters: {
+				foo: [],
+				bar: ["abc", "123"],
+			},
+			search: "?foo[]&bar=abc&bar=123",
+		},
+	])("filters to $search", async ({ filters, search }) => {
 		window.location.href = "/page";
 
 		const filterlist = new Filterlist({
@@ -117,13 +167,39 @@ describe.concurrent("should change query", () => {
 			}),
 		});
 
+		filterlist.setAndApplyFilters(filters);
+
+		await vi.waitFor(() => {
+			expect(window.location.search).toBe(search);
+		});
+
+		expect(window.location.pathname).toBe("/page");
+	});
+
+	test("redefine `stringifyOptions`", async () => {
+		window.location.href = "/page";
+
+		const filterlist = new Filterlist({
+			createDataStore: makeCreateDataStore({
+				stringifyOptions: {
+					allowEmptyArrays: false,
+					arrayFormat: undefined,
+				},
+			}),
+			loadItems: vi.fn().mockResolvedValue({
+				items: [],
+			}),
+		});
+
 		filterlist.setAndApplyFilters({
-			foo: "bar",
-			baz: "qux",
+			foo: [],
+			bar: ["abc", "123"],
 		});
 
 		await vi.waitFor(() => {
-			expect(window.location.search).toBe("?foo=bar&baz=qux");
+			expect(window.location.search).toBe(
+				`?bar${encodeURIComponent("[0]")}=abc&bar${encodeURIComponent("[1]")}=123`,
+			);
 		});
 
 		expect(window.location.pathname).toBe("/page");
