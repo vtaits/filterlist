@@ -53,9 +53,11 @@ function StringFilterInner({
 
 	return (
 		<div className="field-row">
-			<div style={{
-				flex: 1
-			}}>
+			<div
+				style={{
+					flex: 1,
+				}}
+			>
 				<label htmlFor={`id_${name}`}>{name}</label>
 
 				<div className="field-row">

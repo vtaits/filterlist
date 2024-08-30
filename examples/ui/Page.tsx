@@ -13,7 +13,7 @@ import type {
 	RequestParams,
 	Sort,
 } from "../../packages/filterlist/src/types";
-import '98.css';
+import "98.css";
 
 type PageProps = Readonly<{
 	requestParams: RequestParams;
@@ -39,8 +39,8 @@ type PageProps = Readonly<{
 
 const StyledWrapper = styled.div({
 	display: "grid",
-	gridTemplateColumns: '1fr 1fr',
-	gap: '10px'
+	gridTemplateColumns: "1fr 1fr",
+	gap: "10px",
 });
 
 const StyledBottomBlock = styled.div({
@@ -50,21 +50,23 @@ const StyledBottomBlock = styled.div({
 });
 
 const paginatorComponents: Partial<Components<unknown>> = {
-	Link: ({
-		className,
-		...rest
-	}) => {
-		return <components.Link {...rest} style={{
-			minWidth: '36px'
-		}} />
+	Link: ({ className, ...rest }) => {
+		return (
+			<components.Link
+				{...rest}
+				style={{
+					minWidth: "36px",
+				}}
+			/>
+		);
 	},
 };
 
 const GlobalStyle = createGlobalStyle({
 	body: {
-		backgroundColor: '#c0c0c0',
-	}
-})
+		backgroundColor: "#c0c0c0",
+	},
+});
 
 export function Page({
 	requestParams,
@@ -139,19 +141,23 @@ export function Page({
 			</div>
 
 			<div>
-				<h4 style={{
-					marginTop: 0,
-				}}>
+				<h4
+					style={{
+						marginTop: 0,
+					}}
+				>
 					Current state of filterlist:
 				</h4>
 
-				<pre><code>{JSON.stringify(listState, null, 2)}</code></pre>
+				<pre>
+					<code>{JSON.stringify(listState, null, 2)}</code>
+				</pre>
 
 				<h4>Current request params:</h4>
 
-				<pre><code>
-					{JSON.stringify(requestParams, null, 2)}
-				</code></pre>
+				<pre>
+					<code>{JSON.stringify(requestParams, null, 2)}</code>
+				</pre>
 			</div>
 		</StyledWrapper>
 	);

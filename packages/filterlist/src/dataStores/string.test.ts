@@ -155,7 +155,7 @@ describe.concurrent("should change query", () => {
 				foo: [],
 				bar: ["abc", "123"],
 			},
-			search: "?foo[]&bar=abc&bar=123",
+			search: `?foo[]&bar${encodeURIComponent("[0]")}=abc&bar${encodeURIComponent("[1]")}=123`,
 		},
 	])("filters to $search", async ({ filters, search }) => {
 		window.location.href = "/page";
@@ -183,7 +183,7 @@ describe.concurrent("should change query", () => {
 			createDataStore: makeCreateDataStore({
 				stringifyOptions: {
 					allowEmptyArrays: false,
-					arrayFormat: undefined,
+					arrayFormat: "repeat",
 				},
 			}),
 			loadItems: vi.fn().mockResolvedValue({
@@ -197,9 +197,7 @@ describe.concurrent("should change query", () => {
 		});
 
 		await vi.waitFor(() => {
-			expect(window.location.search).toBe(
-				`?bar${encodeURIComponent("[0]")}=abc&bar${encodeURIComponent("[1]")}=123`,
-			);
+			expect(window.location.search).toBe("?bar=abc&bar=123");
 		});
 
 		expect(window.location.pathname).toBe("/page");

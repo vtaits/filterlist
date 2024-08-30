@@ -132,7 +132,6 @@ export function createStringBasedDataStore(
 						: undefined,
 				},
 				{
-					arrayFormat: "repeat",
 					allowEmptyArrays: true,
 					...stringifyOptions,
 				},
