@@ -27,6 +27,7 @@
     "prepare": "husky install"
   },
   "devDependencies": {
+    "98.css": "^0.1.20",
     "@biomejs/biome": "^1.8.3",
     "@faker-js/faker": "^8.4.1",
     "@fortawesome/fontawesome-svg-core": "^6.6.0",

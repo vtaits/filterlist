@@ -1,27 +1,12 @@
 /** @jsxImportSource react */
 import { type ReactElement, memo } from "react";
-
 import styled from "styled-components";
-
 import { Th } from "./Th";
-
 import type { User } from "../types";
-
 import type { Sort } from "../../packages/filterlist/src/types";
 
 const StyledTable = styled.table({
 	width: "100%",
-	borderCollapse: "collapse",
-});
-
-const StyledTd = styled.td({
-	borderBottom: "2px solid #ccc",
-	padding: "5px 10px",
-	textAlign: "left",
-
-	"& + &": {
-		borderLeft: "1px solid #ccc",
-	},
 });
 
 type TableProps = Readonly<{
@@ -76,10 +61,10 @@ function TableInner({ sort, items, setSorting }: TableProps): ReactElement {
 			<tbody>
 				{items.map(({ id, name, email, city }) => (
 					<tr key={id}>
-						<StyledTd>{id}</StyledTd>
-						<StyledTd>{name}</StyledTd>
-						<StyledTd>{email}</StyledTd>
-						<StyledTd>{city}</StyledTd>
+						<td>{id}</td>
+						<td>{name}</td>
+						<td>{email}</td>
+						<td>{city}</td>
 					</tr>
 				))}
 			</tbody>

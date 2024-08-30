@@ -6,44 +6,10 @@ import {
 	memo,
 	useCallback,
 } from "react";
-
 import styled from "styled-components";
 
-import { Button } from "./Button";
-
-const StyledWrapper = styled.div({
-	display: "flex",
-	alignItems: "center",
-
-	"& + &": {
-		marginTop: 20,
-	},
-});
-
-const StyledName = styled.div({
-	width: 100,
-	textAlign: "right",
-	paddingRight: 20,
-});
-
-const StyledInputWrapper = styled.div({
-	flex: 1,
-});
-
 const StyledButtonWrapper = styled.div({
-	paddingLeft: 20,
-});
-
-const StyledInput = styled.input({
-	height: 30,
-	borderRadius: 15,
-	boxSizing: "border-box",
-	width: "100%",
-	border: "2px solid #999",
-	backgroundColor: "#fff",
-	outline: "none",
-	paddingLeft: 15,
-	paddingRight: 15,
+	paddingLeft: 5,
 });
 
 type StringFilterProps = Readonly<{
@@ -86,30 +52,38 @@ function StringFilterInner({
 	}, [name, resetFilter]);
 
 	return (
-		<StyledWrapper>
-			<StyledName>{name}</StyledName>
+		<div className="field-row">
+			<div style={{
+				flex: 1
+			}}>
+				<label htmlFor={`id_${name}`}>{name}</label>
 
-			<StyledInputWrapper>
-				<StyledInput
-					name={name}
-					value={typeof value === "string" ? value : ""}
-					onChange={onChange}
-					onKeyDown={onKeyDown}
-				/>
-			</StyledInputWrapper>
+				<div className="field-row">
+					<input
+						id={`id_${name}`}
+						name={name}
+						value={typeof value === "string" ? value : ""}
+						onChange={onChange}
+						onKeyDown={onKeyDown}
+						style={{
+							flex: 1,
+						}}
+					/>
 
-			<StyledButtonWrapper>
-				<Button type="button" onClick={onApplyClick}>
-					Apply
-				</Button>
-			</StyledButtonWrapper>
+					<StyledButtonWrapper>
+						<button type="button" onClick={onApplyClick}>
+							Apply
+						</button>
+					</StyledButtonWrapper>
 
-			<StyledButtonWrapper>
-				<Button $buttonType="danger" type="button" onClick={onResetClick}>
-					Reset
-				</Button>
-			</StyledButtonWrapper>
-		</StyledWrapper>
+					<StyledButtonWrapper>
+						<button type="button" onClick={onResetClick}>
+							Reset
+						</button>
+					</StyledButtonWrapper>
+				</div>
+			</div>
+		</div>
 	);
 }
 

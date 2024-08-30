@@ -1,24 +1,19 @@
 /** @jsxImportSource react */
 import type { ReactElement } from "react";
-
-import styled from "styled-components";
-
-import { Paginator } from "@vtaits/react-paginator";
-
-import { Button } from "./Button";
+import styled, { createGlobalStyle } from "styled-components";
+import { components, Components, Paginator } from "@vtaits/react-paginator";
 import { Filters } from "./Filters";
 import { ItemsPerPage } from "./ItemsPerPage";
 import { Preloader } from "./Preloader";
 import { Table } from "./Table";
 import { TotalCount } from "./TotalCount";
-
 import type { Additional, User } from "../types";
-
 import type {
 	ListState,
 	RequestParams,
 	Sort,
 } from "../../packages/filterlist/src/types";
+import '98.css';
 
 type PageProps = Readonly<{
 	requestParams: RequestParams;
@@ -43,36 +38,9 @@ type PageProps = Readonly<{
 }>;
 
 const StyledWrapper = styled.div({
-	display: "flex",
-	alignItems: "flex-start",
-});
-
-const StyledView = styled.div({
-	maxWidth: 900,
-});
-
-const StyledListStateWrapper = styled.div({
-	paddingLeft: 40,
-});
-
-const StyledListStateTitle = styled.div({
-	fontSize: 24,
-	lineHeight: 1.2,
-	marginBottom: 20,
-});
-
-const StyledListState = styled.pre({
-	boxSizing: "border-box",
-	backgroundColor: "#efefef",
-	width: 600,
-	maxHeight: 600,
-	padding: 15,
-	overflow: "auto",
-});
-
-const StyledTotalCountBlock = styled.div({
-	marginBottom: 20,
-	height: 22,
+	display: "grid",
+	gridTemplateColumns: '1fr 1fr',
+	gap: '10px'
 });
 
 const StyledBottomBlock = styled.div({
@@ -80,6 +48,23 @@ const StyledBottomBlock = styled.div({
 	justifyContent: "space-between",
 	marginTop: 30,
 });
+
+const paginatorComponents: Partial<Components<unknown>> = {
+	Link: ({
+		className,
+		...rest
+	}) => {
+		return <components.Link {...rest} style={{
+			minWidth: '36px'
+		}} />
+	},
+};
+
+const GlobalStyle = createGlobalStyle({
+	body: {
+		backgroundColor: '#c0c0c0',
+	}
+})
 
 export function Page({
 	requestParams,
@@ -108,7 +93,8 @@ export function Page({
 
 	return (
 		<StyledWrapper>
-			<StyledView>
+			<GlobalStyle />
+			<div>
 				<Filters
 					filters={filters}
 					resetAllFilters={resetAllFilters}
@@ -118,9 +104,7 @@ export function Page({
 					reload={reload}
 				/>
 
-				<StyledTotalCountBlock>
-					{total && <TotalCount count={total} />}
-				</StyledTotalCountBlock>
+				{total && <TotalCount count={total} />}
 
 				<Table items={items} sort={sort} setSorting={setSorting} />
 
@@ -128,13 +112,13 @@ export function Page({
 
 				<StyledBottomBlock>
 					{isInfinity ? (
-						<Button
+						<button
 							type="button"
 							onClick={loadMore}
 							disabled={!total || Math.ceil(total / pageSize) === loadedPages}
 						>
 							Load more
-						</Button>
+						</button>
 					) : (
 						<>
 							<div>
@@ -143,6 +127,7 @@ export function Page({
 										page={page}
 										pageCount={Math.ceil(total / pageSize)}
 										onPageChange={setPage}
+										components={paginatorComponents}
 									/>
 								)}
 							</div>
@@ -151,21 +136,23 @@ export function Page({
 						</>
 					)}
 				</StyledBottomBlock>
-			</StyledView>
+			</div>
 
-			<StyledListStateWrapper>
-				<StyledListStateTitle>
+			<div>
+				<h4 style={{
+					marginTop: 0,
+				}}>
 					Current state of filterlist:
-				</StyledListStateTitle>
+				</h4>
 
-				<StyledListState>{JSON.stringify(listState, null, 2)}</StyledListState>
+				<pre><code>{JSON.stringify(listState, null, 2)}</code></pre>
 
-				<StyledListStateTitle>Current request params:</StyledListStateTitle>
+				<h4>Current request params:</h4>
 
-				<StyledListState>
+				<pre><code>
 					{JSON.stringify(requestParams, null, 2)}
-				</StyledListState>
-			</StyledListStateWrapper>
+				</code></pre>
+			</div>
 		</StyledWrapper>
 	);
 }

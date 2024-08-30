@@ -1,27 +1,6 @@
 /** @jsxImportSource react */
 import type { ReactElement } from "react";
-
-import styled from "styled-components";
-
-import { Button } from "./Button";
 import { StringFilter } from "./StringFilter";
-
-const StyledWrapper = styled.div({
-	backgroundColor: "#EEE",
-	borderRadius: 10,
-	padding: 20,
-	marginBottom: 30,
-});
-
-const StyledFiltersWrapper = styled.div({
-	marginBottom: 20,
-});
-
-const StyledResetWrapper = styled.div({
-	display: "flex",
-	justifyContent: "flex-end",
-	gap: 20,
-});
 
 type FiltersProps = Readonly<{
 	filters: Readonly<Record<string, unknown>>;
@@ -41,8 +20,7 @@ export function Filters({
 	reload,
 }: FiltersProps): ReactElement {
 	return (
-		<StyledWrapper>
-			<StyledFiltersWrapper>
+		<fieldset>
 				<StringFilter
 					name="name"
 					value={filters.name}
@@ -66,17 +44,16 @@ export function Filters({
 					resetFilter={resetFilter}
 					applyFilter={applyFilter}
 				/>
-			</StyledFiltersWrapper>
 
-			<StyledResetWrapper>
-				<Button type="button" $buttonType="danger" onClick={reload}>
-					Reload
-				</Button>
+				<div className="field-row">
+					<button type="button" onClick={reload}>
+						Reload
+					</button>
 
-				<Button type="button" $buttonType="danger" onClick={resetAllFilters}>
-					Reset all filters
-				</Button>
-			</StyledResetWrapper>
-		</StyledWrapper>
+					<button type="button" onClick={resetAllFilters}>
+						Reset all filters
+					</button>
+				</div>
+		</fieldset>
 	);
 }
