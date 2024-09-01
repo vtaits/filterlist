@@ -1,19 +1,23 @@
+import {
+	type Components,
+	Paginator,
+	components,
+} from "@vtaits/react-paginator";
 /** @jsxImportSource react */
 import type { ReactElement } from "react";
-import styled, { createGlobalStyle } from "styled-components";
-import { components, Components, Paginator } from "@vtaits/react-paginator";
-import { Filters } from "./Filters";
-import { ItemsPerPage } from "./ItemsPerPage";
-import { Preloader } from "./Preloader";
-import { Table } from "./Table";
-import { TotalCount } from "./TotalCount";
-import type { Additional, User } from "../types";
 import type {
 	ListState,
 	RequestParams,
 	Sort,
 } from "../../packages/filterlist/src/types";
+import type { Additional, User } from "../types";
+import { Filters } from "./Filters";
+import { ItemsPerPage } from "./ItemsPerPage";
+import { Preloader } from "./Preloader";
+import { Table } from "./Table";
+import { TotalCount } from "./TotalCount";
 import "98.css";
+import styles from "./Page.module.css";
 
 type PageProps = Readonly<{
 	requestParams: RequestParams;
@@ -37,18 +41,6 @@ type PageProps = Readonly<{
 	loadMore?: () => void;
 }>;
 
-const StyledWrapper = styled.div({
-	display: "grid",
-	gridTemplateColumns: "1fr 1fr",
-	gap: "10px",
-});
-
-const StyledBottomBlock = styled.div({
-	display: "flex",
-	justifyContent: "space-between",
-	marginTop: 30,
-});
-
 const paginatorComponents: Partial<Components<unknown>> = {
 	Link: ({ className, ...rest }) => {
 		return (
@@ -61,12 +53,6 @@ const paginatorComponents: Partial<Components<unknown>> = {
 		);
 	},
 };
-
-const GlobalStyle = createGlobalStyle({
-	body: {
-		backgroundColor: "#c0c0c0",
-	},
-});
 
 export function Page({
 	requestParams,
@@ -94,8 +80,7 @@ export function Page({
 	const pageSize = pageSizeProp || 10;
 
 	return (
-		<StyledWrapper>
-			<GlobalStyle />
+		<div className={styles.page}>
 			<div>
 				<Filters
 					filters={filters}
@@ -112,7 +97,7 @@ export function Page({
 
 				{loading && <Preloader />}
 
-				<StyledBottomBlock>
+				<div className={styles.bottomBlock}>
 					{isInfinity ? (
 						<button
 							type="button"
@@ -137,7 +122,7 @@ export function Page({
 							<ItemsPerPage value={pageSize} setPageSize={setPageSize} />
 						</>
 					)}
-				</StyledBottomBlock>
+				</div>
 			</div>
 
 			<div>
@@ -159,6 +144,6 @@ export function Page({
 					<code>{JSON.stringify(requestParams, null, 2)}</code>
 				</pre>
 			</div>
-		</StyledWrapper>
+		</div>
 	);
 }

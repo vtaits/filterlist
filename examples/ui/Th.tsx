@@ -1,5 +1,11 @@
 /** @jsxImportSource react */
-import { type ReactElement, type ReactNode, memo, useCallback } from "react";
+import {
+	type KeyboardEventHandler,
+	type ReactElement,
+	type ReactNode,
+	memo,
+	useCallback,
+} from "react";
 
 type ThProps = Readonly<{
 	asc?: boolean;
@@ -19,12 +25,28 @@ function ThInner({
 
 	setSorting,
 }: ThProps): ReactElement {
-	const onClick = useCallback((): void => {
+	const handle = useCallback((): void => {
 		setSorting(param);
 	}, [param, setSorting]);
 
+	const onKeyDown = useCallback<KeyboardEventHandler>(
+		(event) => {
+			switch (event.key) {
+				case "Enter":
+				case " ":
+					event.preventDefault();
+					handle();
+					return;
+
+				default:
+					return;
+			}
+		},
+		[handle],
+	);
+
 	return (
-		<th onClick={onClick} role="button" tabIndex={0}>
+		<th onClick={handle} onKeyDown={onKeyDown}>
 			{children}
 
 			{param === current && (asc ? "↓" : "↑")}

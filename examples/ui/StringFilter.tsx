@@ -6,11 +6,6 @@ import {
 	memo,
 	useCallback,
 } from "react";
-import styled from "styled-components";
-
-const StyledButtonWrapper = styled.div({
-	paddingLeft: 5,
-});
 
 type StringFilterProps = Readonly<{
 	name: string;
@@ -63,6 +58,7 @@ function StringFilterInner({
 				<div className="field-row">
 					<input
 						id={`id_${name}`}
+						type="text"
 						name={name}
 						value={typeof value === "string" ? value : ""}
 						onChange={onChange}
@@ -72,17 +68,13 @@ function StringFilterInner({
 						}}
 					/>
 
-					<StyledButtonWrapper>
-						<button type="button" onClick={onApplyClick}>
-							Apply
-						</button>
-					</StyledButtonWrapper>
+					<button type="button" onClick={onApplyClick}>
+						Apply
+					</button>
 
-					<StyledButtonWrapper>
-						<button type="button" onClick={onResetClick}>
-							Reset
-						</button>
-					</StyledButtonWrapper>
+					<button type="button" onClick={onResetClick}>
+						Reset
+					</button>
 				</div>
 			</div>
 		</div>

@@ -1,13 +1,8 @@
 /** @jsxImportSource react */
 import { type ReactElement, memo } from "react";
-import styled from "styled-components";
-import { Th } from "./Th";
-import type { User } from "../types";
 import type { Sort } from "../../packages/filterlist/src/types";
-
-const StyledTable = styled.table({
-	width: "100%",
-});
+import type { User } from "../types";
+import { Th } from "./Th";
 
 type TableProps = Readonly<{
 	sort: Sort;
@@ -17,7 +12,11 @@ type TableProps = Readonly<{
 
 function TableInner({ sort, items, setSorting }: TableProps): ReactElement {
 	return (
-		<StyledTable>
+		<table
+			style={{
+				width: "100%",
+			}}
+		>
 			<thead>
 				<tr>
 					<Th
@@ -68,7 +67,7 @@ function TableInner({ sort, items, setSorting }: TableProps): ReactElement {
 					</tr>
 				))}
 			</tbody>
-		</StyledTable>
+		</table>
 	);
 }
 
