@@ -30,6 +30,8 @@ export class Filterlist<Item, Additional, Error> {
 
 	itemsLoader: ItemsLoader<Item, Additional, Error>;
 
+	shouldRefresh?: () => boolean;
+
 	refreshTimeout?: number;
 
 	refreshTimeoutId: ReturnType<typeof setTimeout> | null = null;
@@ -68,6 +70,7 @@ export class Filterlist<Item, Additional, Error> {
 		this.options = collectOptions(params);
 
 		this.refreshTimeout = params.refreshTimeout;
+		this.shouldRefresh = params.shouldRefresh;
 
 		this.onInit();
 	}
@@ -677,7 +680,7 @@ export class Filterlist<Item, Additional, Error> {
 
 		if (typeof this.refreshTimeout === "number" && this.refreshTimeout > 0) {
 			this.refreshTimeoutId = setTimeout(() => {
-				this.reload();
+				this.reloadByTimeout();
 			}, this.refreshTimeout);
 		}
 
@@ -881,6 +884,18 @@ export class Filterlist<Item, Additional, Error> {
 		return this.dataStore.getValue();
 	}
 
+	reloadByTimeout() {
+		if (this.shouldRefresh && !this.shouldRefresh()) {
+			this.refreshTimeoutId = setTimeout(() => {
+				this.reloadByTimeout();
+			}, this.refreshTimeout);
+
+			return;
+		}
+
+		this.reload();
+	}
+
 	setRefreshTimeout(nextValue: number | null | undefined) {
 		this.refreshTimeout = nextValue || undefined;
 
@@ -891,7 +906,7 @@ export class Filterlist<Item, Additional, Error> {
 
 		if (typeof this.refreshTimeout === "number" && this.refreshTimeout > 0) {
 			this.refreshTimeoutId = setTimeout(() => {
-				this.reload();
+				this.reloadByTimeout();
 			}, this.refreshTimeout);
 		}
 	}

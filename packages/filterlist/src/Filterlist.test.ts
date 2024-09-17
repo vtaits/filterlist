@@ -1291,6 +1291,45 @@ describe.concurrent.each([
 
 			filterlist.destroy();
 		});
+
+		test("disable by shouldRefresh", async () => {
+			let callNumber = 0;
+			const shouldRefresh = () => {
+				const res = callNumber % 2 === 0;
+
+				++callNumber;
+
+				return res;
+			};
+
+			const loadItems = vi
+				.fn<ItemsLoader<unknown, unknown, unknown>>()
+				.mockResolvedValue({
+					items: [1, 2, 3],
+				})
+				.mockResolvedValue({
+					items: [4, 5, 6],
+				})
+				.mockResolvedValue({
+					items: [7, 8, 9],
+				})
+				.mockResolvedValue({
+					items: [10, 11, 12],
+				});
+
+			const filterlist = new Filterlist({
+				createDataStore,
+				loadItems,
+				refreshTimeout: 50,
+				shouldRefresh,
+			});
+
+			await sleep(210);
+
+			expect(loadItems).toHaveBeenCalledTimes(3);
+
+			filterlist.destroy();
+		});
 	});
 
 	describe("save items while loading", () => {

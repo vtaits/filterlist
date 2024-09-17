@@ -1,3 +1,9 @@
+## 2.3.0 (17 sep 2024)
+
+### New features
+
+* Added `shouldRefresh` parameter
+
 ## 2.2.0 (30 aug 2024)
 
 ### New features

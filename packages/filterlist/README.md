@@ -193,6 +193,8 @@ const filterlist = new Filterlist({
 	page,
 	// initial size of the page
 	pageSize,
+  // check whether the list should be refreshed by timeout
+  shouldRefresh,
 	// timeout to refresh the list
 	refreshTimeout,
 	// total count of items
