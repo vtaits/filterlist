@@ -7,19 +7,20 @@
     "dist",
     "datastore"
   ],
-  "main": "./dist/core.js",
-  "module": "./dist/esm/core.js",
-  "typings": "dist/core.d.ts",
+  "main": "./dist/core.cjs",
+  "module": "./dist/core.js",
+  "types": "dist/core.d.ts",
   "exports": {
+    "./package.json": "./package.json",
     ".": {
-      "import": "./dist/esm/core.js",
-      "require": "./dist/core.js",
-      "types": "./dist/core.d.ts"
+      "types": "./dist/core.d.ts",
+      "import": "./dist/core.js",
+      "default": "./dist/core.cjs"
     },
     "./datastore/string": {
-      "import": "./dist/esm/datastore_string.js",
-      "require": "./dist/datastore_string.js",
-      "types": "./dist/datastore_string.d.ts"
+      "types": "./dist/datastore_string.d.ts",
+      "import": "./dist/datastore_string.js",
+      "default": "./dist/datastore_string.cjs"
     }
   },
   "repository": {
@@ -49,24 +50,24 @@
     "prepare": "yarn build"
   },
   "dependencies": {
-    "@types/qs": "^6.9.15",
+    "@types/qs": "^6.9.16",
     "mitt": "^3.0.1",
     "qs": "^6.13.0",
     "sleep-promise": "^9.1.0"
   },
   "devDependencies": {
-    "@biomejs/biome": "^1.8.3",
-    "@storybook/react": "^8.2.9",
-    "@swc/core": "^1.7.22",
-    "@types/react": "^18.3.5",
+    "@biomejs/biome": "^1.9.1",
+    "@storybook/react": "^8.3.1",
+    "@swc/core": "^1.7.26",
+    "@types/react": "^18.3.7",
     "@vtaits/react-router-dom-fake-browser": "^1.0.0",
     "@vtaits/use-latest": "^1.3.0",
-    "exports-fallback": "^1.0.1",
-    "happy-dom": "^15.6.0",
+    "exports-fallback": "^1.0.2",
+    "happy-dom": "^15.7.4",
     "react": "^18.3.1",
-    "react-router-dom": "^6.26.1",
-    "tsup": "^8.2.4",
+    "react-router-dom": "^6.26.2",
+    "tsup": "^8.3.0",
     "typescript": "5.5.4",
-    "vitest": "^2.0.5"
+    "vitest": "^2.1.1"
   }
 }

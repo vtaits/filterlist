@@ -16,10 +16,10 @@
     "test": "echo pass"
   },
   "devDependencies": {
-    "@biomejs/biome": "^1.8.3",
+    "@biomejs/biome": "^1.9.1",
     "serve": "^14.2.3",
     "typescript": "5.5.4",
-    "vite": "^5.4.2"
+    "vite": "^5.4.6"
   },
   "dependencies": {
     "@builder.io/qwik": "1.7.3",

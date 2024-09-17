@@ -1,5 +1,5 @@
 .page {
-  display: grid;
+	display: grid;
 	grid-template-columns: 1fr 1fr;
 	gap: 10px;
 	background-color: #c0c0c0;
@@ -7,7 +7,7 @@
 }
 
 .bottomBlock {
-  display: flex;
+	display: flex;
 	justify-content: space-between;
 	margin-top: 30px;
 }

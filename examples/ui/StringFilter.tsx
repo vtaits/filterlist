@@ -46,6 +46,8 @@ function StringFilterInner({
 		resetFilter(name);
 	}, [name, resetFilter]);
 
+	const id = `id_${name}`;
+
 	return (
 		<div className="field-row">
 			<div
@@ -53,11 +55,11 @@ function StringFilterInner({
 					flex: 1,
 				}}
 			>
-				<label htmlFor={`id_${name}`}>{name}</label>
+				<label htmlFor={id}>{name}</label>
 
 				<div className="field-row">
 					<input
-						id={`id_${name}`}
+						id={id}
 						type="text"
 						name={name}
 						value={typeof value === "string" ? value : ""}

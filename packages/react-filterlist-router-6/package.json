@@ -6,14 +6,15 @@
   "files": [
     "dist"
   ],
-  "main": "./dist/index.js",
-  "module": "./dist/esm/index.js",
-  "typings": "dist/index.d.ts",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "dist/index.d.ts",
   "exports": {
+    "./package.json": "./package.json",
     ".": {
-      "import": "./dist/esm/index.js",
-      "require": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.cjs"
     }
   },
   "repository": {
@@ -30,7 +31,7 @@
     "react"
   ],
   "scripts": {
-    "build": "tsup src/index.ts --sourcemap --format esm,cjs --dts --legacy-output",
+    "build": "tsup src/index.ts --sourcemap --format esm,cjs --dts",
     "lint": "biome check src",
     "lint:fix": "biome check src --write --unsafe",
     "format": "biome format src --write",
@@ -47,22 +48,22 @@
     "react-router-dom": "^6.0.0"
   },
   "devDependencies": {
-    "@biomejs/biome": "^1.8.3",
-    "@storybook/react": "^8.2.9",
-    "@swc/core": "^1.7.22",
+    "@biomejs/biome": "^1.9.1",
+    "@storybook/react": "^8.3.1",
+    "@swc/core": "^1.7.26",
     "@testing-library/react-hooks": "^8.0.1",
-    "@types/react": "^18.3.5",
+    "@types/react": "^18.3.7",
     "@vitejs/plugin-react": "^4.3.1",
     "@vtaits/filterlist": "^2.2.1",
     "@vtaits/react-filterlist": "^2.0.1",
     "@vtaits/react-router-dom-fake-browser": "^1.0.0",
-    "happy-dom": "^15.6.0",
+    "happy-dom": "^15.7.4",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-router-dom": "^6.26.1",
-    "tsup": "^8.2.4",
+    "react-router-dom": "^6.26.2",
+    "tsup": "^8.3.0",
     "typescript": "5.5.4",
-    "vitest": "^2.0.5"
+    "vitest": "^2.1.1"
   },
   "dependencies": {
     "@vtaits/use-latest": "^1.3.0"
