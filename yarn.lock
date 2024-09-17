@@ -394,28 +394,28 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@builder.io/qwik-react@npm:^0.5.4":
-  version: 0.5.4
-  resolution: "@builder.io/qwik-react@npm:0.5.4"
+"@builder.io/qwik-react@npm:^0.5.5":
+  version: 0.5.5
+  resolution: "@builder.io/qwik-react@npm:0.5.5"
   peerDependencies:
-    "@builder.io/qwik": ^1.4.5
-    "@types/react": ^18.2.58
-    "@types/react-dom": ^18.2.19
+    "@builder.io/qwik": ^1.6.0
+    "@types/react": ^18.2.79
+    "@types/react-dom": ^18.2.25
     react: 18.2.0
     react-dom: 18.2.0
-  checksum: 10/13302309c766289c5b833132307f8bdd283a41e1dcb2243fc7ce6b2e3d152ec8e46fb565d321775e9048f44bf13eb41e38e13d6b29dad9a7fee928988aef5bd0
+  checksum: 10/7cbda9c58f31e99440812ab331c41ea9fcd2f83e6e968f41d7676ab5a9d3a3364dea8c5558605a46cafdee5311e9ab6b1d9671245b21d72f6dcf061e65e5c39d
   languageName: node
   linkType: hard
 
-"@builder.io/qwik@npm:1.7.3, @builder.io/qwik@npm:^1.5.3":
-  version: 1.7.3
-  resolution: "@builder.io/qwik@npm:1.7.3"
+"@builder.io/qwik@npm:1.8.0, @builder.io/qwik@npm:^1.8.0":
+  version: 1.8.0
+  resolution: "@builder.io/qwik@npm:1.8.0"
   dependencies:
-    csstype: "npm:^3.1.3"
-    vite: "npm:^5.2.10"
+    csstype: "npm:^3.1"
+    vite: "npm:^5"
   bin:
     qwik: dist/qwik-cli.cjs
-  checksum: 10/f7487743ca35988e4c553f0ce39675d79738b8a819888488032c3c58bb498b92e64894106eded6b5708d4403adb26f82f33afc860dee7fbc049e784ef28b6c4a
+  checksum: 10/dfe425536879553e7862cb159a36626f98ffa30add4544772dd7e50149200facca6f7f32d54389a53d8a90d65aa3b3a0397d86fcf3bf8a3a687c22756ed53c2a
   languageName: node
   linkType: hard
 
@@ -2264,7 +2264,7 @@ __metadata:
   resolution: "@vtaits/qwik-filterlist@workspace:packages/qwik-filterlist"
   dependencies:
     "@biomejs/biome": "npm:^1.9.1"
-    "@builder.io/qwik": "npm:^1.5.3"
+    "@builder.io/qwik": "npm:^1.8.0"
     "@vtaits/filterlist": "npm:^2.2.1"
     is-promise: "npm:^4.0.0"
     typescript: "npm:5.6.2"
@@ -3222,7 +3222,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"csstype@npm:3.1.3, csstype@npm:^3.0.2, csstype@npm:^3.1.3":
+"csstype@npm:3.1.3, csstype@npm:^3.0.2, csstype@npm:^3.1":
   version: 3.1.3
   resolution: "csstype@npm:3.1.3"
   checksum: 10/f593cce41ff5ade23f44e77521e3a1bcc2c64107041e1bf6c3c32adc5187d0d60983292fda326154d20b01079e24931aa5b08e4467cc488b60bb1e7f6d478ade
@@ -5885,8 +5885,8 @@ __metadata:
   resolution: "qwik-filterlist-example@workspace:packages/qwik-filterlist-example"
   dependencies:
     "@biomejs/biome": "npm:^1.9.1"
-    "@builder.io/qwik": "npm:1.7.3"
-    "@builder.io/qwik-react": "npm:^0.5.4"
+    "@builder.io/qwik": "npm:1.8.0"
+    "@builder.io/qwik-react": "npm:^0.5.5"
     "@fortawesome/free-solid-svg-icons": "npm:^6.6.0"
     "@fortawesome/react-fontawesome": "npm:^0.2.2"
     "@vtaits/filterlist": "npm:^2.2.1"
@@ -7427,7 +7427,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vite@npm:^5.0.0, vite@npm:^5.2.10, vite@npm:^5.4.6":
+"vite@npm:^5, vite@npm:^5.0.0, vite@npm:^5.4.6":
   version: 5.4.6
   resolution: "vite@npm:5.4.6"
   dependencies:
