@@ -168,7 +168,7 @@ export type Params<Item, Additional, Error> = Readonly<{
 	pageSize?: number | null;
 	/**
 	 * check whether the list should be refreshed by timeout
-	 * 
+	 *
 	 * @example shouldRefresh: () => !document.hidden,
 	 */
 	shouldRefresh?: () => boolean;
