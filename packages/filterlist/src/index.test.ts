@@ -6,7 +6,7 @@ import { LoadListError } from "./errors";
 import * as lib from "./index";
 import { initialRequestParams } from "./initialRequestParams";
 import { listInitialState } from "./listInitialState";
-import { EventType } from "./types";
+import { EventType, LoadListAction } from "./types";
 
 test("should export needed modules", () => {
 	expect(lib.Filterlist).toBe(Filterlist);
@@ -16,4 +16,5 @@ test("should export needed modules", () => {
 	expect(lib.initialRequestParams).toBe(initialRequestParams);
 	expect(lib.listInitialState).toBe(listInitialState);
 	expect(lib.LoadListError).toBe(LoadListError);
+	expect(lib.LoadListAction).toBe(LoadListAction);
 });

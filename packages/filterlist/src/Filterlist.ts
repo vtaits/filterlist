@@ -11,6 +11,7 @@ import {
 	type ItemsLoader,
 	type ItemsLoaderResponse,
 	type ListState,
+	LoadListAction,
 	type Options,
 	type Params,
 	type RequestParams,
@@ -159,7 +160,7 @@ export class Filterlist<Item, Additional, Error> {
 
 		this.emitEvent(EventType.loadMore);
 
-		await this.requestItems();
+		await this.requestItems(LoadListAction.init);
 	}
 
 	/**
@@ -179,7 +180,7 @@ export class Filterlist<Item, Additional, Error> {
 		this.emitEvent(EventType.loadMore);
 		this.emitEvent(EventType.changeLoadParams);
 
-		await this.requestItems();
+		await this.requestItems(LoadListAction.loadMore);
 	}
 
 	/**
@@ -532,14 +533,14 @@ export class Filterlist<Item, Additional, Error> {
 	 * reload the list in the current state
 	 */
 	async reload(): Promise<void> {
-		const stateBeforeChange = this.getListStateBeforeChange();
+		const stateBeforeChange = this.getListStateBeforeReload();
 
 		this.setListState(stateBeforeChange);
 
 		this.emitEvent(EventType.reload);
 		this.emitEvent(EventType.changeLoadParams);
 
-		await this.requestItems();
+		await this.requestItems(LoadListAction.reload);
 	}
 
 	getNextAsc(param: string, asc?: boolean): boolean {
@@ -616,7 +617,6 @@ export class Filterlist<Item, Additional, Error> {
 	updateStateAndRequest(updateStateParams: UpdateStateParams) {
 		const { filters, appliedFilters, sort, page, pageSize } = updateStateParams;
 
-		const prevListState = this.listState;
 		const requestParamsBeforeChange = this.getRequestParamsBeforeChange();
 		const stateBeforeChange = this.getListStateBeforeChange();
 
@@ -637,7 +637,7 @@ export class Filterlist<Item, Additional, Error> {
 		});
 	}
 
-	async requestItems() {
+	async requestItems(action: LoadListAction) {
 		const nextRequestId = this.requestId + 1;
 		++this.requestId;
 
@@ -664,6 +664,7 @@ export class Filterlist<Item, Additional, Error> {
 			response = await this.itemsLoader(
 				this.dataStore.getValue(),
 				this.listState,
+				action,
 			);
 		} catch (e) {
 			error = e as Error;
@@ -705,6 +706,8 @@ export class Filterlist<Item, Additional, Error> {
 
 		const isClean = saveItemsWhileLoad && prevListState.shouldClean;
 
+		const loadedPages = response.loadedPages ?? 1;
+
 		this.setListState({
 			...prevListState,
 
@@ -716,7 +719,9 @@ export class Filterlist<Item, Additional, Error> {
 				? response.items
 				: [...prevListState.items, ...response.items],
 
-			loadedPages: isClean ? 1 : prevListState.loadedPages + 1,
+			loadedPages: isClean
+				? loadedPages
+				: prevListState.loadedPages + loadedPages,
 
 			additional:
 				typeof response.additional !== "undefined"
@@ -856,18 +861,18 @@ export class Filterlist<Item, Additional, Error> {
 			return res;
 		}, {});
 
-		const stateBeforeReload = this.getListStateBeforeReload();
+		const stateBeforeChange = this.getListStateBeforeChange();
 		this.setListState({
-			...stateBeforeReload,
+			...stateBeforeChange,
 			filters: {
-				...stateBeforeReload.filters,
+				...stateBeforeChange.filters,
 				...changedFilters,
 			},
 		});
 
 		this.emitEvent(EventType.changeRequestParams);
 
-		this.requestItems();
+		this.requestItems(LoadListAction.changeRequestParams);
 	};
 
 	setListState(nextListState: ListState<Item, Additional, Error>): void {

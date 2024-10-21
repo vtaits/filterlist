@@ -82,6 +82,12 @@ export type ItemsLoaderResponse<Item, Additional> = Readonly<{
 	 * total number of items
 	 */
 	total?: number | null;
+	/**
+	 * number of data pages that `items` consists of
+	 *
+	 * `loadItems` in infiniter loading can load multiple pages of data
+	 */
+	loadedPages?: number | null;
 }>;
 
 /**
@@ -92,6 +98,7 @@ export type ItemsLoaderResponse<Item, Additional> = Readonly<{
 export type ItemsLoader<Item, Additional, Error> = (
 	requestParams: RequestParams,
 	prevListState: ListState<Item, Additional, Error>,
+	action: LoadListAction,
 ) =>
 	| ItemsLoaderResponse<Item, Additional>
 	| Promise<ItemsLoaderResponse<Item, Additional>>;
@@ -217,6 +224,13 @@ export enum EventType {
 	loadItemsError = 23,
 	changeListState = 24,
 	changeRequestParams = 25,
+}
+
+export enum LoadListAction {
+	changeRequestParams = 0,
+	init = 1,
+	loadMore = 2,
+	reload = 3,
 }
 
 export type DataStoreListener = (

@@ -120,10 +120,8 @@ export const useFilterlist = <Item, Additional, Error, FiltersAndSortData>(
 
 	const loadItemsRef = useLatest(loadItems);
 
-	const loadItemsProxy: ItemsLoader<Item, Additional, Error> = (
-		nextRequestParams,
-		nextListState,
-	) => loadItemsRef.current(nextRequestParams, nextListState);
+	const loadItemsProxy: ItemsLoader<Item, Additional, Error> = (...args) =>
+		loadItemsRef.current(...args);
 
 	const onChangeLoadParamsRef = useLatest(onChangeLoadParams);
 

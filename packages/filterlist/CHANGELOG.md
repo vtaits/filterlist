@@ -1,3 +1,10 @@
+## 2.4.0
+
+### New features
+
+* Added `action` argument to `loadItems`
+* Added parameter `loadedPages` to success response
+
 ## 2.3.0 (17 sep 2024)
 
 ### New features
