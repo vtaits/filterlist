@@ -6,6 +6,7 @@ import {
 } from 'react';
 import { useFilterlist } from '@vtaits/react-filterlist';
 import { useCreateDataStore } from '@vtaits/react-filterlist-router-6';
+import { useRerender } from '@vtaits/react-signals';
 import { Page } from '../../../../examples/ui/Page';
 import * as api from '../../../../examples/api';
 import type {
@@ -23,7 +24,7 @@ export function DeferredInit(): ReactElement | null {
 
   const createDataStore = useCreateDataStore();
 
-  const [requestParams, listState, filterlist] = useFilterlist<
+  const [requestParamsSignal, listStateSignal, filterlist] = useFilterlist<
   User,
   {
     count: number,
@@ -144,6 +145,11 @@ export function DeferredInit(): ReactElement | null {
       filterName,
     );
   }, [filterlist]);
+
+  const listState = listStateSignal.get();
+  const requestParams = requestParamsSignal.get();
+
+  useRerender([requestParamsSignal, listStateSignal]);
 
   if (!listState || !requestParams) {
     return null;

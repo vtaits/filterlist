@@ -211,8 +211,23 @@ describe.concurrent("should change query", () => {
 			foo: "bar",
 			baz: "qux",
 		});
+
+		await vi.waitFor(() => {
+			expect(loadItems).toHaveBeenCalledTimes(2);
+		});
+
 		result.current[2]?.setPageSize(20);
+
+		await vi.waitFor(() => {
+			expect(loadItems).toHaveBeenCalledTimes(3);
+		});
+
 		result.current[2]?.setSorting("id", false);
+
+		await vi.waitFor(() => {
+			expect(loadItems).toHaveBeenCalledTimes(4);
+		});
+
 		result.current[2]?.setPage(3);
 
 		await vi.waitFor(() => {
@@ -247,8 +262,23 @@ test.concurrent("navigate backward", async () => {
 		foo: "bar",
 		baz: "qux",
 	});
+
+	await vi.waitFor(() => {
+		expect(loadItems).toHaveBeenCalledTimes(2);
+	});
+
 	result.current[2]?.setPageSize(20);
+
+	await vi.waitFor(() => {
+		expect(loadItems).toHaveBeenCalledTimes(3);
+	});
+
 	result.current[2]?.setSorting("id", false);
+
+	await vi.waitFor(() => {
+		expect(loadItems).toHaveBeenCalledTimes(4);
+	});
+
 	result.current[2]?.setPage(3);
 
 	await vi.waitFor(() => {
