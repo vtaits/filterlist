@@ -2,9 +2,9 @@ import {
   type ReactElement,
   useState,
   useCallback,
-  useSyncExternalStore,
 } from 'react';
-import { Filterlist, EventType } from '@vtaits/filterlist';
+import { Filterlist } from '@vtaits/filterlist';
+import { useRerender } from '@vtaits/react-signals';
 import { Page } from '../../../../examples/ui/Page';
 import * as api from '../../../../examples/api';
 import type {
@@ -42,29 +42,12 @@ export function AllFeatures(): ReactElement {
     });
   });
 
-  const listState = useSyncExternalStore(
-    (callback) => {
-      filterlist.emitter.on(EventType.changeListState, callback);
+  const {
+    listState,
+    requestParams,
+  } = filterlist;
 
-      return () => {
-        filterlist.emitter.off(EventType.changeListState, callback);
-      };
-    },
-
-    () => filterlist.getListState(),
-  );
-
-  const requestParams = useSyncExternalStore(
-    (callback) => {
-      filterlist.emitter.on(EventType.changeListState, callback);
-
-      return () => {
-        filterlist.emitter.off(EventType.changeListState, callback);
-      };
-    },
-
-    () => filterlist.getRequestParams(),
-  );
+  useRerender([listState, requestParams])
 
   const setPage = useCallback((
     page: number,
@@ -110,19 +93,19 @@ export function AllFeatures(): ReactElement {
     page,
     pageSize,
     sort,
-  } = requestParams;
+  } = requestParams.get();
 
   const {
     items,
     loading,
     total,
     filters,
-  } = listState;
+  } = listState.get();
 
   return (
     <Page
-      requestParams={requestParams}
-      listState={listState}
+      requestParams={requestParams.get()}
+      listState={listState.get()}
       filters={filters}
       page={page}
       pageSize={pageSize}

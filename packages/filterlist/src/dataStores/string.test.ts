@@ -1,25 +1,25 @@
+import { Signal } from "signal-polyfill";
 import { describe, expect, test, vi } from "vitest";
 import { Filterlist } from "../Filterlist";
 import {
 	type StringBasedDataStoreOptions,
-	createEmitter,
 	createStringBasedDataStore,
 } from "./string";
 
-const historyEmitter = createEmitter();
+const searchSignal = new Signal.State("");
 
 window.addEventListener("popstate", () => {
-	historyEmitter.emit();
+	searchSignal.set(window.location.search);
 });
 
 function makeCreateDataStore(options: StringBasedDataStoreOptions = {}) {
 	const createDataStore = () => {
 		return createStringBasedDataStore(
-			() => window.location.search,
+			searchSignal,
 			(nextSearch) => {
 				window.location.href = `${window.location.pathname}?${nextSearch}`;
+				window.dispatchEvent(new PopStateEvent("popstate"));
 			},
-			historyEmitter,
 			options,
 		);
 	};
@@ -27,7 +27,7 @@ function makeCreateDataStore(options: StringBasedDataStoreOptions = {}) {
 	return createDataStore;
 }
 
-test.concurrent.each([
+test.each([
 	{
 		href: "/page",
 		appliedFilters: {},
@@ -122,8 +122,9 @@ test.concurrent.each([
 	},
 ])(
 	"should parse query correctly: $href",
-	({ href, appliedFilters, page, pageSize, sort, options }) => {
+	async ({ href, appliedFilters, page, pageSize, sort, options }) => {
 		window.location.href = href;
+		window.dispatchEvent(new PopStateEvent("popstate"));
 
 		const filterlist = new Filterlist({
 			createDataStore: makeCreateDataStore(options),
@@ -132,16 +133,18 @@ test.concurrent.each([
 			}),
 		});
 
-		expect(filterlist.getRequestParams()).toEqual({
-			appliedFilters,
-			page,
-			pageSize,
-			sort,
+		await vi.waitFor(() => {
+			expect(filterlist.getRequestParams()).toEqual({
+				appliedFilters,
+				page,
+				pageSize,
+				sort,
+			});
 		});
 	},
 );
 
-describe.concurrent("should change query", () => {
+describe("should change query", () => {
 	test.each([
 		{
 			filters: {
@@ -159,6 +162,7 @@ describe.concurrent("should change query", () => {
 		},
 	])("filters to $search", async ({ filters, search }) => {
 		window.location.href = "/page";
+		window.dispatchEvent(new PopStateEvent("popstate"));
 
 		const filterlist = new Filterlist({
 			createDataStore: makeCreateDataStore(),
@@ -178,6 +182,7 @@ describe.concurrent("should change query", () => {
 
 	test("redefine `stringifyOptions`", async () => {
 		window.location.href = "/page";
+		window.dispatchEvent(new PopStateEvent("popstate"));
 
 		const filterlist = new Filterlist({
 			createDataStore: makeCreateDataStore({
@@ -205,6 +210,7 @@ describe.concurrent("should change query", () => {
 
 	test("all parameters", async () => {
 		window.location.href = "/page";
+		window.dispatchEvent(new PopStateEvent("popstate"));
 
 		const filterlist = new Filterlist({
 			createDataStore: makeCreateDataStore(),
@@ -233,6 +239,7 @@ describe.concurrent("should change query", () => {
 
 test("navigate backward", async () => {
 	window.location.href = "/page";
+	window.dispatchEvent(new PopStateEvent("popstate"));
 
 	const filterlist = new Filterlist({
 		createDataStore: makeCreateDataStore(),
@@ -262,17 +269,20 @@ test("navigate backward", async () => {
 	});
 
 	window.location.search = "?foo=bar&baz=qux&page=3&page_size=20&sort=-id";
+	window.dispatchEvent(new PopStateEvent("popstate"));
 
-	expect(filterlist.getRequestParams()).toEqual({
-		appliedFilters: {
-			foo: "bar",
-			baz: "qux",
-		},
-		page: 3,
-		pageSize: 20,
-		sort: {
-			param: "id",
-			asc: false,
-		},
+	await vi.waitFor(() => {
+		expect(filterlist.getRequestParams()).toEqual({
+			appliedFilters: {
+				foo: "bar",
+				baz: "qux",
+			},
+			page: 3,
+			pageSize: 20,
+			sort: {
+				param: "id",
+				asc: false,
+			},
+		});
 	});
 });

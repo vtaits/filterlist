@@ -1,16 +1,15 @@
 import {
   type ReactElement,
   useState,
-  useEffect,
   useCallback,
-  useSyncExternalStore,
 } from 'react';
 import {
   useNavigate,
   useLocation,
 } from 'react-router-dom';
-import { Filterlist, EventType } from '@vtaits/filterlist';
-import { createEmitter, createStringBasedDataStore } from '@vtaits/filterlist/datastore/string';
+import { Filterlist } from '@vtaits/filterlist';
+import { createStringBasedDataStore } from '@vtaits/filterlist/datastore/string';
+import { useRerender, useSignalify } from '@vtaits/react-signals';
 import { Page } from '../../../../examples/ui/Page';
 import * as api from '../../../../examples/api';
 import {useLatest} from '@vtaits/use-latest';
@@ -51,22 +50,17 @@ export function HistoryDataStore(): ReactElement {
     search,
   } = location;
 
-  const [emitter] = useState(() => createEmitter());
-
   const navigateRef = useLatest(navigate);
   const searchRef = useLatest(location.search);
 
-  useEffect(() => {
-    emitter.emit();
-  }, [search]);
+  const searchSignal = useSignalify(search);
 
   const createDataStore = useCallback(() => createStringBasedDataStore(
-    () => searchRef.current,
+    searchSignal,
     (nextSearch) => {
       navigateRef.current(`/?${nextSearch}`)
     },
-    emitter,
-  ), [emitter, navigateRef, searchRef]);
+  ), [navigateRef, searchRef]);
 
   const [filterlist] = useState(() => {
     return new Filterlist({
@@ -76,29 +70,12 @@ export function HistoryDataStore(): ReactElement {
     });
   });
 
-  const listState = useSyncExternalStore(
-    (callback) => {
-      filterlist.emitter.on(EventType.changeListState, callback);
+  const {
+    listState,
+    requestParams,
+  } = filterlist;
 
-      return () => {
-        filterlist.emitter.off(EventType.changeListState, callback);
-      };
-    },
-
-    () => filterlist.getListState(),
-  );
-
-  const requestParams = useSyncExternalStore(
-    (callback) => {
-      filterlist.emitter.on(EventType.changeRequestParams, callback);
-
-      return () => {
-        filterlist.emitter.off(EventType.changeRequestParams, callback);
-      };
-    },
-
-    () => filterlist.getRequestParams(),
-  );
+  useRerender([listState, requestParams])
 
   const setPage = useCallback((
     page: number,
@@ -144,19 +121,19 @@ export function HistoryDataStore(): ReactElement {
     page,
     pageSize,
     sort,
-  } = requestParams;
+  } = requestParams.get();
 
   const {
     items,
     loading,
     total,
     filters,
-  } = listState;
+  } = listState.get();
 
   return (
     <Page
-      requestParams={requestParams}
-      listState={listState}
+      requestParams={requestParams.get()}
+      listState={listState.get()}
       filters={filters}
       page={page}
       pageSize={pageSize}

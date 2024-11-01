@@ -1,30 +1,6 @@
-import mitt from "mitt";
 import qs from "qs";
+import { Signal } from "signal-polyfill";
 import type { DataStore, RequestParams } from "../types";
-
-const EVENT_TYPE = "UPDATE_SEARCH";
-
-type EmitterWrapper = Readonly<{
-	emit: VoidFunction;
-	on: (callback: VoidFunction) => void;
-	off: (callback: VoidFunction) => void;
-}>;
-
-export function createEmitter() {
-	const emitter = mitt();
-
-	return {
-		emit: () => {
-			emitter.emit(EVENT_TYPE);
-		},
-		on: (callback: VoidFunction) => {
-			emitter.on(EVENT_TYPE, callback);
-		},
-		off: (callback: VoidFunction) => {
-			emitter.off(EVENT_TYPE, callback);
-		},
-	};
-}
 
 export type StringBasedDataStoreOptions = Readonly<{
 	pageKey?: string;
@@ -51,9 +27,8 @@ function getFirst(arg: unknown) {
 }
 
 export function createStringBasedDataStore(
-	getSearch: () => string,
+	searchSignal: Signal.State<string> | Signal.Computed<string>,
 	setSearch: (nextValue: string) => void,
-	emitter: EmitterWrapper,
 	options: StringBasedDataStoreOptions = {},
 ): DataStore {
 	const {
@@ -97,29 +72,12 @@ export function createStringBasedDataStore(
 		};
 	}
 
-	let cacheKey: string | null = null;
-	let cacheValue: RequestParams = {
-		appliedFilters: {},
-		page: 1,
-		sort: {
-			asc: false,
-		},
-	};
-
-	let prevValue = getStateFromSearch(getSearch());
+	const signal = new Signal.Computed(() =>
+		getStateFromSearch(searchSignal.get()),
+	);
 
 	return {
-		getValue: () => {
-			const search = getSearch();
-
-			if (cacheKey !== search) {
-				prevValue = cacheValue;
-				cacheKey = search;
-				cacheValue = getStateFromSearch(search);
-			}
-
-			return cacheValue;
-		},
+		signal,
 		setValue: (nextRequestParams) => {
 			const newQuery = qs.stringify(
 				{
@@ -137,27 +95,7 @@ export function createStringBasedDataStore(
 				},
 			);
 
-			setSearch(`${newQuery}`);
-		},
-
-		subscribe: (callback) => {
-			const listenCallback = () => {
-				const search = getSearch();
-
-				if (cacheKey !== search) {
-					prevValue = cacheValue;
-					cacheKey = search;
-					cacheValue = getStateFromSearch(search);
-				}
-
-				callback(cacheValue, prevValue);
-			};
-
-			emitter.on(listenCallback);
-
-			return () => {
-				emitter.off(listenCallback);
-			};
+			setSearch(newQuery);
 		},
 	};
 }

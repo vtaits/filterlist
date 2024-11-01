@@ -1,3 +1,5 @@
+import type { Signal } from "signal-polyfill";
+
 export type Sort = Readonly<{
 	param?: string | null;
 	asc: boolean;
@@ -33,7 +35,7 @@ export type ListState<Item, Additional, Error> = Readonly<{
 	 * is the first load after initialization
 	 */
 	isFirstLoad: boolean;
-	total?: number | null;
+	total: number | null | undefined;
 }>;
 
 export type RequestParams = Readonly<{
@@ -197,35 +199,6 @@ export type UpdateStateParams = Readonly<{
 	pageSize?: number | null;
 }>;
 
-export enum EventType {
-	loadMore = 0,
-	setFilterValue = 1,
-	applyFilter = 2,
-	setAndApplyFilter = 3,
-	resetFilter = 4,
-	setFiltersValues = 5,
-	applyFilters = 6,
-	setAndApplyFilters = 7,
-	setAndApplyEmptyFilters = 8,
-	setPage = 9,
-	setPageSize = 10,
-	resetFilters = 11,
-	resetAllFilters = 12,
-	reload = 13,
-	setSorting = 14,
-	resetSorting = 15,
-	updateStateAndRequest = 16,
-	changeLoadParams = 17,
-	insertItem = 18,
-	deleteItem = 19,
-	updateItem = 20,
-	requestItems = 21,
-	loadItemsSuccess = 22,
-	loadItemsError = 23,
-	changeListState = 24,
-	changeRequestParams = 25,
-}
-
 export enum LoadListAction {
 	changeRequestParams = 0,
 	init = 1,
@@ -233,13 +206,7 @@ export enum LoadListAction {
 	reload = 3,
 }
 
-export type DataStoreListener = (
-	nextValue: RequestParams,
-	prevValue: RequestParams,
-) => void;
-
 export type DataStore = {
-	getValue: () => RequestParams;
-	setValue: (nextValue: Partial<RequestParams>) => void;
-	subscribe: (listener: DataStoreListener) => () => void;
+	signal: Signal.State<RequestParams> | Signal.Computed<RequestParams>;
+	setValue: (nextValue: RequestParams) => void;
 };

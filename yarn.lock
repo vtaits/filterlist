@@ -2113,13 +2113,14 @@ __metadata:
     "@types/react": "npm:^18.3.12"
     "@vitest/coverage-v8": "npm:2.1.4"
     "@vtaits/react-router-dom-fake-browser": "npm:^1.0.0"
+    "@vtaits/react-signals": "npm:^1.0.1"
     "@vtaits/use-latest": "npm:^1.3.0"
     exports-fallback: "npm:^1.0.2"
     happy-dom: "npm:^15.7.4"
-    mitt: "npm:^3.0.1"
     qs: "npm:^6.13.0"
     react: "npm:^18.3.1"
     react-router-dom: "npm:^6.27.0"
+    signal-polyfill: "npm:^0.2.1"
     sleep-promise: "npm:^9.1.0"
     tsup: "npm:^8.3.5"
     typescript: "npm:5.6.3"
@@ -2267,6 +2268,16 @@ __metadata:
     react-router-dom: ^6.0.0
     styled-components: ^5.0.0 || ^6.0.0
   checksum: 10/e3bae425c9a05dfaf3853a9c5df9743c8e408267c637ce2e3562ca9c645258f5e23fffa8d6c5eee75d6deef9822afd065afa32fbbb4c5ef6dd789b2fc879d70d
+  languageName: node
+  linkType: hard
+
+"@vtaits/react-signals@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "@vtaits/react-signals@npm:1.0.1"
+  peerDependencies:
+    react: ^17.0.0 || ^18.0.0
+    signal-polyfill: ^0.2.1
+  checksum: 10/28da439cbb58d41b6e10ca633fde69115d56229d2e05533b2b624560305b39b9b23c8e267e1cf644e115183c1228da43ee380f18298201dce54383ca4d7bb7a9
   languageName: node
   linkType: hard
 
@@ -4935,13 +4946,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mitt@npm:^3.0.1":
-  version: 3.0.1
-  resolution: "mitt@npm:3.0.1"
-  checksum: 10/287c70d8e73ffc25624261a4989c783768aed95ecb60900f051d180cf83e311e3e59865bfd6e9d029cdb149dc20ba2f128a805e9429c5c4ce33b1416c65bbd14
-  languageName: node
-  linkType: hard
-
 "mkdirp@npm:^1.0.3":
   version: 1.0.4
   resolution: "mkdirp@npm:1.0.4"
@@ -6079,6 +6083,13 @@ __metadata:
   version: 4.1.0
   resolution: "signal-exit@npm:4.1.0"
   checksum: 10/c9fa63bbbd7431066174a48ba2dd9986dfd930c3a8b59de9c29d7b6854ec1c12a80d15310869ea5166d413b99f041bfa3dd80a7947bcd44ea8e6eb3ffeabfa1f
+  languageName: node
+  linkType: hard
+
+"signal-polyfill@npm:^0.2.1":
+  version: 0.2.1
+  resolution: "signal-polyfill@npm:0.2.1"
+  checksum: 10/1ed0dec7e55c366b6fa8b596e3ab18bad581a11f834b414b68f086cab1d23105cdcf164cc2939870aaffeea62a2272b666a9796f49008498422abb5e7cd5670b
   languageName: node
   linkType: hard
 

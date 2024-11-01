@@ -1,46 +1,27 @@
+import { Signal } from "signal-polyfill";
 import sleep from "sleep-promise";
 import { describe, expect, test, vi } from "vitest";
 import { Filterlist } from "./Filterlist";
 import { LoadListError } from "./errors";
 import {
 	type DataStore,
-	type DataStoreListener,
 	type ItemsLoader,
 	LoadListAction,
 	type RequestParams,
 } from "./types";
 
 export function createAsyncDataStore(initalValue: RequestParams): DataStore {
-	let value = initalValue;
-	let listeners: DataStoreListener[] = [];
+	const signal = new Signal.State(initalValue);
 
-	const setValue = (nextValue: Partial<RequestParams>) => {
-		const prevValue = value;
-
-		value = {
-			...prevValue,
-			...nextValue,
-		};
-
-		const currentValue = value;
-
-		for (const listener of listeners) {
-			setTimeout(() => {
-				listener(currentValue, prevValue);
-			});
-		}
+	const setValue = (nextValue: RequestParams) => {
+		setTimeout(() => {
+			signal.set(nextValue);
+		});
 	};
 
 	return {
-		getValue: () => value,
+		signal,
 		setValue: setValue,
-		subscribe: (listener) => {
-			listeners.push(listener);
-
-			return () => {
-				listeners = listeners.filter((item) => item !== listener);
-			};
-		},
 	};
 }
 
@@ -71,10 +52,11 @@ describe.concurrent.each([
 				LoadListAction.init,
 			);
 
-			const listState = filterlist.getListState();
+			await vi.waitFor(() => {
+				expect(filterlist.getListState().loading).toBe(false);
+			});
 
-			expect(listState.items).toEqual([1, 2, 3]);
-			expect(listState.loading).toBe(false);
+			expect(filterlist.getListState().items).toEqual([1, 2, 3]);
 		});
 
 		test("not load items on init", async () => {
@@ -216,9 +198,12 @@ describe.concurrent.each([
 					expect(loadItems).toHaveBeenCalledTimes(1);
 				});
 
+				await vi.waitFor(() => {
+					expect(filterlist.getListState().loading).toBe(false);
+				});
+
 				const listState = filterlist.getListState();
 
-				expect(filterlist.getListState().loading).toBe(false);
 				expect(listState.additional).toEqual({
 					baz: "qux",
 				});
@@ -263,6 +248,10 @@ describe.concurrent.each([
 			expect(loadItems).toHaveBeenCalledTimes(1);
 		});
 
+		await vi.waitFor(() => {
+			expect(filterlist.getListState().loading).toBe(false);
+		});
+
 		const listState = filterlist.getListState();
 
 		expect(listState.total).toEqual(15);
@@ -283,6 +272,10 @@ describe.concurrent.each([
 
 		await vi.waitFor(() => {
 			expect(loadItems).toHaveBeenCalledTimes(1);
+		});
+
+		await vi.waitFor(() => {
+			expect(filterlist.getListState().loading).toBe(false);
 		});
 
 		const listState = filterlist.getListState();
@@ -404,6 +397,10 @@ describe.concurrent.each([
 
 			await vi.waitFor(() => {
 				expect(loadItems).toHaveBeenCalledTimes(1);
+			});
+
+			await vi.waitFor(() => {
+				expect(filterlist.getListState().loading).toBe(false);
 			});
 
 			expect(filterlist.getListState().loadedPages).toEqual(1);

@@ -6,11 +6,10 @@ import { LoadListError } from "./errors";
 import * as lib from "./index";
 import { initialRequestParams } from "./initialRequestParams";
 import { listInitialState } from "./listInitialState";
-import { EventType, LoadListAction } from "./types";
+import { LoadListAction } from "./types";
 
 test("should export needed modules", () => {
 	expect(lib.Filterlist).toBe(Filterlist);
-	expect(lib.EventType).toBe(EventType);
 	expect(lib.collectListInitialState).toBe(collectListInitialState);
 	expect(lib.collectOptions).toBe(collectOptions);
 	expect(lib.initialRequestParams).toBe(initialRequestParams);

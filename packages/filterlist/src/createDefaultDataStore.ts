@@ -1,31 +1,15 @@
-import type { DataStore, DataStoreListener, RequestParams } from "./types";
+import { Signal } from "signal-polyfill";
+import type { DataStore, RequestParams } from "./types";
 
 export function createDefaultDataStore(initalValue: RequestParams): DataStore {
-	let value = initalValue;
-	let listeners: DataStoreListener[] = [];
+	const signal = new Signal.State(initalValue);
 
-	const setValue = (nextValue: Partial<RequestParams>) => {
-		const prevValue = value;
-
-		value = {
-			...prevValue,
-			...nextValue,
-		};
-
-		for (const listener of listeners) {
-			listener(value, prevValue);
-		}
+	const setValue = (nextValue: RequestParams) => {
+		signal.set(nextValue);
 	};
 
 	return {
-		getValue: () => value,
-		setValue: setValue,
-		subscribe: (listener) => {
-			listeners.push(listener);
-
-			return () => {
-				listeners = listeners.filter((item) => item !== listener);
-			};
-		},
+		signal,
+		setValue,
 	};
 }
