@@ -1,14 +1,10 @@
 import type {
 	Params as BaseParams,
-	ListState,
 	UpdateStateParams,
 } from "@vtaits/filterlist";
+import type { AnySignal } from "@vtaits/react-signals";
 
 export type AsyncParsedFiltersAndSort = Promise<UpdateStateParams>;
-
-export type OnChangeLoadParams<Item, Additional, Error> = (
-	listState: ListState<Item, Additional, Error>,
-) => void;
 
 export type ShouldRecount<FiltersAndSortData> = (
 	nextData: FiltersAndSortData,
@@ -25,7 +21,6 @@ export type Params<Item, Additional, Error, FiltersAndSortData> = Readonly<
 		filtersAndSortData?: FiltersAndSortData;
 		shouldRecount?: ShouldRecount<FiltersAndSortData>;
 		canInit?: boolean;
-		onChangeLoadParams?: OnChangeLoadParams<Item, Additional, Error>;
 	}
 >;
 
@@ -38,6 +33,6 @@ export type UseFilterReturn<Value> = Readonly<{
 	setAndApplyFilter: (value: Value) => void;
 	applyFilter: () => void;
 	resetFilter: () => void;
-	value: Value | null;
-	appliedValue: Value | null;
+	valueSignal: AnySignal<Value | null>;
+	appliedValueSignal: AnySignal<Value | null>;
 }>;

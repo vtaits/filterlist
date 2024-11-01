@@ -1,22 +1,28 @@
+import { renderHook } from "@testing-library/react";
 import {
 	type Filterlist,
+	type ListState,
+	type RequestParams,
 	initialRequestParams,
 	listInitialState,
 } from "@vtaits/filterlist";
-import { useCallback, useMemo } from "react";
-import { afterEach, describe, expect, test, vi } from "vitest";
+import { Signal } from "signal-polyfill";
+import { describe, expect, test, vi } from "vitest";
 import { useFilter } from "./useFilter";
 
-vi.mock("react");
-vi.mocked(useCallback).mockImplementation((fn) => fn);
-vi.mocked(useMemo).mockImplementation((fn) => fn());
-
-afterEach(() => {
-	vi.clearAllMocks();
-});
-
 describe("not inited", () => {
-	const filter = useFilter(null, null, null, "test");
+	const {
+		result: { current: filter },
+	} = renderHook(() =>
+		useFilter(
+			new Signal.Computed<RequestParams | null>(() => null),
+			new Signal.Computed<ListState<unknown, unknown, unknown> | null>(
+				() => null,
+			),
+			null,
+			"test",
+		),
+	);
 
 	test("setFilterValue", () => {
 		filter.setFilterValue("foo");
@@ -35,11 +41,11 @@ describe("not inited", () => {
 	});
 
 	test("value", () => {
-		expect(filter.value).toBe(null);
+		expect(filter.valueSignal.get()).toBe(null);
 	});
 
 	test("appliedValue", () => {
-		expect(filter.appliedValue).toBe(null);
+		expect(filter.appliedValueSignal.get()).toBe(null);
 	});
 });
 
@@ -51,21 +57,25 @@ describe("inited", () => {
 		resetFilter: vi.fn(),
 	} as unknown as Filterlist<unknown, unknown, unknown>;
 
-	const filter = useFilter(
-		{
-			...initialRequestParams,
-			appliedFilters: {
-				test: "baz",
-			},
-		},
-		{
-			...listInitialState,
-			filters: {
-				test: "bar",
-			},
-		},
-		filterlist,
-		"test",
+	const {
+		result: { current: filter },
+	} = renderHook(() =>
+		useFilter(
+			new Signal.Computed<RequestParams | null>(() => ({
+				...initialRequestParams,
+				appliedFilters: {
+					test: "baz",
+				},
+			})),
+			new Signal.Computed<ListState<unknown, unknown, unknown> | null>(() => ({
+				...listInitialState,
+				filters: {
+					test: "bar",
+				},
+			})),
+			filterlist,
+			"test",
+		),
 	);
 
 	test("setFilterValue", () => {
@@ -97,10 +107,10 @@ describe("inited", () => {
 	});
 
 	test("value", () => {
-		expect(filter.value).toBe("bar");
+		expect(filter.valueSignal.get()).toBe("bar");
 	});
 
 	test("appliedValue", () => {
-		expect(filter.appliedValue).toBe("baz");
+		expect(filter.appliedValueSignal.get()).toBe("baz");
 	});
 });

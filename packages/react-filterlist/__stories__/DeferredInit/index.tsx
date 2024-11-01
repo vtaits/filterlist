@@ -12,6 +12,7 @@ import {
   useLocation,
 } from 'react-router-dom';
 import { useFilterlist } from '@vtaits/react-filterlist';
+import { useSignalEffect, useRerender } from '@vtaits/react-signals';
 import type {
   UpdateStateParams,
 } from '@vtaits/filterlist';
@@ -34,7 +35,7 @@ export function DeferredInit(): ReactElement | null {
   const navigationType = useNavigationType();
   const location = useLocation();
 
-  const [requestParams, listState, filterlist] = useFilterlist<
+  const [requestParamsSignal, listStateSignal, filterlist] = useFilterlist<
   User,
   {
     count: number,
@@ -64,23 +65,6 @@ export function DeferredInit(): ReactElement | null {
         items: response.users,
         total: response.count,
       };
-    },
-
-    onChangeLoadParams: (): void => {
-      if (filterlist) {
-        const nextRequestParams = filterlist.getRequestParams();
-
-        const newQuery = qs.stringify({
-          ...nextRequestParams.appliedFilters,
-          page: nextRequestParams.page,
-          pageSize: nextRequestParams.pageSize,
-          sort: nextRequestParams.sort.param
-            ? `${nextRequestParams.sort.asc ? '' : '-'}${nextRequestParams.sort.param}`
-            : null,
-        });
-  
-        navigate(`${location.pathname}?${newQuery}`);
-      }
     },
 
     parseFiltersAndSort: async ({
@@ -133,6 +117,23 @@ export function DeferredInit(): ReactElement | null {
     }, prevProps) => navigationTypeParam === 'POP'
       && location.search !== prevProps.location.search,
   });
+
+  useSignalEffect(() => {
+    const nextRequestParams = requestParamsSignal.get();
+
+    if (nextRequestParams) {
+      const newQuery = qs.stringify({
+        ...nextRequestParams.appliedFilters,
+        page: nextRequestParams.page,
+        pageSize: nextRequestParams.pageSize,
+        sort: nextRequestParams.sort.param
+          ? `${nextRequestParams.sort.asc ? '' : '-'}${nextRequestParams.sort.param}`
+          : null,
+      });
+  
+      navigate(`${location.pathname}?${newQuery}`);
+    }
+  }, []);
 
   const setPage = useCallback((page: number) => {
     if (!filterlist) {
@@ -223,6 +224,11 @@ export function DeferredInit(): ReactElement | null {
       filterName,
     );
   }, [filterlist]);
+
+  const listState = listStateSignal.get();
+  const requestParams = requestParamsSignal.get();
+
+  useRerender([requestParamsSignal, listStateSignal]);
 
   if (!listState || !requestParams) {
     return null;

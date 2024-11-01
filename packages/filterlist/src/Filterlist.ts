@@ -573,7 +573,7 @@ export class Filterlist<Item, Additional, Error> {
 	}
 
 	/**
-	 * set filters, applied filters, sorting, page and pageSize and request then
+	 * set filters, applied filters, sorting, page and pageSize and then request
 	 */
 	updateStateAndRequest(updateStateParams: UpdateStateParams) {
 		const { filters, appliedFilters, sort, page, pageSize } = updateStateParams;

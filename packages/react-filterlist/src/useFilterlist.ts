@@ -2,27 +2,30 @@
  * TO DO: add tests
  */
 
-import { EventType, Filterlist } from "@vtaits/filterlist";
+import { Filterlist } from "@vtaits/filterlist";
 import type {
 	ItemsLoader,
 	ListState,
 	RequestParams,
 	UpdateStateParams,
 } from "@vtaits/filterlist";
+import {
+	type AnySignal,
+	useRerender,
+	useSignalComputed,
+	useSignalState,
+} from "@vtaits/react-signals";
 import { useLatest } from "@vtaits/use-latest";
 import isPromise from "is-promise";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { defaultShouldRecount } from "./defaultShouldRecount";
 import type {
 	AsyncParams,
 	AsyncParsedFiltersAndSort,
-	OnChangeLoadParams,
 	Params,
 	UseFilterReturn,
 } from "./types";
 import { useFilter } from "./useFilter";
-
-type SyncListState = () => void;
 
 type GetFilterlistOptionsRestul<Item, Additional, Error, FiltersAndSortData> =
 	| Params<Item, Additional, Error, FiltersAndSortData>
@@ -60,24 +63,9 @@ const getFilterlistOptions = <Item, Additional, Error, FiltersAndSortData>(
 	};
 };
 
-const createFilterlist = <Item, Additional, Error, FiltersAndSortData>(
-	options: Params<Item, Additional, Error, FiltersAndSortData>,
-	syncListState: SyncListState,
-	onChangeLoadParams: OnChangeLoadParams<Item, Additional, Error>,
-): Filterlist<Item, Additional, Error> => {
-	const filterlist = new Filterlist<Item, Additional, Error>(options);
-
-	filterlist.emitter.on(EventType.changeListState, syncListState);
-	filterlist.emitter.on(EventType.changeRequestParams, onChangeLoadParams);
-
-	return filterlist;
-};
-
 const initFilterlist = <Item, Additional, Error, FiltersAndSortData>(
 	params: Params<Item, Additional, Error, FiltersAndSortData>,
 	loadItems: ItemsLoader<Item, Additional, Error>,
-	syncListState: SyncListState,
-	onChangeLoadParams: OnChangeLoadParams<Item, Additional, Error>,
 ):
 	| Filterlist<Item, Additional, Error>
 	| Promise<Filterlist<Item, Additional, Error>> => {
@@ -86,15 +74,11 @@ const initFilterlist = <Item, Additional, Error, FiltersAndSortData>(
 	if (isPromise(optionsResult)) {
 		return (
 			optionsResult as AsyncParams<Item, Additional, Error, FiltersAndSortData>
-		).then((options) =>
-			createFilterlist(options, syncListState, onChangeLoadParams),
-		);
+		).then((options) => new Filterlist(options));
 	}
 
-	return createFilterlist(
+	return new Filterlist(
 		optionsResult as Params<Item, Additional, Error, FiltersAndSortData>,
-		syncListState,
-		onChangeLoadParams,
 	);
 };
 
@@ -102,8 +86,8 @@ export const useFilterlist = <Item, Additional, Error, FiltersAndSortData>(
 	params: Params<Item, Additional, Error, FiltersAndSortData>,
 	inputs: readonly unknown[] = [],
 ): [
-	RequestParams | null,
-	ListState<Item, Additional, Error> | null,
+	AnySignal<RequestParams | null>,
+	AnySignal<ListState<Item, Additional, Error> | null>,
 	Filterlist<Item, Additional, Error> | null,
 	{
 		useBoundFilter: <Value>(filterName: string) => UseFilterReturn<Value>;
@@ -113,7 +97,6 @@ export const useFilterlist = <Item, Additional, Error, FiltersAndSortData>(
 		parseFiltersAndSort = null,
 		filtersAndSortData = null,
 		shouldRecount = defaultShouldRecount,
-		onChangeLoadParams = null,
 		loadItems,
 		canInit = true,
 	} = params;
@@ -123,85 +106,58 @@ export const useFilterlist = <Item, Additional, Error, FiltersAndSortData>(
 	const loadItemsProxy: ItemsLoader<Item, Additional, Error> = (...args) =>
 		loadItemsRef.current(...args);
 
-	const onChangeLoadParamsRef = useLatest(onChangeLoadParams);
+	const filterlistSignal = useSignalState<Filterlist<
+		Item,
+		Additional,
+		Error
+	> | null>(null);
 
-	const onChangeLoadParamsProxy = useCallback(
-		(nextListState: ListState<Item, Additional, Error>) => {
-			if (onChangeLoadParamsRef.current) {
-				onChangeLoadParamsRef.current(nextListState);
-			}
-		},
-		[onChangeLoadParamsRef],
-	);
+	const isInitInProgress = useSignalState(false);
 
-	const isInitInProgressRef = useRef(false);
-	const filterlistRef = useRef<Filterlist<Item, Additional, Error>>();
-
-	const setListStateRef =
-		useRef<
-			(
-				nextListState: [
-					RequestParams | null,
-					ListState<Item, Additional, Error> | null,
-				],
-			) => void
-		>();
-
-	const syncListState = (): void => {
-		setListStateRef.current?.([
-			filterlistRef.current ? filterlistRef.current.getRequestParams() : null,
-			filterlistRef.current ? filterlistRef.current.getListState() : null,
-		]);
-	};
-
-	const initFilterlistInComponent = (isInEffect: boolean): void => {
-		if (!filterlistRef.current && !isInitInProgressRef.current) {
-			const filterlistResult = initFilterlist(
-				params,
-				loadItemsProxy,
-				syncListState,
-				onChangeLoadParamsProxy,
-			);
+	const initFilterlistInComponent = (): void => {
+		if (!filterlistSignal.get() && !isInitInProgress.get()) {
+			const filterlistResult = initFilterlist(params, loadItemsProxy);
 
 			if (isPromise(filterlistResult)) {
-				isInitInProgressRef.current = true;
+				isInitInProgress.set(true);
 
 				(filterlistResult as Promise<Filterlist<Item, Additional, Error>>).then(
 					(filterlist) => {
-						filterlistRef.current = filterlist;
-						isInitInProgressRef.current = false;
-
-						setListStateRef.current?.([
-							filterlist.getRequestParams(),
-							filterlist.getListState(),
-						]);
+						filterlistSignal.set(filterlist);
+						isInitInProgress.set(false);
 					},
 				);
 			} else {
-				filterlistRef.current = filterlistResult as Filterlist<
-					Item,
-					Additional,
-					Error
-				>;
+				filterlistSignal.set(
+					filterlistResult as Filterlist<Item, Additional, Error>,
+				);
 			}
-		}
-
-		if (isInEffect) {
-			syncListState();
 		}
 	};
 
 	if (canInit) {
-		initFilterlistInComponent(false);
+		initFilterlistInComponent();
 	}
 
-	const [[requestParams, listState], setListStateHandler] = useState<
-		[RequestParams | null, ListState<Item, Additional, Error> | null]
-	>([
-		filterlistRef.current ? filterlistRef.current.getRequestParams() : null,
-		filterlistRef.current ? filterlistRef.current.getListState() : null,
-	]);
-	setListStateRef.current = setListStateHandler;
+	const requestParams = useSignalComputed(() => {
+		const filterlist = filterlistSignal.get();
+
+		if (filterlist) {
+			return filterlist.requestParams.get();
+		}
+
+		return null;
+	});
+
+	const listState = useSignalComputed(() => {
+		const filterlist = filterlistSignal.get();
+
+		if (filterlist) {
+			return filterlist.listState.get();
+		}
+
+		return null;
+	});
 
 	const filtersAndSortDataRef = useRef(filtersAndSortData);
 	if (
@@ -214,7 +170,7 @@ export const useFilterlist = <Item, Additional, Error, FiltersAndSortData>(
 			const parsedFiltersAndSort =
 				await parseFiltersAndSort(filtersAndSortData);
 
-			const filterlist = filterlistRef.current;
+			const filterlist = filterlistSignal.get();
 
 			if (filterlist) {
 				filterlist.updateStateAndRequest(parsedFiltersAndSort);
@@ -229,38 +185,34 @@ export const useFilterlist = <Item, Additional, Error, FiltersAndSortData>(
 			return undefined;
 		}
 
-		initFilterlistInComponent(true);
+		initFilterlistInComponent();
 
 		return () => {
-			if (filterlistRef.current) {
-				filterlistRef.current.emitter.off(EventType.changeListState);
-				filterlistRef.current.emitter.off(EventType.changeLoadParams);
+			const filterlist = filterlistSignal.get();
 
-				// Support older versions
-				filterlistRef.current?.destroy();
+			if (filterlist) {
+				filterlist.destroy();
 			}
-
-			filterlistRef.current = undefined;
-			isInitInProgressRef.current = false;
 		};
 	}, [...inputs, canInit]);
 
-	// biome-ignore lint/correctness/useExhaustiveDependencies: bug
 	const useBoundFilter = useCallback(
 		<Value>(filterName: string) =>
 			useFilter<Value, Item, Additional, Error>(
 				requestParams,
 				listState,
-				filterlistRef.current || null,
+				filterlistSignal.get(),
 				filterName,
 			),
-		[requestParams, listState],
+		[requestParams, listState, filterlistSignal],
 	);
+
+	useRerender([requestParams, listState, filterlistSignal]);
 
 	return [
 		requestParams,
 		listState,
-		filterlistRef.current || null,
+		filterlistSignal.get(),
 		{
 			useBoundFilter,
 		},
