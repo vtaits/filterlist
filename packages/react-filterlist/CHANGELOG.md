@@ -1,3 +1,9 @@
+## Signals
+
+* `useFilterlist` returns signals
+* `useFilter` accepts signals
+* Removed `onChangeLoadParams`
+
 ## 2.1.0 (21 oct 2024)
 
 ### Improvement

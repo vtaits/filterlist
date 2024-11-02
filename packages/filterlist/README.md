@@ -1,22 +1,24 @@
 [![NPM](https://img.shields.io/npm/v/@vtaits/filterlist.svg)](https://www.npmjs.com/package/@vtaits/filterlist)
 ![dependencies status](https://img.shields.io/librariesio/release/npm/@vtaits/filterlist)
 
-# @vtaits/filterlist
+# @vtaits/filterlist@signals
 
 [Api reference](https://vtaits.github.io/filterlist/modules/Filterlist.html)
 
 Util for creating lists with filters, sotring, paginatinon, endless scroll etc.
 
+This version of package uses [TC39 signals](https://github.com/tc39/proposal-signals)
+
 ## Installation
 
 ```
-npm install @vtaits/filterlist --save
+npm install @vtaits/filterlist@signals --save
 ```
 
 or
 
 ```
-yarn add @vtaits/filterlist
+yarn add @vtaits/filterlist@signals
 ```
 
 ## Api
@@ -73,12 +75,34 @@ const filterlist = new Filterlist({
   },
 });
 
-filterlist.emitter.on(eventTypes.changeListState, (nextListState) => {
-  // change ui
-  document.getElementById('loader').style.display = nextListState.loading ? 'block' : 'none';
-});
+// Signal that stores parameters for the request
+const {
+  // currently applied filters
+  appliedFilters,
+  // current page
+  page,
+  // number of items on one page
+  pageSize,
+  // sorting state
+  sort: {
+    // sorting parameter
+    param,
+    // asc or desc (boolean)
+    asc,
+  },
+} = filterlist.requestParams.get();
 
-// load next chunk of   for the infinite list
+// Signal that stores state of the list
+const {
+  // runtime values of filters
+  filters,
+  // is the list currently loading
+  loading,
+  // list of loading items
+  items,
+} = filterlist.listState.get();
+
+// load next chunk of  for the infinite list
 filterlist.loadMore();
 
 // change runtime value of filter (e.g. on keyboard input)
@@ -138,31 +162,6 @@ filterlist.setPage(3);
 
 // change current page reload the list
 filterlist.setPageSize(nextPage);
-
-const {
-  // currently applied filters
-  appliedFilters,
-  // current page
-  page,
-  // number of items on one page
-  pageSize,
-  // sorting state
-  sort: {
-    // sorting parameter
-    param,
-    // asc or desc (boolean)
-    asc,
-  },
-} = filterlist.getRequestParams();
-
-const {
-  // runtime values of filters
-  filters,
-  // is the list currently loading
-  loading,
-  // list of loading items
-  items,
-} = filterlist.getListState();
 ```
 
 ### Filterlist parameters
@@ -209,24 +208,21 @@ You can use `createDataStore` parameter
 There's an example of synchronization using `window.history` and `window.location` here:
 
 ```typescript
-import {
-	createEmitter,
-	createStringBasedDataStore,
-} from "@vtaits/filterlist/datastore/string";
+import { createStringBasedDataStore } from "@vtaits/filterlist/datastore/string";
+import { Signal } from "signal-polyfill";
 
-const historyEmitter = createEmitter();
+const searchSignal = Signal.State(window.location.search);
 
 window.addEventListener("popstate", () => {
-	historyEmitter.emit();
+  searchSignal.set(window.location.search);
 });
 
 function createDataStore() {
   return createStringBasedDataStore(
-    () => window.location.search,
+    searchSignal,
     (nextSearch) => {
       window.history.pushState('', '', `${window.location.pathname}?${nextSearch}`);
     },
-    historyEmitter,
     options,
   );
 };
@@ -236,45 +232,3 @@ const filterlist = new Filterlist({
   // ...
 })
 ```
-
-### Events
-
-`emitter` is the instance of [mitt](https://github.com/developit/mitt).
-
-```ts
-import { EventType } from '@vtaits/filterlist';
-
-filterlist.emitter.on(EventType.changeListState, (listState) => {
-  // ...
-});
-```
-
-List of event types:
-
-| Name | When triggered |
-| ---- | -------------- |
-| loadMore | after load items on init or call `loadMore` method |
-| setFilterValue | after call `setFilterValue` method |
-| applyFilter | after call `applyFilter` method |
-| setAndApplyFilter | after call `setAndApplyFilter` method |
-| resetFilter | after call `resetFilter` method |
-| setFiltersValues | after call `setFiltersValues` method |
-| applyFilters | after call `applyFilters` method |
-| setAndApplyFilters | after call `setAndApplyFilters` method |
-| setAndApplyEmptyFilters | after call `setAndApplyEmptyFilters` method |
-| setPage | after call `setPage` method |
-| setPageSize | after call `setPageSize` method |
-| resetFilters | after call `resetFilters` method |
-| resetAllFilters | after call `resetAllFilters` method |
-| setSorting | after call `setSorting` method |
-| resetSorting | after call `resetSorting` method |
-| reload | after call `reload` method |
-| updateStateAndRequest | after call `updateStateAndRequest` method |
-| changeLoadParams | after call some of next methods: `loadMore`, `applyFilter`, `setAndApplyFilter`, `resetFilter`, `applyFilters`, `setAndApplyFilters`, `resetFilters`, `resetAllFilters`, `setSorting`, `resetSorting`, `updateStateAndRequest` |
-| insertItem | after call `insertItem` method |
-| deleteItem | after call `deleteItem` method |
-| updateItem | after call `updateItem` method |
-| requestItems | before load items |
-| loadItemsSuccess | after successfully load |
-| loadItemsError | after load with error |
-| changeListState | after every change of list state |

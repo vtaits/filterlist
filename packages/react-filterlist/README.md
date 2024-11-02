@@ -1,9 +1,11 @@
 [![NPM](https://img.shields.io/npm/v/@vtaits/react-filterlist.svg)](https://www.npmjs.com/package/@vtaits/react-filterlist)
 ![dependencies status](https://img.shields.io/librariesio/release/npm/@vtaits/react-filterlist)
 
-# @vtaits/react-filterlist
+# @vtaits/react-filterlist@signals
 
 React wrapper above [@vtaits/filterlist](https://www.npmjs.com/package/@vtaits/filterlist).
+
+This version of package uses [TC39 signals](https://github.com/tc39/proposal-signals)
 
 ## Sandbox examples
 
@@ -12,22 +14,23 @@ React wrapper above [@vtaits/filterlist](https://www.npmjs.com/package/@vtaits/f
 ## Installation
 
 ```
-npm install @vtaits/filterlist @vtaits/react-filterlist --save
+npm install @vtaits/filterlist@signals @vtaits/react-filterlist@signals --save
 ```
 
 or
 
 ```
-yarn add @vtaits/filterlist @vtaits/react-filterlist
+yarn add @vtaits/filterlist@signals @vtaits/react-filterlist@signals
 ```
 
 ## Simple examples
 
-```typescript
+```tsx
 import { useFilterlist } from '@vtaits/react-filterlist';
+import { useRerender } from "@vtaits/react-signals";
 
 function List() {
-  const [listState, filterlist] = useFilterlist({
+  const [_requestParamsSignal, listStateSignal, filterlist] = useFilterlist({
     loadItems: async () => {
       const response = await fetch('/cars');
       const cars = await response.json();
@@ -38,6 +41,14 @@ function List() {
       };
     },
   });
+
+  useRerender([listStateSignal]);
+
+  const listState = listStateSignal.get();
+
+  if (!listState) {
+    return null;
+  }
 
   const {
     items,
@@ -65,11 +76,11 @@ function List() {
               owner,
               color,
             }) => (
-              <tr key={ id }>
-                <td>{ id }</td>
-                <td>{ brand }</td>
-                <td>{ owner }</td>
-                <td>{ color }</td>
+              <tr key={id}>
+                <td>{id}</td>
+                <td>{brand}</td>
+                <td>{owner}</td>
+                <td>{color}</td>
               </tr>
             ))
           }
@@ -103,7 +114,7 @@ import { useFilterlist } from '@vtaits/react-filterlist';
 
 // ...
 
-const [requestParams, listState, filterlist] = useFilterlist({
+const [requestParamsSignal, listStateSignal, filterlist] = useFilterlist({
   ...options,
   parseFiltersAndSort,
   filtersAndSortData,
@@ -114,7 +125,7 @@ const [requestParams, listState, filterlist] = useFilterlist({
 });
 ```
 
-`listState` and `filterlist` are `null` during async init or when `canInit` is `true`
+The values of `listStateSignal` and `filterlistSignal` are `null` during async init or when `canInit` is `true`
 
 #### Params
 
@@ -141,16 +152,16 @@ import { useFilterlist, useFilter } from '@vtaits/react-filterlist';
 
 // ...
 
-const [requestParams, listState, filterlist] = useFilterlist(options);
+const [requestParamsSignal, listStateSignal, filterlist] = useFilterlist(options);
 
 const {
   setFilterValue,
   setAndApplyFilter,
   applyFilter,
   resetFilter,
-  value,
-  appliedValue,
-} = useFilter(listState, filterlist, 'filter_name');
+  valueSignal,
+  appliedValueSignal,
+} = useFilter(requestParamsSignal, listStateSignal, filterlist, 'filter_name');
 
 setFilterValue('next_value');
 setAndApplyFilter('next_value');
@@ -167,7 +178,7 @@ import { useFilterlist } from '@vtaits/react-filterlist';
 
 // ...
 
-const [listState, filterlist, {
+const [listStateSignal, filterlistSignal, {
   useBoundFilter,
 }] = useFilterlist(options);
 
@@ -176,8 +187,8 @@ const {
   setAndApplyFilter,
   applyFilter,
   resetFilter,
-  value,
-  appliedValue,
+  valueSignal,
+  appliedValueSignal,
 } = useBoundFilter('filter_name');
 
 setFilterValue('next_value');
@@ -190,8 +201,8 @@ resetFilter();
 
 You can use one of the next integrations:
 
-[react-router v6](https://github.com/vtaits/filterlist/tree/master/packages/react-filterlist-router-6)
+[react-router v6](https://github.com/vtaits/filterlist/tree/feature/signals/packages/react-filterlist-router-6)
 
-[react-router v5](https://github.com/vtaits/filterlist/tree/master/packages/react-filterlist-router-6)
+[react-router v5](https://github.com/vtaits/filterlist/tree/feature/signals/packages/react-filterlist-router-5)
 
-Or use `createDataStore` parameter as described in the [core](https://www.npmjs.com/package/@vtaits/filterlist) package
+Or use `createDataStore` parameter as described in the [core](https://github.com/vtaits/filterlist/tree/feature/signals/packages/filterlist) package

@@ -1,3 +1,11 @@
+## Signals
+
+* Make `listState` a signal
+* Make `requestParams` a signal
+* Removed `eventTypes`
+* Removed `mitt` in favor of signals
+* Chagned format of data stores
+
 ## 2.4.0 (21 oct 2024)
 
 ### New features
