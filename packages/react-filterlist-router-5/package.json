@@ -1,7 +1,7 @@
 {
   "type": "module",
   "name": "@vtaits/react-filterlist-router-5",
-  "version": "1.0.2",
+  "version": "1.0.2-signals.0",
   "description": "Integration of `@vtaits/react-filterlist` with `react-router-dom` v5",
   "files": [
     "dist"
@@ -42,8 +42,8 @@
     "prepare": "yarn build"
   },
   "peerDependencies": {
-    "@vtaits/filterlist": "^2.0.0",
-    "@vtaits/react-filterlist": "^2.0.0",
+    "@vtaits/filterlist": "^2.4.0-signals.0",
+    "@vtaits/react-filterlist": "^2.1.0-signals.0",
     "react": "^16.14.0 || ^17.0.0 || ^18.0.0",
     "react-router-dom": "^5.0.0"
   },
@@ -55,8 +55,8 @@
     "@types/react": "^18.3.12",
     "@types/react-router-dom": "^5.3.3",
     "@vitejs/plugin-react": "^4.3.3",
-    "@vtaits/filterlist": "^2.3.0",
-    "@vtaits/react-filterlist": "^2.0.1",
+    "@vtaits/filterlist": "^2.4.0-signals.0",
+    "@vtaits/react-filterlist": "^2.1.0-signals.0",
     "happy-dom": "^15.7.4",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
