@@ -1768,9 +1768,13 @@ describe.concurrent.each([
 
 		filterlist.setRefreshTimeout(30);
 
-		await sleep(100);
+		await sleep(40);
 
-		expect(loadItems).toHaveBeenCalledTimes(3);
+		expect(loadItems).toHaveBeenCalledTimes(1);
+
+		await sleep(40);
+
+		expect(loadItems).toHaveBeenCalledTimes(2);
 		loadItems.mockClear();
 
 		filterlist.setRefreshTimeout(null);
