@@ -50,7 +50,7 @@
     "@storybook/react": "^8.4.0",
     "@swc/core": "^1.7.42",
     "@testing-library/dom": "^10.4.0",
-    "@testing-library/react": "^16.0.1",
+    "@testing-library/react-hooks": "^8.0.1",
     "@types/qs": "^6.9.16",
     "@types/react": "^18.3.12",
     "@vitejs/plugin-react": "^4.3.3",
