@@ -1,22 +1,16 @@
+import { renderHook } from "@testing-library/react-hooks";
 import {
 	type Filterlist,
 	initialRequestParams,
 	listInitialState,
 } from "@vtaits/filterlist";
-import { useCallback, useMemo } from "react";
-import { afterEach, describe, expect, test, vi } from "vitest";
+import { describe, expect, test, vi } from "vitest";
 import { useFilter } from "./useFilter";
 
-vi.mock("react");
-vi.mocked(useCallback).mockImplementation((fn) => fn);
-vi.mocked(useMemo).mockImplementation((fn) => fn());
-
-afterEach(() => {
-	vi.clearAllMocks();
-});
-
 describe("not inited", () => {
-	const filter = useFilter(null, null, null, "test");
+	const {
+		result: { current: filter },
+	} = renderHook(() => useFilter(null, null, null, "test"));
 
 	test("setFilterValue", () => {
 		filter.setFilterValue("foo");
@@ -51,21 +45,25 @@ describe("inited", () => {
 		resetFilter: vi.fn(),
 	} as unknown as Filterlist<unknown, unknown, unknown>;
 
-	const filter = useFilter(
-		{
-			...initialRequestParams,
-			appliedFilters: {
-				test: "baz",
+	const {
+		result: { current: filter },
+	} = renderHook(() =>
+		useFilter(
+			{
+				...initialRequestParams,
+				appliedFilters: {
+					test: "baz",
+				},
 			},
-		},
-		{
-			...listInitialState,
-			filters: {
-				test: "bar",
+			{
+				...listInitialState,
+				filters: {
+					test: "bar",
+				},
 			},
-		},
-		filterlist,
-		"test",
+			filterlist,
+			"test",
+		),
 	);
 
 	test("setFilterValue", () => {
