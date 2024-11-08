@@ -2115,7 +2115,7 @@ __metadata:
     "@vtaits/react-router-dom-fake-browser": "npm:^1.0.0"
     "@vtaits/use-latest": "npm:^1.3.0"
     exports-fallback: "npm:^1.0.2"
-    happy-dom: "npm:^15.10.1"
+    happy-dom: "npm:^15.10.2"
     mitt: "npm:^3.0.1"
     qs: "npm:^6.13.0"
     react: "npm:^18.3.1"
@@ -2174,7 +2174,7 @@ __metadata:
     "@vtaits/filterlist": "npm:^2.3.0"
     "@vtaits/react-filterlist": "npm:^2.0.1"
     "@vtaits/use-latest": "npm:^1.3.0"
-    happy-dom: "npm:^15.10.1"
+    happy-dom: "npm:^15.10.2"
     react: "npm:^18.3.1"
     react-dom: "npm:^18.3.1"
     react-router-dom: "npm:^5.3.4"
@@ -2203,7 +2203,7 @@ __metadata:
     "@vtaits/react-filterlist": "npm:^2.0.1"
     "@vtaits/react-router-dom-fake-browser": "npm:^1.0.0"
     "@vtaits/use-latest": "npm:^1.3.0"
-    happy-dom: "npm:^15.10.1"
+    happy-dom: "npm:^15.10.2"
     react: "npm:^18.3.1"
     react-dom: "npm:^18.3.1"
     react-router-dom: "npm:^6.27.0"
@@ -3839,14 +3839,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"happy-dom@npm:^15.10.1":
-  version: 15.10.1
-  resolution: "happy-dom@npm:15.10.1"
+"happy-dom@npm:^15.10.2":
+  version: 15.10.2
+  resolution: "happy-dom@npm:15.10.2"
   dependencies:
     entities: "npm:^4.5.0"
     webidl-conversions: "npm:^7.0.0"
     whatwg-mimetype: "npm:^3.0.0"
-  checksum: 10/637b0330a6ed33708beb2287076bc078f31d839525b7492d1008774e28e17ba9752d1c496cc8528f94fe8fe892bc2603a751287ab06ae708afa648873f571c9f
+  checksum: 10/045caf1b2657162db8bfb27b298120795c3ea766d3b853e5aa1bb653b1b08bf6ea1f0945008afc88502b28355fc26276cf29784f220384bb0eddd902e52d73cd
   languageName: node
   linkType: hard
 
