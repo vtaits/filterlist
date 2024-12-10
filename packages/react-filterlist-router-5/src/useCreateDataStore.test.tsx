@@ -1,12 +1,8 @@
-import { renderHook } from "@testing-library/react-hooks";
+import { renderHook } from "@testing-library/react";
 import type { StringBasedDataStoreOptions } from "@vtaits/filterlist/dist/datastore_string";
 import { type Params, useFilterlist } from "@vtaits/react-filterlist";
 import type { History, Location } from "history";
-import {
-	type MutableRefObject,
-	type PropsWithChildren,
-	createRef,
-} from "react";
+import { type PropsWithChildren, type RefObject, createRef } from "react";
 import { MemoryRouter, Route, useHistory, useLocation } from "react-router-dom";
 import { describe, expect, test, vi } from "vitest";
 import { useCreateDataStore } from "./useCreateDataStore";
@@ -28,10 +24,10 @@ function setup(
 	href: string,
 	options: StringBasedDataStoreOptions = {},
 ) {
-	const locationRef = createRef<Location<unknown>>() as MutableRefObject<
+	const locationRef = createRef<Location<unknown>>() as RefObject<
 		Location<unknown>
 	>;
-	const historyRef = createRef<History<unknown>>() as MutableRefObject<
+	const historyRef = createRef<History<unknown>>() as RefObject<
 		History<unknown>
 	>;
 
@@ -195,8 +191,23 @@ describe.concurrent("should change query", () => {
 			foo: "bar",
 			baz: "qux",
 		});
+
+		await vi.waitFor(() => {
+			expect(loadItems).toHaveBeenCalledTimes(2);
+		});
+
 		result.current[2]?.setPageSize(20);
+
+		await vi.waitFor(() => {
+			expect(loadItems).toHaveBeenCalledTimes(3);
+		});
+
 		result.current[2]?.setSorting("id", false);
+
+		await vi.waitFor(() => {
+			expect(loadItems).toHaveBeenCalledTimes(4);
+		});
+
 		result.current[2]?.setPage(3);
 
 		await vi.waitFor(() => {
@@ -231,8 +242,23 @@ test.concurrent("navigate backward", async () => {
 		foo: "bar",
 		baz: "qux",
 	});
+
+	await vi.waitFor(() => {
+		expect(loadItems).toHaveBeenCalledTimes(2);
+	});
+
 	result.current[2]?.setPageSize(20);
+
+	await vi.waitFor(() => {
+		expect(loadItems).toHaveBeenCalledTimes(3);
+	});
+
 	result.current[2]?.setSorting("id", false);
+
+	await vi.waitFor(() => {
+		expect(loadItems).toHaveBeenCalledTimes(4);
+	});
+
 	result.current[2]?.setPage(3);
 
 	await vi.waitFor(() => {

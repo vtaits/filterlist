@@ -12,9 +12,9 @@
   "types": "./lib-types/index.d.ts",
   "exports": {
     ".": {
+      "types": "./lib-types/index.d.ts",
       "import": "./lib/index.qwik.mjs",
-      "require": "./lib/index.qwik.cjs",
-      "types": "./lib-types/index.d.ts"
+      "require": "./lib/index.qwik.cjs"
     }
   },
   "repository": {
@@ -51,9 +51,9 @@
     "@biomejs/biome": "^1.9.4",
     "@builder.io/qwik": "^1.9.1",
     "@vtaits/filterlist": "^2.3.0",
-    "typescript": "5.6.3",
-    "vite": "^5.4.10",
-    "vitest": "^2.1.4"
+    "typescript": "5.7.2",
+    "vite": "^6.0.3",
+    "vitest": "^2.1.8"
   },
   "dependencies": {
     "is-promise": "^4.0.0"

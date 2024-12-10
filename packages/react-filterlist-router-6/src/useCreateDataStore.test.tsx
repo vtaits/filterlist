@@ -1,11 +1,7 @@
-import { renderHook } from "@testing-library/react-hooks";
+import { renderHook } from "@testing-library/react";
 import type { StringBasedDataStoreOptions } from "@vtaits/filterlist/dist/datastore_string";
 import { type Params, useFilterlist } from "@vtaits/react-filterlist";
-import {
-	type MutableRefObject,
-	type PropsWithChildren,
-	createRef,
-} from "react";
+import { type PropsWithChildren, type RefObject, createRef } from "react";
 import {
 	type Location,
 	MemoryRouter,
@@ -34,8 +30,8 @@ function TestRouteComponent({
 	locationRef,
 	navigateRef,
 }: {
-	locationRef: MutableRefObject<Location<unknown>>;
-	navigateRef: MutableRefObject<NavigateFunction>;
+	locationRef: RefObject<Location<unknown>>;
+	navigateRef: RefObject<NavigateFunction>;
 }) {
 	const navigate = useNavigate();
 	const location = useLocation();
@@ -63,8 +59,8 @@ function setup(
 					path="page"
 					element={
 						<TestRouteComponent
-							locationRef={locationRef as MutableRefObject<Location<unknown>>}
-							navigateRef={navigateRef as MutableRefObject<NavigateFunction>}
+							locationRef={locationRef as RefObject<Location<unknown>>}
+							navigateRef={navigateRef as RefObject<NavigateFunction>}
 						/>
 					}
 				/>
@@ -211,8 +207,23 @@ describe.concurrent("should change query", () => {
 			foo: "bar",
 			baz: "qux",
 		});
+
+		await vi.waitFor(() => {
+			expect(loadItems).toHaveBeenCalledTimes(2);
+		});
+
 		result.current[2]?.setPageSize(20);
+
+		await vi.waitFor(() => {
+			expect(loadItems).toHaveBeenCalledTimes(3);
+		});
+
 		result.current[2]?.setSorting("id", false);
+
+		await vi.waitFor(() => {
+			expect(loadItems).toHaveBeenCalledTimes(4);
+		});
+
 		result.current[2]?.setPage(3);
 
 		await vi.waitFor(() => {
@@ -247,8 +258,23 @@ test.concurrent("navigate backward", async () => {
 		foo: "bar",
 		baz: "qux",
 	});
+
+	await vi.waitFor(() => {
+		expect(loadItems).toHaveBeenCalledTimes(2);
+	});
+
 	result.current[2]?.setPageSize(20);
+
+	await vi.waitFor(() => {
+		expect(loadItems).toHaveBeenCalledTimes(3);
+	});
+
 	result.current[2]?.setSorting("id", false);
+
+	await vi.waitFor(() => {
+		expect(loadItems).toHaveBeenCalledTimes(4);
+	});
+
 	result.current[2]?.setPage(3);
 
 	await vi.waitFor(() => {

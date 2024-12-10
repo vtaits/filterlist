@@ -135,7 +135,7 @@ export const useFilterlist = <Item, Additional, Error, FiltersAndSortData>(
 	);
 
 	const isInitInProgressRef = useRef(false);
-	const filterlistRef = useRef<Filterlist<Item, Additional, Error>>();
+	const filterlistRef = useRef<Filterlist<Item, Additional, Error>>(null);
 
 	const setListStateRef =
 		useRef<
@@ -145,7 +145,7 @@ export const useFilterlist = <Item, Additional, Error, FiltersAndSortData>(
 					ListState<Item, Additional, Error> | null,
 				],
 			) => void
-		>();
+		>(null);
 
 	const syncListState = (): void => {
 		setListStateRef.current?.([
@@ -240,7 +240,7 @@ export const useFilterlist = <Item, Additional, Error, FiltersAndSortData>(
 				filterlistRef.current?.destroy();
 			}
 
-			filterlistRef.current = undefined;
+			filterlistRef.current = null;
 			isInitInProgressRef.current = false;
 		};
 	}, [...inputs, canInit]);
