@@ -1,7 +1,7 @@
-[![NPM](https://img.shields.io/npm/v/@vtaits/react-filterlist-router-6.svg)](https://www.npmjs.com/package/@vtaits/react-filterlist-router-6)
-![dependencies status](https://img.shields.io/librariesio/release/npm/@vtaits/react-filterlist-router-6)
+[![NPM](https://img.shields.io/npm/v/@vtaits/react-filterlist-router.svg)](https://www.npmjs.com/package/@vtaits/react-filterlist-router)
+![dependencies status](https://img.shields.io/librariesio/release/npm/@vtaits/react-filterlist-router)
 
-# @vtaits/react-filterlist-router-6@signals
+# @vtaits/react-filterlist-router@signals
 
 Integration of [@vtaits/filterlist](https://www.npmjs.com/package/@vtaits/filterlist) with [react-router-dom](https://reactrouter.com/en/main)
 
@@ -10,20 +10,20 @@ This version of package uses [TC39 signals](https://github.com/tc39/proposal-sig
 ## Installation
 
 ```
-npm install @vtaits/filterlist@signals @vtaits/react-filterlist@signals @vtaits/react-filterlist-router-6@signals --save
+npm install @vtaits/filterlist@signals @vtaits/react-filterlist@signals @vtaits/react-filterlist-router@signals --save
 ```
 
 or
 
 ```
-yarn add @vtaits/filterlist@signals @vtaits/react-filterlist@signals @vtaits/react-filterlist-router-6@signals
+yarn add @vtaits/filterlist@signals @vtaits/react-filterlist@signals @vtaits/react-filterlist-router@signals
 ```
 
 ## Simple examples
 
 ```tsx
 import { useFilterlist } from '@vtaits/react-filterlist';
-import { useCreateDataStore } from '@vtaits/react-filterlist-router-6';
+import { useCreateDataStore } from '@vtaits/react-filterlist-router';
 import { useRerender } from "@vtaits/react-signals";
 
 function List() {

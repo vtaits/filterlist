@@ -1,11 +1,9 @@
 import {
   type ReactElement,
-  useState,
   useCallback,
-  useEffect,
 } from 'react';
 import { useFilterlist } from '@vtaits/react-filterlist';
-import { useCreateDataStore } from '@vtaits/react-filterlist-router-6';
+import { useCreateDataStore } from '@vtaits/react-filterlist-router';
 import { useRerender } from '@vtaits/react-signals';
 import { Page } from '../../../../examples/ui/Page';
 import * as api from '../../../../examples/api';
@@ -13,40 +11,31 @@ import type {
   User,
 } from '../../../../examples/types';
 
-export function DeferredInit(): ReactElement | null {
-  const [canInit, setCanInit] = useState(false);
-
-  useEffect((): void => {
-    setTimeout((): void => {
-      setCanInit(true);
-    }, 2000);
-  }, []);
-
+export function InfinityList(): ReactElement | null {
   const createDataStore = useCreateDataStore();
 
   const [requestParamsSignal, listStateSignal, filterlist] = useFilterlist<
-  User,
-  {
-    count: number,
-  },
-  never,
-  unknown
+    User,
+    {
+      count: number,
+    },
+    never,
+    unknown
   >({
-    canInit,
-
     createDataStore,
 
     loadItems: async ({
       sort,
       appliedFilters,
-      page,
       pageSize,
+    }, {
+      loadedPages,
     }) => {
       const response = await api.loadUsers({
         ...appliedFilters,
-        page,
         pageSize,
         sort: `${sort.param ? `${sort.asc ? '' : '-'}${sort.param}` : ''}`,
+        page: loadedPages + 1,
       });
 
       return {
@@ -146,6 +135,14 @@ export function DeferredInit(): ReactElement | null {
     );
   }, [filterlist]);
 
+  const loadMore = useCallback(() => {
+    if (!filterlist) {
+      throw new Error('filterlist is not initialized');
+    }
+
+    filterlist.loadMore();
+  }, [filterlist]);
+
   const listState = listStateSignal.get();
   const requestParams = requestParamsSignal.get();
 
@@ -183,10 +180,12 @@ export function DeferredInit(): ReactElement | null {
       applyFilter={applyFilter}
       resetAllFilters={resetAllFilters}
       reload={reload}
-      total={total}
       setPage={setPage}
       setPageSize={setPageSize}
       setSorting={setSorting}
+      total={total}
+      isInfinity
+      loadMore={loadMore}
     />
   );
 }

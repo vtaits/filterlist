@@ -1,7 +1,7 @@
 {
   "type": "module",
   "name": "@vtaits/react-filterlist-router-5",
-  "version": "1.0.2-signals.0",
+  "version": "1.0.3-signals.0",
   "description": "Integration of `@vtaits/react-filterlist` with `react-router-dom` v5",
   "files": [
     "dist"
@@ -43,27 +43,28 @@
   },
   "peerDependencies": {
     "@vtaits/filterlist": "^2.4.0-signals.0",
-    "@vtaits/react-filterlist": "^2.1.0-signals.0",
-    "react": "^16.14.0 || ^17.0.0 || ^18.0.0",
+    "@vtaits/react-filterlist": "^2.1.1-signals.0",
+    "react": "^16.14.0 || ^17.0.0 || ^18.0.0 || ^19.0.0",
     "react-router-dom": "^5.0.0"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
-    "@swc/core": "^1.7.42",
-    "@testing-library/react-hooks": "^8.0.1",
+    "@swc/core": "^1.10.1",
+    "@testing-library/dom": "^10.4.0",
+    "@testing-library/react": "^16.1.0",
     "@types/history": "^4.7.11",
-    "@types/react": "^18.3.12",
+    "@types/react": "^19.0.1",
     "@types/react-router-dom": "^5.3.3",
-    "@vitejs/plugin-react": "^4.3.3",
+    "@vitejs/plugin-react": "^4.3.4",
     "@vtaits/filterlist": "^2.4.0-signals.0",
-    "@vtaits/react-filterlist": "^2.1.0-signals.0",
-    "happy-dom": "^15.7.4",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
+    "@vtaits/react-filterlist": "^2.1.1-signals.0",
+    "happy-dom": "^15.11.7",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
     "react-router-dom": "^5.3.4",
     "tsup": "^8.3.5",
-    "typescript": "5.6.3",
-    "vitest": "^2.1.4"
+    "typescript": "5.7.2",
+    "vitest": "^2.1.8"
   },
   "dependencies": {
     "@vtaits/react-signals": "^1.0.1",

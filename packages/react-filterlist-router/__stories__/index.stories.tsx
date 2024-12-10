@@ -7,7 +7,7 @@ import { InfinityList } from './InfinityList';
 import { UseFilterlist } from './UseFilterlist';
 
 const meta: Meta = {
-  title: 'react-filterlist-router-6',
+  title: 'react-filterlist-router',
   tags: ['autodocs'],
 };
 
