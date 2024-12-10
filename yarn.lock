@@ -2107,9 +2107,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vtaits/react-filterlist-router-6@workspace:packages/react-filterlist-router-6":
+"@vtaits/react-filterlist-router@workspace:packages/react-filterlist-router":
   version: 0.0.0-use.local
-  resolution: "@vtaits/react-filterlist-router-6@workspace:packages/react-filterlist-router-6"
+  resolution: "@vtaits/react-filterlist-router@workspace:packages/react-filterlist-router"
   dependencies:
     "@biomejs/biome": "npm:^1.9.4"
     "@storybook/react": "npm:^8.4.7"

@@ -1,38 +1,26 @@
 import {
   type ReactElement,
-  useState,
   useCallback,
-  useEffect,
 } from 'react';
 import { useFilterlist } from '@vtaits/react-filterlist';
-import { useCreateDataStore } from '@vtaits/react-filterlist-router-6';
+import { useCreateDataStore } from '@vtaits/react-filterlist-router';
 import { Page } from '../../../../examples/ui/Page';
 import * as api from '../../../../examples/api';
 import type {
   User,
 } from '../../../../examples/types';
 
-export function DeferredInit(): ReactElement | null {
-  const [canInit, setCanInit] = useState(false);
-
-  useEffect((): void => {
-    setTimeout((): void => {
-      setCanInit(true);
-    }, 2000);
-  }, []);
-
+export function UseFilterlist(): ReactElement | null {
   const createDataStore = useCreateDataStore();
 
   const [requestParams, listState, filterlist] = useFilterlist<
-  User,
-  {
-    count: number,
-  },
-  never,
-  unknown
+    User,
+    {
+      count: number,
+    },
+    never,
+    unknown
   >({
-    canInit,
-
     createDataStore,
 
     loadItems: async ({
@@ -177,10 +165,10 @@ export function DeferredInit(): ReactElement | null {
       applyFilter={applyFilter}
       resetAllFilters={resetAllFilters}
       reload={reload}
-      total={total}
       setPage={setPage}
       setPageSize={setPageSize}
       setSorting={setSorting}
+      total={total}
     />
   );
 }

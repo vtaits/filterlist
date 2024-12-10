@@ -3,14 +3,14 @@ import {
   useCallback,
 } from 'react';
 import { useFilterlist } from '@vtaits/react-filterlist';
-import { useCreateDataStore } from '@vtaits/react-filterlist-router-6';
+import { useCreateDataStore } from '@vtaits/react-filterlist-router';
 import { Page } from '../../../../examples/ui/Page';
 import * as api from '../../../../examples/api';
 import type {
   User,
 } from '../../../../examples/types';
 
-export function UseFilterlist(): ReactElement | null {
+export function InfinityList(): ReactElement | null {
   const createDataStore = useCreateDataStore();
 
   const [requestParams, listState, filterlist] = useFilterlist<
@@ -26,14 +26,15 @@ export function UseFilterlist(): ReactElement | null {
     loadItems: async ({
       sort,
       appliedFilters,
-      page,
       pageSize,
+    }, {
+      loadedPages,
     }) => {
       const response = await api.loadUsers({
         ...appliedFilters,
-        page,
         pageSize,
         sort: `${sort.param ? `${sort.asc ? '' : '-'}${sort.param}` : ''}`,
+        page: loadedPages + 1,
       });
 
       return {
@@ -133,6 +134,14 @@ export function UseFilterlist(): ReactElement | null {
     );
   }, [filterlist]);
 
+  const loadMore = useCallback(() => {
+    if (!filterlist) {
+      throw new Error('filterlist is not initialized');
+    }
+
+    filterlist.loadMore();
+  }, [filterlist]);
+
   if (!listState || !requestParams) {
     return null;
   }
@@ -169,6 +178,8 @@ export function UseFilterlist(): ReactElement | null {
       setPageSize={setPageSize}
       setSorting={setSorting}
       total={total}
+      isInfinity
+      loadMore={loadMore}
     />
   );
 }

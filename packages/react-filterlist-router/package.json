@@ -1,8 +1,8 @@
 {
   "type": "module",
-  "name": "@vtaits/react-filterlist-router-6",
-  "version": "1.0.2",
-  "description": "Integration of `@vtaits/react-filterlist` with `react-router-dom` v6",
+  "name": "@vtaits/react-filterlist-router",
+  "version": "1.0.0",
+  "description": "Integration of `@vtaits/react-filterlist` with `react-router-dom`",
   "files": [
     "dist"
   ],
