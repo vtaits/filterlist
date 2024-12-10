@@ -1,7 +1,7 @@
 {
   "type": "module",
   "name": "@vtaits/react-filterlist-router-5",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Integration of `@vtaits/react-filterlist` with `react-router-dom` v5",
   "files": [
     "dist"
@@ -57,7 +57,7 @@
     "@types/react-router-dom": "^5.3.3",
     "@vitejs/plugin-react": "^4.3.4",
     "@vtaits/filterlist": "^2.3.0",
-    "@vtaits/react-filterlist": "^2.0.1",
+    "@vtaits/react-filterlist": "^2.1.1",
     "happy-dom": "^15.11.7",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",

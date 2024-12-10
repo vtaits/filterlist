@@ -2090,7 +2090,7 @@ __metadata:
     "@types/react-router-dom": "npm:^5.3.3"
     "@vitejs/plugin-react": "npm:^4.3.4"
     "@vtaits/filterlist": "npm:^2.3.0"
-    "@vtaits/react-filterlist": "npm:^2.0.1"
+    "@vtaits/react-filterlist": "npm:^2.1.1"
     "@vtaits/use-latest": "npm:^1.3.0"
     happy-dom: "npm:^15.11.7"
     react: "npm:^19.0.0"
@@ -2119,7 +2119,7 @@ __metadata:
     "@types/react": "npm:^19.0.1"
     "@vitejs/plugin-react": "npm:^4.3.4"
     "@vtaits/filterlist": "npm:^2.3.0"
-    "@vtaits/react-filterlist": "npm:^2.0.1"
+    "@vtaits/react-filterlist": "npm:^2.1.1"
     "@vtaits/react-router-dom-fake-browser": "npm:^1.0.0"
     "@vtaits/use-latest": "npm:^1.3.0"
     happy-dom: "npm:^15.11.7"
@@ -2138,7 +2138,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vtaits/react-filterlist@npm:^2.0.1, @vtaits/react-filterlist@workspace:packages/react-filterlist":
+"@vtaits/react-filterlist@npm:^2.1.1, @vtaits/react-filterlist@workspace:packages/react-filterlist":
   version: 0.0.0-use.local
   resolution: "@vtaits/react-filterlist@workspace:packages/react-filterlist"
   dependencies:

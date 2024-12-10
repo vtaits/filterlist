@@ -56,7 +56,7 @@
     "@types/react": "^19.0.1",
     "@vitejs/plugin-react": "^4.3.4",
     "@vtaits/filterlist": "^2.3.0",
-    "@vtaits/react-filterlist": "^2.0.1",
+    "@vtaits/react-filterlist": "^2.1.1",
     "@vtaits/react-router-dom-fake-browser": "^1.0.0",
     "happy-dom": "^15.11.7",
     "react": "^19.0.0",
