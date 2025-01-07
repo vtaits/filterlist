@@ -20,12 +20,12 @@
     "@biomejs/biome": "^1.9.4",
     "serve": "^14.2.4",
     "typescript": "5.7.2",
-    "vite": "^6.0.3"
+    "vite": "^6.0.7"
   },
   "dependencies": {
     "@builder.io/qwik": "1.9.1",
     "@builder.io/qwik-react": "^0.5.5",
-    "@fortawesome/free-solid-svg-icons": "^6.7.1",
+    "@fortawesome/free-solid-svg-icons": "^6.7.2",
     "@fortawesome/react-fontawesome": "^0.2.2",
     "@vtaits/filterlist": "^2.3.0",
     "@vtaits/qwik-filterlist": "^2.0.0",
