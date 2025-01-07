@@ -7,7 +7,8 @@
 .pnp.*
 
 node_modules
-
+coverage
+docs
 dist
 
 *.log

@@ -1,52 +1,19 @@
-import { useCallback, memo } from "react";
-import type { SyntheticEvent, KeyboardEvent, ReactElement } from "react";
+/** @jsxImportSource react */
+import {
+	type KeyboardEvent,
+	type ReactElement,
+	type SyntheticEvent,
+	memo,
+	useCallback,
+} from "react";
 
-import styled from "styled-components";
-
-import { Button } from "./Button";
-
-const StyledWrapper = styled.div({
-	display: "flex",
-	alignItems: "center",
-
-	"& + &": {
-		marginTop: 20,
-	},
-});
-
-const StyledName = styled.div({
-	width: 100,
-	textAlign: "right",
-	paddingRight: 20,
-});
-
-const StyledInputWrapper = styled.div({
-	flex: 1,
-});
-
-const StyledButtonWrapper = styled.div({
-	paddingLeft: 20,
-});
-
-const StyledInput = styled.input({
-	height: 30,
-	borderRadius: 15,
-	boxSizing: "border-box",
-	width: "100%",
-	border: "2px solid #999",
-	backgroundColor: "#fff",
-	outline: "none",
-	paddingLeft: 15,
-	paddingRight: 15,
-});
-
-type StringFilterProps = {
+type StringFilterProps = Readonly<{
 	name: string;
 	value?: unknown;
-	setFilterValue: (filterName: string, value: any) => void;
-	resetFilter: (filterName: string) => Promise<void>;
-	applyFilter: (filterName: string) => Promise<void>;
-};
+	setFilterValue: (filterName: string, value: unknown) => void;
+	resetFilter: (filterName: string) => void;
+	applyFilter: (filterName: string) => void;
+}>;
 
 function StringFilterInner({
 	name,
@@ -79,31 +46,40 @@ function StringFilterInner({
 		resetFilter(name);
 	}, [name, resetFilter]);
 
+	const id = `id_${name}`;
+
 	return (
-		<StyledWrapper>
-			<StyledName>{name}</StyledName>
+		<div className="field-row">
+			<div
+				style={{
+					flex: 1,
+				}}
+			>
+				<label htmlFor={id}>{name}</label>
 
-			<StyledInputWrapper>
-				<StyledInput
-					name={name}
-					value={typeof value === "string" ? value : ""}
-					onChange={onChange}
-					onKeyDown={onKeyDown}
-				/>
-			</StyledInputWrapper>
+				<div className="field-row">
+					<input
+						id={id}
+						type="text"
+						name={name}
+						value={typeof value === "string" ? value : ""}
+						onChange={onChange}
+						onKeyDown={onKeyDown}
+						style={{
+							flex: 1,
+						}}
+					/>
 
-			<StyledButtonWrapper>
-				<Button type="button" onClick={onApplyClick}>
-					Apply
-				</Button>
-			</StyledButtonWrapper>
+					<button type="button" onClick={onApplyClick}>
+						Apply
+					</button>
 
-			<StyledButtonWrapper>
-				<Button $buttonType="danger" type="button" onClick={onResetClick}>
-					Reset
-				</Button>
-			</StyledButtonWrapper>
-		</StyledWrapper>
+					<button type="button" onClick={onResetClick}>
+						Reset
+					</button>
+				</div>
+			</div>
+		</div>
 	);
 }
 

@@ -1,22 +1,32 @@
 {
   "type": "module",
   "name": "@vtaits/filterlist",
-  "version": "0.3.1",
+  "version": "2.4.0",
   "description": "Creating lists with filters, sotring, paginatinon, endless scroll etc",
   "files": [
-    "dist"
+    "dist",
+    "datastore"
   ],
-  "main": "./dist/index.js",
-  "module": "./dist/esm/index.js",
-  "typings": "dist/index.d.ts",
+  "main": "./dist/core.cjs",
+  "module": "./dist/core.js",
+  "types": "dist/core.d.ts",
   "exports": {
+    "./package.json": "./package.json",
     ".": {
-      "import": "./dist/esm/index.js",
-      "require": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+      "types": "./dist/core.d.ts",
+      "import": "./dist/core.js",
+      "default": "./dist/core.cjs"
+    },
+    "./datastore/string": {
+      "types": "./dist/datastore_string.d.ts",
+      "import": "./dist/datastore_string.js",
+      "default": "./dist/datastore_string.cjs"
     }
   },
-  "repository": "git@github.com:vtaits/filterlist.git",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/vtaits/filterlist.git"
+  },
   "author": "Vadim Taits <taizvadim@gmail.com>",
   "license": "MIT",
   "keywords": [
@@ -27,29 +37,39 @@
     "vanilla"
   ],
   "scripts": {
-    "build": "tsup src/index.ts --sourcemap --format esm,cjs --dts --legacy-output",
-    "lint": "rome check src",
-    "format": "rome check --apply-unsafe src && rome format --write src",
+    "build": "yarn build:js && yarn build:proxy_directories",
+    "build:js": "tsup",
+    "build:proxy_directories": "exports-fallback -gf",
+    "lint": "biome check src",
+    "lint:fix": "biome check src --write --unsafe",
+    "format": "biome format src --write",
     "test:ts": "tsc --noEmit",
-    "test:unit": "vitest run",
+    "test:unit": "vitest run --coverage.enabled --coverage.all --coverage.include=src",
     "test:unit:dev": "vitest",
     "test": "yarn test:unit",
     "prepare": "yarn build"
   },
   "dependencies": {
-    "mitt": "^3.0.1"
+    "@types/qs": "^6.9.17",
+    "mitt": "^3.0.1",
+    "qs": "^6.13.1",
+    "sleep-promise": "^9.1.0"
   },
   "devDependencies": {
-    "@storybook/react": "^7.4.0",
-    "@types/qs": "^6.9.8",
-    "@types/react": "^18.2.21",
+    "@biomejs/biome": "^1.9.4",
+    "@storybook/react": "^8.4.7",
+    "@swc/core": "^1.10.1",
+    "@types/react": "^19.0.1",
+    "@vitest/coverage-v8": "2.1.8",
     "@vtaits/react-router-dom-fake-browser": "^1.0.0",
-    "qs": "^6.11.2",
-    "react": "^18.2.0",
-    "react-router-dom": "^6.15.0",
-    "rome": "^12.1.3",
-    "tsup": "^7.2.0",
-    "typescript": "^5.2.2",
-    "vitest": "^0.34.3"
+    "@vtaits/use-latest": "^1.3.0",
+    "exports-fallback": "^1.0.2",
+    "happy-dom": "^15.11.7",
+    "react": "^19.0.0",
+    "react-router-dom": "^7.0.2",
+    "tsup": "^8.3.5",
+    "typescript": "5.7.2",
+    "vite": "^6.0.3",
+    "vitest": "^2.1.8"
   }
 }

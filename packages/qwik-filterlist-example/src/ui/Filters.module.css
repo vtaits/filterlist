@@ -1,0 +1,16 @@
+.wrapper {
+	background-color: #eee;
+	border-radius: 10px;
+	padding: 20px;
+	margin-bottom: 30px;
+}
+
+.filtersWrapper {
+	margin-bottom: 20px;
+}
+
+.resetWrapper {
+	display: flex;
+	justify-content: flex-end;
+	gap: 20px;
+}

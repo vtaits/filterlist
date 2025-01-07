@@ -1,0 +1,38 @@
+.wrapper {
+	display: flex;
+	align-items: flex-start;
+}
+
+.view {
+	max-width: 900px;
+}
+
+.listStateWrapper {
+	padding-left: 40px;
+}
+
+.listStatTitle {
+	font-size: 24px;
+	line-height: 1.2;
+	margin-bottom: 20px;
+}
+
+.listState {
+	box-sizing: border-box;
+	background-color: #efefef;
+	width: 600px;
+	max-height: 600px;
+	padding: 15px;
+	overflow: auto;
+}
+
+.totalCount {
+	margin-bottom: 20px;
+	height: 22px;
+}
+
+.bottomBlock {
+	display: flex;
+	justify-content: space-between;
+	margin-top: 30px;
+}

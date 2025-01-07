@@ -1,9 +1,11 @@
 import type { Options, Params } from "./types";
 
 export const defaultOptions: Options = {
-	autoload: true,
-	isDefaultSortAsc: true,
 	alwaysResetFilters: {},
+	autoload: true,
+	debounceTimeout: undefined,
+	isDefaultSortAsc: true,
+	refreshTimeout: undefined,
 	resetFiltersTo: {},
 	saveFiltersOnResetAll: [],
 	saveItemsWhileLoad: false,
@@ -19,6 +21,8 @@ export const collectOptions = <Item, Additional, Error>(
 			? params.autoload
 			: defaultOptions.autoload,
 
+	debounceTimeout: params.debounceTimeout,
+
 	isDefaultSortAsc:
 		typeof params.isDefaultSortAsc === "boolean"
 			? params.isDefaultSortAsc
@@ -26,6 +30,8 @@ export const collectOptions = <Item, Additional, Error>(
 
 	alwaysResetFilters:
 		params.alwaysResetFilters || defaultOptions.alwaysResetFilters,
+
+	refreshTimeout: params.refreshTimeout,
 
 	resetFiltersTo: params.resetFiltersTo || defaultOptions.resetFiltersTo,
 

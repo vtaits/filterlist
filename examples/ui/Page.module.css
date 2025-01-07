@@ -1,0 +1,13 @@
+.page {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 10px;
+	background-color: #c0c0c0;
+	padding: 20px;
+}
+
+.bottomBlock {
+	display: flex;
+	justify-content: space-between;
+	margin-top: 30px;
+}

@@ -1,164 +1,78 @@
 import {
   type ReactElement,
   useState,
-  useEffect,
   useCallback,
   useSyncExternalStore,
 } from 'react';
-
-import qs from 'qs';
-
-import {
-  useNavigate,
-  useNavigationType,
-  useLocation,
-} from 'react-router-dom';
-
-import { Filterlist, type ListState, eventTypes } from '@vtaits/filterlist';
-
+import { Filterlist, EventType } from '@vtaits/filterlist';
 import { Page } from '../../../../examples/ui/Page';
 import * as api from '../../../../examples/api';
-
 import type {
   User,
   Additional,
 } from '../../../../examples/types';
-
 import type {
   ItemsLoader,
-  Sort,
 } from '../../src/types';
-
-const getStateFromSearch = (search: string): {
-  sort: Sort;
-  filters: Record<string, string | number>;
-  appliedFilters: Record<string, string | number>;
-} => {
-  const parsed: Record<string, any> = qs.parse(search, {
-    ignoreQueryPrefix: true,
-  });
-
-  const {
-    sort,
-  } = parsed;
-
-  const appliedFilters = {
-    name: parsed.name || '',
-    email: parsed.email || '',
-    city: parsed.city || '',
-    page: parsed.page ? Number(parsed.page) : 1,
-    perPage: parsed.perPage || 10,
-  };
-
-  return {
-    sort: {
-      param: sort
-        ? (
-          sort[0] === '-'
-            ? sort.substring(1, sort.length)
-            : sort
-        )
-        : 'id',
-      asc: !sort || sort[0] === '-',
-    },
-
-    filters: appliedFilters,
-    appliedFilters,
-  };
-};
 
 const loadItems: ItemsLoader<User, Additional, unknown> = async ({
   sort,
   appliedFilters,
+  page,
+  pageSize,
 }) => {
   const response = await api.loadUsers({
     ...appliedFilters,
+    page,
+    pageSize,
     sort: `${sort.param ? `${sort.asc ? '' : '-'}${sort.param}` : ''}`,
   });
 
   return {
     items: response.users,
-    additional: {
-      count: response.count,
-    },
+    total: response.count,
   };
 };
 
 export function AllFeatures(): ReactElement {
-  const navigate = useNavigate();
-  const navigationType = useNavigationType();
-  const location = useLocation();
-
   const [filterlist] = useState(() => {
-    const {
-      search,
-    } = location;
-
-    const stateFromSearch = getStateFromSearch(search);
-
     return new Filterlist({
-      alwaysResetFilters: {
-        page: 1,
-      },
-
-      resetFiltersTo: {
-        perPage: 10,
-      },
-
-      saveFiltersOnResetAll: ['perPage'],
-
       loadItems,
-
-      ...stateFromSearch,
+      refreshTimeout: 10000,
     });
   });
 
   const listState = useSyncExternalStore(
     (callback) => {
-      filterlist.emitter.on(eventTypes.changeListState, callback);
+      filterlist.emitter.on(EventType.changeListState, callback);
 
       return () => {
-        filterlist.emitter.off(eventTypes.changeListState, callback);
+        filterlist.emitter.off(EventType.changeListState, callback);
       };
     },
 
     () => filterlist.getListState(),
   );
 
-  const onChangeListState = useCallback((newListState: ListState<User, Additional, unknown>) => {
-    const newQuery = qs.stringify({
-      ...newListState.appliedFilters,
-      sort: newListState.sort.param
-        ? `${newListState.sort.asc ? '' : '-'}${newListState.sort.param}`
-        : null,
-    });
+  const requestParams = useSyncExternalStore(
+    (callback) => {
+      filterlist.emitter.on(EventType.changeListState, callback);
 
-    navigate(`/?${newQuery}`);
-  }, [navigate]);
+      return () => {
+        filterlist.emitter.off(EventType.changeListState, callback);
+      };
+    },
 
-  useEffect(() => {
-    filterlist.emitter.on(eventTypes.changeLoadParams, onChangeListState);
+    () => filterlist.getRequestParams(),
+  );
 
-    return () => {
-      filterlist.emitter.off(eventTypes.changeLoadParams, onChangeListState);
-    };
-  }, []);
+  const setPage = useCallback((
+    page: number,
+  ) => filterlist.setPage(page), [filterlist]);
 
-  useEffect(() => {
-    if (navigationType === 'POP') {
-      const stateFromSearch = getStateFromSearch(location.search);
-
-      filterlist.setFiltersAndSorting(stateFromSearch);
-    }
-  }, [navigationType, location.search]);
-
-  const setAndApplyFilter = useCallback((
-    filterName: string,
-    value: any,
-  ) => filterlist.setAndApplyFilter(
-    filterName,
-    value,
-  ), []);
+  const setPageSize = useCallback((
+    pageSize: number | null | undefined,
+  ) => filterlist.setPageSize(pageSize), [filterlist]);
 
   const setFilterValue = useCallback((
     filterName: string,
@@ -174,48 +88,53 @@ export function AllFeatures(): ReactElement {
   ) => filterlist.setSorting(
     paramName,
     asc,
-  ), []);
+  ), [filterlist]);
 
-  const resetAllFilters = useCallback(() => filterlist.resetAllFilters(), []);
+  const resetAllFilters = useCallback(() => filterlist.resetAllFilters(), [filterlist]);
 
-  const reload = useCallback(() => filterlist.reload(), []);
+  const reload = useCallback(() => filterlist.reload(), [filterlist]);
 
   const resetFilter = useCallback((
     filterName: string,
   ) => filterlist.resetFilter(
     filterName,
-  ), []);
+  ), [filterlist]);
 
   const applyFilter = useCallback((
     filterName: string,
   ) => filterlist.applyFilter(
     filterName,
-  ), []);
+  ), [filterlist]);
 
   const {
-    additional,
+    page,
+    pageSize,
+    sort,
+  } = requestParams;
+
+  const {
     items,
     loading,
-
-    sort,
-
+    total,
     filters,
-    appliedFilters,
   } = listState;
 
   return (
     <Page
+      requestParams={requestParams}
       listState={listState}
       filters={filters}
-      appliedFilters={appliedFilters}
+      page={page}
+      pageSize={pageSize}
       sort={sort}
       items={items}
-      additional={additional}
+      total={total}
       loading={loading}
       setFilterValue={setFilterValue}
       resetFilter={resetFilter}
       applyFilter={applyFilter}
-      setAndApplyFilter={setAndApplyFilter}
+      setPage={setPage}
+      setPageSize={setPageSize}
       resetAllFilters={resetAllFilters}
       reload={reload}
       setSorting={setSorting}

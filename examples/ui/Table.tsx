@@ -1,38 +1,22 @@
-import { memo } from "react";
-import type { ReactElement } from "react";
-
-import styled from "styled-components";
-
+/** @jsxImportSource react */
+import { type ReactElement, memo } from "react";
+import type { Sort } from "../../packages/filterlist/src/types";
+import type { User } from "../types";
 import { Th } from "./Th";
 
-import type { User } from "../types";
-
-import type { Sort } from "../../packages/filterlist/src/types";
-
-const StyledTable = styled.table({
-	width: "100%",
-	borderCollapse: "collapse",
-});
-
-const StyledTd = styled.td({
-	borderBottom: "2px solid #ccc",
-	padding: "5px 10px",
-	textAlign: "left",
-
-	"& + &": {
-		borderLeft: "1px solid #ccc",
-	},
-});
-
-type TableProps = {
-	readonly sort: Sort;
-	readonly items: readonly User[];
-	readonly setSorting: (param: string) => void;
-};
+type TableProps = Readonly<{
+	sort: Sort;
+	items: readonly User[];
+	setSorting: (param: string) => void;
+}>;
 
 function TableInner({ sort, items, setSorting }: TableProps): ReactElement {
 	return (
-		<StyledTable>
+		<table
+			style={{
+				width: "100%",
+			}}
+		>
 			<thead>
 				<tr>
 					<Th
@@ -74,16 +58,16 @@ function TableInner({ sort, items, setSorting }: TableProps): ReactElement {
 			</thead>
 
 			<tbody>
-				{items.map(({ id, name, email, city }: User) => (
+				{items.map(({ id, name, email, city }) => (
 					<tr key={id}>
-						<StyledTd>{id}</StyledTd>
-						<StyledTd>{name}</StyledTd>
-						<StyledTd>{email}</StyledTd>
-						<StyledTd>{city}</StyledTd>
+						<td>{id}</td>
+						<td>{name}</td>
+						<td>{email}</td>
+						<td>{city}</td>
 					</tr>
 				))}
 			</tbody>
-		</StyledTable>
+		</table>
 	);
 }
 

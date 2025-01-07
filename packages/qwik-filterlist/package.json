@@ -1,0 +1,61 @@
+{
+  "type": "module",
+  "name": "@vtaits/qwik-filterlist",
+  "version": "2.0.0",
+  "description": "Qwik wrapper above @vtaits/filterlist",
+  "files": [
+    "lib",
+    "lib-types"
+  ],
+  "main": "./lib/index.qwik.mjs",
+  "qwik": "./lib/index.qwik.mjs",
+  "types": "./lib-types/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./lib-types/index.d.ts",
+      "import": "./lib/index.qwik.mjs",
+      "require": "./lib/index.qwik.cjs"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/vtaits/filterlist.git"
+  },
+  "author": "Vadim Taits <taizvadim@gmail.com>",
+  "license": "MIT",
+  "keywords": [
+    "filterlist",
+    "filter",
+    "sort",
+    "pagination",
+    "qwik"
+  ],
+  "scripts": {
+    "build": "yarn build:lib && yarn build:types",
+    "build:lib": "vite build --mode lib",
+    "build:types": "tsc --emitDeclarationOnly",
+    "lint": "biome check src",
+    "lint:fix": "biome check src --write --unsafe",
+    "format": "biome format src --write",
+    "test:ts": "tsc --noEmit",
+    "test:unit": "vitest run",
+    "test:unit:dev": "vitest",
+    "test": "yarn test:unit",
+    "prepare": "yarn build"
+  },
+  "peerDependencies": {
+    "@builder.io/qwik": "^1.5.1",
+    "@vtaits/filterlist": "^2.0.0"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.9.4",
+    "@builder.io/qwik": "^1.9.1",
+    "@vtaits/filterlist": "^2.3.0",
+    "typescript": "5.7.2",
+    "vite": "^6.0.3",
+    "vitest": "^2.1.8"
+  },
+  "dependencies": {
+    "is-promise": "^4.0.0"
+  }
+}

@@ -18,7 +18,7 @@ export type Response = {
 
 export type Params = {
 	page?: number;
-	perPage?: number;
+	pageSize?: number | null;
 	name?: string;
 	email?: string;
 	city?: string;
@@ -27,7 +27,7 @@ export type Params = {
 
 export const loadUsers = async (params: Params): Promise<Response> => {
 	const page: number = params.page || 1;
-	const perPage: number = params.perPage || 10;
+	const pageSize: number = params.pageSize || 10;
 
 	const name = (params.name || "").toLowerCase();
 	const email = (params.email || "").toLowerCase();
@@ -44,7 +44,7 @@ export const loadUsers = async (params: Params): Promise<Response> => {
 				}
 
 				return desc ? 1 : -1;
-		  })
+			})
 		: users;
 
 	const filteredUsers = sortedUsers.filter((user) => {
@@ -63,12 +63,12 @@ export const loadUsers = async (params: Params): Promise<Response> => {
 		return true;
 	});
 
-	const offset = (page - 1) * perPage;
+	const offset = (page - 1) * pageSize;
 
 	await delay(2000);
 
 	return {
-		users: filteredUsers.slice(offset, offset + perPage),
+		users: filteredUsers.slice(offset, offset + pageSize),
 		count: filteredUsers.length,
 	};
 };

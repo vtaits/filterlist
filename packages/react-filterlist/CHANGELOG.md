@@ -1,4 +1,37 @@
-## 0.4.0-alpha.1 (28 oct 2022)
+## 2.1.0 (21 oct 2024)
+
+### Improvement
+
+* Support `@vtaits/filterlist@^2.4.0`
+
+## 2.0.0 (15 jul 2024)
+
+### Breaking changes
+
+* Changed result of `useFilterlist`, moved `appliedFilters`, `page`, `pageSize`, `sort` to the first element
+
+    ```typescript
+    const [requestParams, listState, filterlist] = useFilterlist({
+        // ...
+    });
+    ```
+
+* Migrate to `@vtaits/filterlist@^2.0.0`
+
+## 1.2.0 (08 may 2024)
+
+### Improvement
+
+* Support `@vtaits/filterlist@^1.1.0`
+
+## 1.1.0 (08 may 2024)
+
+### New features
+
+* Added `useFilter` hook
+* Added `useBoundFilter` hook to the result of `useFilterlist`
+
+## 1.0.0 (28 jan 2024)
 
 ### Typings
 
@@ -11,7 +44,7 @@
 
 ### Breaking changes
 
-* Migrate to `@vtaits/filterlist@^0.3.0`
+* Migrate to `@vtaits/filterlist@^1.0.0`
 * Remove api with HOC and render props
 
 ## 0.3.0 (01 oct 2021)

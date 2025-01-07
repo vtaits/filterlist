@@ -1,3 +1,63 @@
+## 2.4.0 (21 oct 2024)
+
+### New features
+
+* Added `action` argument to `loadItems`
+* Added parameter `loadedPages` to success response
+
+## 2.3.0 (17 sep 2024)
+
+### New features
+
+* Added `shouldRefresh` parameter
+
+## 2.2.0 (30 aug 2024)
+
+### New features
+
+* Added `parseOptions` and `stringifyOptions` to string data store
+* Added `setAndApplyEmptyFilters` method
+
+## 2.1.0 (17 jul 2024)
+
+### New features
+
+* Added `setRefreshTimeout` method
+
+## 2.0.0 (15 jul 2024)
+
+### New features
+
+* Added `createDataStore` parameter to sync with external stores such as browser history
+
+### Breaking changes
+
+* Changed arguments of `loadItems`
+* `eventTypes` -> `EventType`
+
+## 1.1.0 (08 may 2024)
+
+### New features
+
+* Added param `debounceTimeout`
+* Added param `refreshTimeout`
+* Added `destroy` method
+
+## 1.0.0 (28 jan 2024)
+
+### New features
+
+* Added `page` to the state of list
+* Added `setPage` method
+* Added `total` to the state of list
+* Added `setTotal` method
+* Added `pageSize` to the state of list
+* Added `setPageSize` method
+
+### Breaking changes
+
+* `setFiltersAndSorting` -> `updateStateAndRequest`
+
 ## 0.3.1 (04 sep 2023)
 
 ### New features

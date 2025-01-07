@@ -1,7 +1,5 @@
 [![NPM](https://img.shields.io/npm/v/@vtaits/react-filterlist.svg)](https://www.npmjs.com/package/@vtaits/react-filterlist)
-[![dependencies status](https://david-dm.org/vtaits/filterlist/status.svg?path=packages/react-filterlist)](https://david-dm.org/vtaits/filterlist?path=packages/react-filterlist)
-[![devDependencies status](https://david-dm.org/vtaits/filterlist/dev-status.svg?path=packages/react-filterlist)](https://david-dm.org/vtaits/filterlist?path=packages/react-filterlist&type=dev)
-[![Types](https://img.shields.io/npm/types/@vtaits/react-filterlist.svg)](https://www.npmjs.com/package/@vtaits/react-filterlist)
+![dependencies status](https://img.shields.io/librariesio/release/npm/@vtaits/react-filterlist)
 
 # @vtaits/react-filterlist
 
@@ -25,7 +23,7 @@ yarn add @vtaits/filterlist @vtaits/react-filterlist
 
 ## Simple examples
 
-```javascript
+```typescript
 import { useFilterlist } from '@vtaits/react-filterlist';
 
 function List() {
@@ -36,17 +34,15 @@ function List() {
 
       return {
         items: cars,
-        additional: {
-          count: cars.length,
-        },
+				total: cars.length,
       };
     },
   });
 
   const {
-    additional,
     items,
     loading,
+    total,
   } = listState;
 
   return (
@@ -81,9 +77,9 @@ function List() {
       </table>
 
       {
-        additional && (
+        typeof total === 'number' && (
           <h4>
-            Total: { additional.count }
+            Total: {total}
           </h4>
         )
       }
@@ -100,12 +96,14 @@ function List() {
 
 ## Api
 
-```javascript
+### useFilterlist
+
+```typescript
 import { useFilterlist } from '@vtaits/react-filterlist';
 
-...
+// ...
 
-const [listState, filterlist] = useFilterlist({
+const [requestParams, listState, filterlist] = useFilterlist({
   ...options,
   parseFiltersAndSort,
   filtersAndSortData,
@@ -118,7 +116,7 @@ const [listState, filterlist] = useFilterlist({
 
 `listState` and `filterlist` are `null` during async init or when `canInit` is `true`
 
-### Params
+#### Params
 
 - **options** - options of [@vtaits/filterlist](https://www.npmjs.com/package/@vtaits/filterlist)
 
@@ -134,3 +132,66 @@ const [listState, filterlist] = useFilterlist({
 
 - **canInit** - boolean, filterlist will not be initialized until `canInit` is `true`
 
+### useFilter
+
+The hook that binds filterlist methods to the filter and receives its value by name
+
+```typescript
+import { useFilterlist, useFilter } from '@vtaits/react-filterlist';
+
+// ...
+
+const [requestParams, listState, filterlist] = useFilterlist(options);
+
+const {
+  setFilterValue,
+  setAndApplyFilter,
+  applyFilter,
+  resetFilter,
+  value,
+  appliedValue,
+} = useFilter(listState, filterlist, 'filter_name');
+
+setFilterValue('next_value');
+setAndApplyFilter('next_value');
+applyFilter();
+resetFilter();
+```
+
+### useBoundFilter
+
+`useFilter` that automatically bound to the filterlist
+
+```typescript
+import { useFilterlist } from '@vtaits/react-filterlist';
+
+// ...
+
+const [listState, filterlist, {
+  useBoundFilter,
+}] = useFilterlist(options);
+
+const {
+  setFilterValue,
+  setAndApplyFilter,
+  applyFilter,
+  resetFilter,
+  value,
+  appliedValue,
+} = useBoundFilter('filter_name');
+
+setFilterValue('next_value');
+setAndApplyFilter('next_value');
+applyFilter();
+resetFilter();
+```
+
+### Navigator url sync
+
+You can use one of the next integrations:
+
+[react-router v6](https://github.com/vtaits/filterlist/tree/master/packages/react-filterlist-router-6)
+
+[react-router v5](https://github.com/vtaits/filterlist/tree/master/packages/react-filterlist-router-6)
+
+Or use `createDataStore` parameter as described in the [core](https://www.npmjs.com/package/@vtaits/filterlist) package

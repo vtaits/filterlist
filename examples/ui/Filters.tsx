@@ -1,35 +1,15 @@
+/** @jsxImportSource react */
 import type { ReactElement } from "react";
-
-import styled from "styled-components";
-
 import { StringFilter } from "./StringFilter";
-import { Button } from "./Button";
 
-const StyledWrapper = styled.div({
-	backgroundColor: "#EEE",
-	borderRadius: 10,
-	padding: 20,
-	marginBottom: 30,
-});
-
-const StyledFiltersWrapper = styled.div({
-	marginBottom: 20,
-});
-
-const StyledResetWrapper = styled.div({
-	display: "flex",
-	justifyContent: "flex-end",
-	gap: 20,
-});
-
-type FiltersProps = {
-	readonly filters: Readonly<Record<string, unknown>>;
-	readonly setFilterValue: (filterName: string, value: unknown) => void;
-	readonly resetFilter: (filterName: string) => Promise<void>;
-	readonly applyFilter: (filterName: string) => Promise<void>;
-	readonly resetAllFilters: () => Promise<void>;
-	readonly reload: () => Promise<void>;
-};
+type FiltersProps = Readonly<{
+	filters: Readonly<Record<string, unknown>>;
+	setFilterValue: (filterName: string, value: unknown) => void;
+	resetFilter: (filterName: string) => void;
+	applyFilter: (filterName: string) => void;
+	resetAllFilters: () => void;
+	reload: () => Promise<void>;
+}>;
 
 export function Filters({
 	filters,
@@ -40,42 +20,40 @@ export function Filters({
 	reload,
 }: FiltersProps): ReactElement {
 	return (
-		<StyledWrapper>
-			<StyledFiltersWrapper>
-				<StringFilter
-					name="name"
-					value={filters.name}
-					setFilterValue={setFilterValue}
-					resetFilter={resetFilter}
-					applyFilter={applyFilter}
-				/>
+		<fieldset>
+			<StringFilter
+				name="name"
+				value={filters.name}
+				setFilterValue={setFilterValue}
+				resetFilter={resetFilter}
+				applyFilter={applyFilter}
+			/>
 
-				<StringFilter
-					name="email"
-					value={filters.email}
-					setFilterValue={setFilterValue}
-					resetFilter={resetFilter}
-					applyFilter={applyFilter}
-				/>
+			<StringFilter
+				name="email"
+				value={filters.email}
+				setFilterValue={setFilterValue}
+				resetFilter={resetFilter}
+				applyFilter={applyFilter}
+			/>
 
-				<StringFilter
-					name="city"
-					value={filters.city}
-					setFilterValue={setFilterValue}
-					resetFilter={resetFilter}
-					applyFilter={applyFilter}
-				/>
-			</StyledFiltersWrapper>
+			<StringFilter
+				name="city"
+				value={filters.city}
+				setFilterValue={setFilterValue}
+				resetFilter={resetFilter}
+				applyFilter={applyFilter}
+			/>
 
-			<StyledResetWrapper>
-				<Button type="button" $buttonType="danger" onClick={reload}>
+			<div className="field-row">
+				<button type="button" onClick={reload}>
 					Reload
-				</Button>
+				</button>
 
-				<Button type="button" $buttonType="danger" onClick={resetAllFilters}>
+				<button type="button" onClick={resetAllFilters}>
 					Reset all filters
-				</Button>
-			</StyledResetWrapper>
-		</StyledWrapper>
+				</button>
+			</div>
+		</fieldset>
 	);
 }
