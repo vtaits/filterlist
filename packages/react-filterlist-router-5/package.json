@@ -36,10 +36,10 @@
     "lint:fix": "biome check src --write --unsafe",
     "format": "biome format src --write",
     "test:ts": "tsc --noEmit",
-    "test:unit": "vitest run",
-    "test:unit:dev": "vitest",
-    "test": "yarn test:unit",
-    "prepare": "yarn build"
+    "test:unit": "bun test --coverage",
+    "test:unit:dev": "bun test --watch",
+    "test": "bun run test:unit",
+    "prepare": "bun run build"
   },
   "peerDependencies": {
     "@vtaits/filterlist": "^2.4.0-signals.0",
@@ -63,8 +63,7 @@
     "react-dom": "^19.0.0",
     "react-router-dom": "^5.3.4",
     "tsup": "^8.3.5",
-    "typescript": "5.7.2",
-    "vitest": "^2.1.8"
+    "typescript": "5.7.2"
   },
   "dependencies": {
     "@vtaits/react-signals": "^1.0.1",

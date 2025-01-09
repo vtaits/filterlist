@@ -82,8 +82,10 @@ export class Filterlist<Item, Additional, Error> {
 			const nextRequestParams = this.requestParams.get();
 
 			if (nextRequestParams !== prevRequestParams) {
+				const prevValue = prevRequestParams;
+
 				queueMicrotask(() => {
-					this.onChangeDataStore(nextRequestParams, prevRequestParams);
+					this.onChangeDataStore(nextRequestParams, prevValue);
 				});
 
 				prevRequestParams = nextRequestParams;

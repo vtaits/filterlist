@@ -23,6 +23,12 @@ or
 yarn add @vtaits/filterlist@signals @vtaits/react-filterlist@signals
 ```
 
+or
+
+```
+bun add @vtaits/filterlist @vtaits/react-filterlist
+```
+
 ## Simple examples
 
 ```tsx

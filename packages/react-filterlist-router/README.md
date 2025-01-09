@@ -19,6 +19,12 @@ or
 yarn add @vtaits/filterlist@signals @vtaits/react-filterlist@signals @vtaits/react-filterlist-router@signals
 ```
 
+or
+
+```
+bun add @vtaits/filterlist @vtaits/react-filterlist @vtaits/react-filterlist-router
+```
+
 ## Simple examples
 
 ```tsx

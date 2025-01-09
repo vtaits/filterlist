@@ -1,3 +1,4 @@
+import { describe, expect, mock, test } from "bun:test";
 import { renderHook } from "@testing-library/react";
 import {
 	type Filterlist,
@@ -7,7 +8,6 @@ import {
 	listInitialState,
 } from "@vtaits/filterlist";
 import { Signal } from "signal-polyfill";
-import { describe, expect, test, vi } from "vitest";
 import { useFilter } from "./useFilter";
 
 describe("not inited", () => {
@@ -51,10 +51,10 @@ describe("not inited", () => {
 
 describe("inited", () => {
 	const filterlist = {
-		setFilterValue: vi.fn(),
-		setAndApplyFilter: vi.fn(),
-		applyFilter: vi.fn(),
-		resetFilter: vi.fn(),
+		setFilterValue: mock(),
+		setAndApplyFilter: mock(),
+		applyFilter: mock(),
+		resetFilter: mock(),
 	} as unknown as Filterlist<unknown, unknown, unknown>;
 
 	const {

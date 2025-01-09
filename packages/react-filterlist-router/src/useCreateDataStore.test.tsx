@@ -1,4 +1,5 @@
-import { renderHook } from "@testing-library/react";
+import { describe, expect, mock, test } from "bun:test";
+import { renderHook, waitFor } from "@testing-library/react";
 import type { StringBasedDataStoreOptions } from "@vtaits/filterlist/dist/datastore_string";
 import { type Params, useFilterlist } from "@vtaits/react-filterlist";
 import { type PropsWithChildren, type RefObject, createRef } from "react";
@@ -11,7 +12,6 @@ import {
 	useLocation,
 	useNavigate,
 } from "react-router-dom";
-import { describe, expect, test, vi } from "vitest";
 import { useCreateDataStore } from "./useCreateDataStore";
 
 function useCompositeHook(
@@ -74,7 +74,7 @@ function setup(
 	return { result, locationRef, navigateRef };
 }
 
-test.concurrent.each([
+test.each([
 	{
 		href: "/page",
 		appliedFilters: {},
@@ -135,7 +135,7 @@ test.concurrent.each([
 ])(
 	"should parse query correctly: $href",
 	({ href, appliedFilters, page, pageSize, sort, options }) => {
-		const loadItems = vi.fn().mockResolvedValue({
+		const loadItems = mock().mockResolvedValue({
 			items: [],
 		});
 
@@ -158,9 +158,9 @@ test.concurrent.each([
 	},
 );
 
-describe.concurrent("should change query", () => {
+describe("should change query", () => {
 	test("only filters", async () => {
-		const loadItems = vi.fn().mockResolvedValue({
+		const loadItems = mock().mockResolvedValue({
 			items: [],
 		});
 
@@ -178,11 +178,11 @@ describe.concurrent("should change query", () => {
 			baz: "qux",
 		});
 
-		await vi.waitFor(() => {
+		await waitFor(() => {
 			expect(loadItems).toHaveBeenCalledTimes(2);
 		});
 
-		await vi.waitFor(() => {
+		await waitFor(() => {
 			expect(locationRef.current?.search).toBe("?foo=bar&baz=qux");
 		});
 
@@ -190,7 +190,7 @@ describe.concurrent("should change query", () => {
 	});
 
 	test("all parameters", async () => {
-		const loadItems = vi.fn().mockResolvedValue({
+		const loadItems = mock().mockResolvedValue({
 			items: [],
 		});
 
@@ -208,29 +208,29 @@ describe.concurrent("should change query", () => {
 			baz: "qux",
 		});
 
-		await vi.waitFor(() => {
+		await waitFor(() => {
 			expect(loadItems).toHaveBeenCalledTimes(2);
 		});
 
 		result.current[2]?.setPageSize(20);
 
-		await vi.waitFor(() => {
+		await waitFor(() => {
 			expect(loadItems).toHaveBeenCalledTimes(3);
 		});
 
 		result.current[2]?.setSorting("id", false);
 
-		await vi.waitFor(() => {
+		await waitFor(() => {
 			expect(loadItems).toHaveBeenCalledTimes(4);
 		});
 
 		result.current[2]?.setPage(3);
 
-		await vi.waitFor(() => {
+		await waitFor(() => {
 			expect(loadItems).toHaveBeenCalledTimes(5);
 		});
 
-		await vi.waitFor(() => {
+		await waitFor(() => {
 			expect(locationRef.current?.search).toBe(
 				"?foo=bar&baz=qux&page=3&page_size=20&sort=-id",
 			);
@@ -240,8 +240,8 @@ describe.concurrent("should change query", () => {
 	});
 });
 
-test.concurrent("navigate backward", async () => {
-	const loadItems = vi.fn().mockResolvedValue({
+test("navigate backward", async () => {
+	const loadItems = mock().mockResolvedValue({
 		items: [],
 	});
 
@@ -259,29 +259,29 @@ test.concurrent("navigate backward", async () => {
 		baz: "qux",
 	});
 
-	await vi.waitFor(() => {
+	await waitFor(() => {
 		expect(loadItems).toHaveBeenCalledTimes(2);
 	});
 
 	result.current[2]?.setPageSize(20);
 
-	await vi.waitFor(() => {
+	await waitFor(() => {
 		expect(loadItems).toHaveBeenCalledTimes(3);
 	});
 
 	result.current[2]?.setSorting("id", false);
 
-	await vi.waitFor(() => {
+	await waitFor(() => {
 		expect(loadItems).toHaveBeenCalledTimes(4);
 	});
 
 	result.current[2]?.setPage(3);
 
-	await vi.waitFor(() => {
+	await waitFor(() => {
 		expect(loadItems).toHaveBeenCalledTimes(5);
 	});
 
-	await vi.waitFor(() => {
+	await waitFor(() => {
 		expect(locationRef.current?.search).toBe(
 			"?foo=bar&baz=qux&page=3&page_size=20&sort=-id",
 		);
@@ -289,17 +289,17 @@ test.concurrent("navigate backward", async () => {
 
 	result.current[2]?.resetFilters(["foo", "baz"]);
 
-	await vi.waitFor(() => {
+	await waitFor(() => {
 		expect(loadItems).toHaveBeenCalledTimes(6);
 	});
 
-	await vi.waitFor(() => {
+	await waitFor(() => {
 		expect(locationRef.current?.search).toBe("?page_size=20&sort=-id");
 	});
 
 	navigateRef.current?.(-1);
 
-	await vi.waitFor(() => {
+	await waitFor(() => {
 		expect(loadItems).toHaveBeenCalledTimes(7);
 	});
 

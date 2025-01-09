@@ -1,3 +1,4 @@
+import type { DataStore } from "@vtaits/filterlist";
 import {
 	type StringBasedDataStoreOptions,
 	createStringBasedDataStore,
@@ -7,7 +8,9 @@ import { useLatest } from "@vtaits/use-latest";
 import { useCallback } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 
-export function useCreateDataStore(options?: StringBasedDataStoreOptions) {
+export function useCreateDataStore(
+	options?: StringBasedDataStoreOptions,
+): () => DataStore {
 	const history = useHistory();
 	const { pathname, search } = useLocation();
 
