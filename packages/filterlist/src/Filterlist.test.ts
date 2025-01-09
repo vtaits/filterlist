@@ -1,11 +1,11 @@
+import { describe, expect, mock, test } from "bun:test";
+import { waitFor } from "@testing-library/dom";
 import sleep from "sleep-promise";
-import { describe, expect, test, vi } from "vitest";
 import { Filterlist } from "./Filterlist";
 import { LoadListError } from "./errors";
 import {
 	type DataStore,
 	type DataStoreListener,
-	type ItemsLoader,
 	LoadListAction,
 	type RequestParams,
 } from "./types";
@@ -44,13 +44,13 @@ export function createAsyncDataStore(initalValue: RequestParams): DataStore {
 	};
 }
 
-describe.concurrent.each([
+describe.each([
 	{ name: "default", createDataStore: undefined },
 	{ name: "async", createDataStore: createAsyncDataStore },
 ])("data store: $name", ({ createDataStore }) => {
 	describe("init", () => {
 		test("load items on init", async () => {
-			const loadItems = vi.fn().mockResolvedValue({
+			const loadItems = mock().mockResolvedValue({
 				items: [1, 2, 3],
 			});
 
@@ -61,7 +61,7 @@ describe.concurrent.each([
 
 			expect(filterlist.getListState().loading).toBe(true);
 
-			await vi.waitFor(() => {
+			await waitFor(() => {
 				expect(loadItems).toHaveBeenCalledTimes(1);
 			});
 
@@ -78,7 +78,7 @@ describe.concurrent.each([
 		});
 
 		test("not load items on init", async () => {
-			const loadItems = vi.fn().mockResolvedValue({
+			const loadItems = mock().mockResolvedValue({
 				items: [1, 2, 3],
 			});
 
@@ -92,11 +92,9 @@ describe.concurrent.each([
 		});
 
 		test("load with default params", async () => {
-			const loadItems = vi
-				.fn<ItemsLoader<unknown, unknown, unknown>>()
-				.mockResolvedValue({
-					items: [1, 2, 3],
-				});
+			const loadItems = mock().mockResolvedValue({
+				items: [1, 2, 3],
+			});
 
 			const filterlist = new Filterlist({
 				createDataStore,
@@ -105,7 +103,7 @@ describe.concurrent.each([
 
 			expect(filterlist.getListState().loading).toBe(true);
 
-			await vi.waitFor(() => {
+			await waitFor(() => {
 				expect(loadItems).toHaveBeenCalledTimes(1);
 			});
 
@@ -132,11 +130,9 @@ describe.concurrent.each([
 		});
 
 		test("load with redefined params", async () => {
-			const loadItems = vi
-				.fn<ItemsLoader<unknown, unknown, unknown>>()
-				.mockResolvedValue({
-					items: [1, 2, 3],
-				});
+			const loadItems = mock().mockResolvedValue({
+				items: [1, 2, 3],
+			});
 
 			const filterlist = new Filterlist({
 				appliedFilters: {
@@ -159,7 +155,7 @@ describe.concurrent.each([
 
 			expect(filterlist.getListState().loading).toBe(true);
 
-			await vi.waitFor(() => {
+			await waitFor(() => {
 				expect(loadItems).toHaveBeenCalledTimes(1);
 			});
 
@@ -193,17 +189,15 @@ describe.concurrent.each([
 
 		describe("load failed", () => {
 			test("caught error", async () => {
-				const loadItems = vi
-					.fn<ItemsLoader<unknown, unknown, unknown>>()
-					.mockRejectedValue(
-						new LoadListError({
-							error: "test error",
-							additional: {
-								baz: "qux",
-							},
-							total: 123,
-						}),
-					);
+				const loadItems = mock().mockRejectedValue(
+					new LoadListError({
+						error: "test error",
+						additional: {
+							baz: "qux",
+						},
+						total: 123,
+					}),
+				);
 
 				const filterlist = new Filterlist({
 					createDataStore,
@@ -212,7 +206,7 @@ describe.concurrent.each([
 
 				expect(filterlist.getListState().loading).toBe(true);
 
-				await vi.waitFor(() => {
+				await waitFor(() => {
 					expect(loadItems).toHaveBeenCalledTimes(1);
 				});
 
@@ -228,9 +222,7 @@ describe.concurrent.each([
 			});
 
 			test("uncaught error", () => {
-				const loadItems = vi
-					.fn<ItemsLoader<unknown, unknown, unknown>>()
-					.mockRejectedValue(new Error("test"));
+				const loadItems = mock().mockRejectedValue(new Error("test"));
 
 				const filterlist = new Filterlist({
 					autoload: false,
@@ -249,7 +241,7 @@ describe.concurrent.each([
 	});
 
 	test("set total", async () => {
-		const loadItems = vi.fn().mockResolvedValue({
+		const loadItems = mock().mockResolvedValue({
 			items: [1, 2, 3],
 			total: 15,
 		});
@@ -259,7 +251,7 @@ describe.concurrent.each([
 			loadItems,
 		});
 
-		await vi.waitFor(() => {
+		await waitFor(() => {
 			expect(loadItems).toHaveBeenCalledTimes(1);
 		});
 
@@ -269,7 +261,7 @@ describe.concurrent.each([
 	});
 
 	test("set additional", async () => {
-		const loadItems = vi.fn().mockResolvedValue({
+		const loadItems = mock().mockResolvedValue({
 			items: [1, 2, 3],
 			additional: {
 				foo: "bar",
@@ -281,7 +273,7 @@ describe.concurrent.each([
 			loadItems,
 		});
 
-		await vi.waitFor(() => {
+		await waitFor(() => {
 			expect(loadItems).toHaveBeenCalledTimes(1);
 		});
 
@@ -295,8 +287,7 @@ describe.concurrent.each([
 	describe("load items methods", () => {
 		describe("loadMore", () => {
 			test("one page", async () => {
-				const loadItems = vi
-					.fn<ItemsLoader<unknown, unknown, unknown>>()
+				const loadItems = mock()
 					.mockResolvedValueOnce({
 						items: [1, 2, 3],
 					})
@@ -311,7 +302,7 @@ describe.concurrent.each([
 
 				expect(filterlist.getListState().loadedPages).toEqual(0);
 
-				await vi.waitFor(() => {
+				await waitFor(() => {
 					expect(loadItems).toHaveBeenCalledTimes(1);
 				});
 
@@ -319,7 +310,7 @@ describe.concurrent.each([
 
 				expect(filterlist.getListState().loadedPages).toEqual(1);
 
-				await vi.waitFor(() => {
+				await waitFor(() => {
 					expect(loadItems).toHaveBeenCalledTimes(2);
 				});
 
@@ -339,8 +330,7 @@ describe.concurrent.each([
 			});
 
 			test("multiple pages", async () => {
-				const loadItems = vi
-					.fn<ItemsLoader<unknown, unknown, unknown>>()
+				const loadItems = mock()
 					.mockResolvedValueOnce({
 						items: [1, 2, 3],
 						loadedPages: 3,
@@ -357,7 +347,7 @@ describe.concurrent.each([
 
 				expect(filterlist.getListState().loadedPages).toEqual(0);
 
-				await vi.waitFor(() => {
+				await waitFor(() => {
 					expect(loadItems).toHaveBeenCalledTimes(1);
 				});
 
@@ -365,7 +355,7 @@ describe.concurrent.each([
 
 				expect(filterlist.getListState().loadedPages).toEqual(3);
 
-				await vi.waitFor(() => {
+				await waitFor(() => {
 					expect(loadItems).toHaveBeenCalledTimes(2);
 				});
 
@@ -386,8 +376,7 @@ describe.concurrent.each([
 		});
 
 		test("applyFilter", async () => {
-			const loadItems = vi
-				.fn<ItemsLoader<unknown, unknown, unknown>>()
+			const loadItems = mock()
 				.mockResolvedValueOnce({
 					items: [1, 2, 3],
 				})
@@ -402,7 +391,7 @@ describe.concurrent.each([
 
 			expect(filterlist.getListState().loadedPages).toEqual(0);
 
-			await vi.waitFor(() => {
+			await waitFor(() => {
 				expect(loadItems).toHaveBeenCalledTimes(1);
 			});
 
@@ -411,7 +400,7 @@ describe.concurrent.each([
 			filterlist.setFilterValue("foo", "bar");
 			filterlist.applyFilter("foo");
 
-			await vi.waitFor(() => {
+			await waitFor(() => {
 				expect(loadItems).toHaveBeenCalledTimes(2);
 			});
 
@@ -435,8 +424,7 @@ describe.concurrent.each([
 		});
 
 		test("setAndApplyFilter", async () => {
-			const loadItems = vi
-				.fn<ItemsLoader<unknown, unknown, unknown>>()
+			const loadItems = mock()
 				.mockResolvedValueOnce({
 					items: [1, 2, 3],
 				})
@@ -451,7 +439,7 @@ describe.concurrent.each([
 
 			expect(filterlist.getListState().loadedPages).toEqual(0);
 
-			await vi.waitFor(() => {
+			await waitFor(() => {
 				expect(loadItems).toHaveBeenCalledTimes(1);
 			});
 
@@ -459,7 +447,7 @@ describe.concurrent.each([
 
 			filterlist.setAndApplyFilter("foo", "bar");
 
-			await vi.waitFor(() => {
+			await waitFor(() => {
 				expect(loadItems).toHaveBeenCalledTimes(2);
 			});
 
@@ -483,8 +471,7 @@ describe.concurrent.each([
 		});
 
 		test("resetFilter", async () => {
-			const loadItems = vi
-				.fn<ItemsLoader<unknown, unknown, unknown>>()
+			const loadItems = mock()
 				.mockResolvedValueOnce({
 					items: [1, 2, 3],
 				})
@@ -502,7 +489,7 @@ describe.concurrent.each([
 
 			expect(filterlist.getListState().loadedPages).toEqual(0);
 
-			await vi.waitFor(() => {
+			await waitFor(() => {
 				expect(loadItems).toHaveBeenCalledTimes(1);
 			});
 
@@ -510,7 +497,7 @@ describe.concurrent.each([
 
 			filterlist.resetFilter("foo");
 
-			await vi.waitFor(() => {
+			await waitFor(() => {
 				expect(loadItems).toHaveBeenCalledTimes(2);
 			});
 
@@ -532,8 +519,7 @@ describe.concurrent.each([
 		});
 
 		test("applyFilters", async () => {
-			const loadItems = vi
-				.fn<ItemsLoader<unknown, unknown, unknown>>()
+			const loadItems = mock()
 				.mockResolvedValueOnce({
 					items: [1, 2, 3],
 				})
@@ -548,7 +534,7 @@ describe.concurrent.each([
 
 			expect(filterlist.getListState().loadedPages).toEqual(0);
 
-			await vi.waitFor(() => {
+			await waitFor(() => {
 				expect(loadItems).toHaveBeenCalledTimes(1);
 			});
 
@@ -560,7 +546,7 @@ describe.concurrent.each([
 			});
 			filterlist.applyFilters(["foo", "baz"]);
 
-			await vi.waitFor(() => {
+			await waitFor(() => {
 				expect(loadItems).toHaveBeenCalledTimes(2);
 			});
 
@@ -585,8 +571,7 @@ describe.concurrent.each([
 		});
 
 		test("setAndApplyFilters", async () => {
-			const loadItems = vi
-				.fn<ItemsLoader<unknown, unknown, unknown>>()
+			const loadItems = mock()
 				.mockResolvedValueOnce({
 					items: [1, 2, 3],
 				})
@@ -601,7 +586,7 @@ describe.concurrent.each([
 
 			expect(filterlist.getListState().loadedPages).toEqual(0);
 
-			await vi.waitFor(() => {
+			await waitFor(() => {
 				expect(loadItems).toHaveBeenCalledTimes(1);
 			});
 
@@ -612,7 +597,7 @@ describe.concurrent.each([
 				baz: "qux",
 			});
 
-			await vi.waitFor(() => {
+			await waitFor(() => {
 				expect(loadItems).toHaveBeenCalledTimes(2);
 			});
 
@@ -637,8 +622,7 @@ describe.concurrent.each([
 		});
 
 		test("setAndApplyEmptyFilters", async () => {
-			const loadItems = vi
-				.fn<ItemsLoader<unknown, unknown, unknown>>()
+			const loadItems = mock()
 				.mockResolvedValueOnce({
 					items: [1, 2, 3],
 				})
@@ -658,7 +642,7 @@ describe.concurrent.each([
 
 			expect(filterlist.getListState().loadedPages).toEqual(0);
 
-			await vi.waitFor(() => {
+			await waitFor(() => {
 				expect(loadItems).toHaveBeenCalledTimes(1);
 			});
 
@@ -672,7 +656,7 @@ describe.concurrent.each([
 				bat: "e",
 			});
 
-			await vi.waitFor(() => {
+			await waitFor(() => {
 				expect(loadItems).toHaveBeenCalledTimes(2);
 			});
 
@@ -718,8 +702,7 @@ describe.concurrent.each([
 		});
 
 		test("resetFilters", async () => {
-			const loadItems = vi
-				.fn<ItemsLoader<unknown, unknown, unknown>>()
+			const loadItems = mock()
 				.mockResolvedValueOnce({
 					items: [1, 2, 3],
 				})
@@ -738,7 +721,7 @@ describe.concurrent.each([
 
 			expect(filterlist.getListState().loadedPages).toEqual(0);
 
-			await vi.waitFor(() => {
+			await waitFor(() => {
 				expect(loadItems).toHaveBeenCalledTimes(1);
 			});
 
@@ -746,7 +729,7 @@ describe.concurrent.each([
 
 			filterlist.resetFilters(["foo", "baz"]);
 
-			await vi.waitFor(() => {
+			await waitFor(() => {
 				expect(loadItems).toHaveBeenCalledTimes(2);
 			});
 
@@ -768,8 +751,7 @@ describe.concurrent.each([
 		});
 
 		test("resetAllFilters", async () => {
-			const loadItems = vi
-				.fn<ItemsLoader<unknown, unknown, unknown>>()
+			const loadItems = mock()
 				.mockResolvedValueOnce({
 					items: [1, 2, 3],
 				})
@@ -788,7 +770,7 @@ describe.concurrent.each([
 
 			expect(filterlist.getListState().loadedPages).toEqual(0);
 
-			await vi.waitFor(() => {
+			await waitFor(() => {
 				expect(loadItems).toHaveBeenCalledTimes(1);
 			});
 
@@ -796,7 +778,7 @@ describe.concurrent.each([
 
 			filterlist.resetAllFilters();
 
-			await vi.waitFor(() => {
+			await waitFor(() => {
 				expect(loadItems).toHaveBeenCalledTimes(2);
 			});
 
@@ -818,8 +800,7 @@ describe.concurrent.each([
 		});
 
 		test("setPage", async () => {
-			const loadItems = vi
-				.fn<ItemsLoader<unknown, unknown, unknown>>()
+			const loadItems = mock()
 				.mockResolvedValueOnce({
 					items: [1, 2, 3],
 				})
@@ -834,7 +815,7 @@ describe.concurrent.each([
 
 			expect(filterlist.getListState().loadedPages).toEqual(0);
 
-			await vi.waitFor(() => {
+			await waitFor(() => {
 				expect(loadItems).toHaveBeenCalledTimes(1);
 			});
 
@@ -842,7 +823,7 @@ describe.concurrent.each([
 
 			filterlist.setPage(3);
 
-			await vi.waitFor(() => {
+			await waitFor(() => {
 				expect(loadItems).toHaveBeenCalledTimes(2);
 			});
 
@@ -863,8 +844,7 @@ describe.concurrent.each([
 		});
 
 		test("setPageSize", async () => {
-			const loadItems = vi
-				.fn<ItemsLoader<unknown, unknown, unknown>>()
+			const loadItems = mock()
 				.mockResolvedValueOnce({
 					items: [1, 2, 3],
 				})
@@ -879,7 +859,7 @@ describe.concurrent.each([
 
 			expect(filterlist.getListState().loadedPages).toEqual(0);
 
-			await vi.waitFor(() => {
+			await waitFor(() => {
 				expect(loadItems).toHaveBeenCalledTimes(1);
 			});
 
@@ -887,7 +867,7 @@ describe.concurrent.each([
 
 			filterlist.setPageSize(30);
 
-			await vi.waitFor(() => {
+			await waitFor(() => {
 				expect(loadItems).toHaveBeenCalledTimes(2);
 			});
 
@@ -909,8 +889,7 @@ describe.concurrent.each([
 
 		describe("setSorting", () => {
 			test("with asc", async () => {
-				const loadItems = vi
-					.fn<ItemsLoader<unknown, unknown, unknown>>()
+				const loadItems = mock()
 					.mockResolvedValueOnce({
 						items: [1, 2, 3],
 					})
@@ -925,7 +904,7 @@ describe.concurrent.each([
 
 				expect(filterlist.getListState().loadedPages).toEqual(0);
 
-				await vi.waitFor(() => {
+				await waitFor(() => {
 					expect(loadItems).toHaveBeenCalledTimes(1);
 				});
 
@@ -933,7 +912,7 @@ describe.concurrent.each([
 
 				filterlist.setSorting("id", true);
 
-				await vi.waitFor(() => {
+				await waitFor(() => {
 					expect(loadItems).toHaveBeenCalledTimes(2);
 				});
 
@@ -957,8 +936,7 @@ describe.concurrent.each([
 			});
 
 			test("without asc", async () => {
-				const loadItems = vi
-					.fn<ItemsLoader<unknown, unknown, unknown>>()
+				const loadItems = mock()
 					.mockResolvedValueOnce({
 						items: [1, 2, 3],
 					})
@@ -977,7 +955,7 @@ describe.concurrent.each([
 
 				expect(filterlist.getListState().loadedPages).toEqual(0);
 
-				await vi.waitFor(() => {
+				await waitFor(() => {
 					expect(loadItems).toHaveBeenCalledTimes(1);
 				});
 
@@ -985,7 +963,7 @@ describe.concurrent.each([
 
 				filterlist.setSorting("id");
 
-				await vi.waitFor(() => {
+				await waitFor(() => {
 					expect(loadItems).toHaveBeenCalledTimes(2);
 				});
 
@@ -1009,8 +987,7 @@ describe.concurrent.each([
 			});
 
 			test("toggle asc", async () => {
-				const loadItems = vi
-					.fn<ItemsLoader<unknown, unknown, unknown>>()
+				const loadItems = mock()
 					.mockResolvedValueOnce({
 						items: [1, 2, 3],
 					})
@@ -1029,7 +1006,7 @@ describe.concurrent.each([
 
 				expect(filterlist.getListState().loadedPages).toEqual(0);
 
-				await vi.waitFor(() => {
+				await waitFor(() => {
 					expect(loadItems).toHaveBeenCalledTimes(1);
 				});
 
@@ -1037,7 +1014,7 @@ describe.concurrent.each([
 
 				filterlist.setSorting("id");
 
-				await vi.waitFor(() => {
+				await waitFor(() => {
 					expect(loadItems).toHaveBeenCalledTimes(2);
 				});
 
@@ -1062,8 +1039,7 @@ describe.concurrent.each([
 		});
 
 		test("resetSorting", async () => {
-			const loadItems = vi
-				.fn<ItemsLoader<unknown, unknown, unknown>>()
+			const loadItems = mock()
 				.mockResolvedValueOnce({
 					items: [1, 2, 3],
 				})
@@ -1082,7 +1058,7 @@ describe.concurrent.each([
 
 			expect(filterlist.getListState().loadedPages).toEqual(0);
 
-			await vi.waitFor(() => {
+			await waitFor(() => {
 				expect(loadItems).toHaveBeenCalledTimes(1);
 			});
 
@@ -1090,7 +1066,7 @@ describe.concurrent.each([
 
 			filterlist.resetSorting();
 
-			await vi.waitFor(() => {
+			await waitFor(() => {
 				expect(loadItems).toHaveBeenCalledTimes(2);
 			});
 
@@ -1114,8 +1090,7 @@ describe.concurrent.each([
 		});
 
 		test("reload", async () => {
-			const loadItems = vi
-				.fn<ItemsLoader<unknown, unknown, unknown>>()
+			const loadItems = mock()
 				.mockResolvedValueOnce({
 					items: [1, 2, 3],
 				})
@@ -1139,7 +1114,7 @@ describe.concurrent.each([
 
 			expect(filterlist.getListState().loadedPages).toEqual(0);
 
-			await vi.waitFor(() => {
+			await waitFor(() => {
 				expect(loadItems).toHaveBeenCalledTimes(1);
 			});
 
@@ -1147,7 +1122,7 @@ describe.concurrent.each([
 
 			filterlist.reload();
 
-			await vi.waitFor(() => {
+			await waitFor(() => {
 				expect(loadItems).toHaveBeenCalledTimes(2);
 			});
 
@@ -1180,8 +1155,7 @@ describe.concurrent.each([
 
 	describe("reset page", () => {
 		test("on filter change", async () => {
-			const loadItems = vi
-				.fn<ItemsLoader<unknown, unknown, unknown>>()
+			const loadItems = mock()
 				.mockResolvedValueOnce({
 					items: [1, 2, 3],
 				})
@@ -1198,7 +1172,7 @@ describe.concurrent.each([
 
 			expect(filterlist.getListState().loadedPages).toEqual(0);
 
-			await vi.waitFor(() => {
+			await waitFor(() => {
 				expect(loadItems).toHaveBeenCalledTimes(1);
 			});
 
@@ -1206,7 +1180,7 @@ describe.concurrent.each([
 
 			filterlist.setAndApplyFilters({});
 
-			await vi.waitFor(() => {
+			await waitFor(() => {
 				expect(loadItems).toHaveBeenCalledTimes(2);
 			});
 
@@ -1221,8 +1195,7 @@ describe.concurrent.each([
 		});
 
 		test("on sort change", async () => {
-			const loadItems = vi
-				.fn<ItemsLoader<unknown, unknown, unknown>>()
+			const loadItems = mock()
 				.mockResolvedValueOnce({
 					items: [1, 2, 3],
 				})
@@ -1239,7 +1212,7 @@ describe.concurrent.each([
 
 			expect(filterlist.getListState().loadedPages).toEqual(0);
 
-			await vi.waitFor(() => {
+			await waitFor(() => {
 				expect(loadItems).toHaveBeenCalledTimes(1);
 			});
 
@@ -1247,7 +1220,7 @@ describe.concurrent.each([
 
 			filterlist.resetSorting();
 
-			await vi.waitFor(() => {
+			await waitFor(() => {
 				expect(loadItems).toHaveBeenCalledTimes(2);
 			});
 
@@ -1262,8 +1235,7 @@ describe.concurrent.each([
 		});
 
 		test("on page size change", async () => {
-			const loadItems = vi
-				.fn<ItemsLoader<unknown, unknown, unknown>>()
+			const loadItems = mock()
 				.mockResolvedValueOnce({
 					items: [1, 2, 3],
 				})
@@ -1280,7 +1252,7 @@ describe.concurrent.each([
 
 			expect(filterlist.getListState().loadedPages).toEqual(0);
 
-			await vi.waitFor(() => {
+			await waitFor(() => {
 				expect(loadItems).toHaveBeenCalledTimes(1);
 			});
 
@@ -1288,7 +1260,7 @@ describe.concurrent.each([
 
 			filterlist.setPageSize(50);
 
-			await vi.waitFor(() => {
+			await waitFor(() => {
 				expect(loadItems).toHaveBeenCalledTimes(2);
 			});
 
@@ -1307,7 +1279,7 @@ describe.concurrent.each([
 		test("setTotal", () => {
 			const filterlist = new Filterlist({
 				createDataStore,
-				loadItems: vi.fn().mockResolvedValue({
+				loadItems: mock().mockResolvedValue({
 					items: [],
 				}),
 			});
@@ -1320,12 +1292,12 @@ describe.concurrent.each([
 		test("insertItem", async () => {
 			const filterlist = new Filterlist({
 				createDataStore,
-				loadItems: vi.fn().mockResolvedValue({
+				loadItems: mock().mockResolvedValue({
 					items: [1, 2, 3],
 				}),
 			});
 
-			await vi.waitFor(() => {
+			await waitFor(() => {
 				expect(filterlist.getListState().items.length).toBeGreaterThan(0);
 			});
 
@@ -1337,12 +1309,12 @@ describe.concurrent.each([
 		test("deleteItem", async () => {
 			const filterlist = new Filterlist({
 				createDataStore,
-				loadItems: vi.fn().mockResolvedValue({
+				loadItems: mock().mockResolvedValue({
 					items: [1, 2, 3],
 				}),
 			});
 
-			await vi.waitFor(() => {
+			await waitFor(() => {
 				expect(filterlist.getListState().items.length).toBeGreaterThan(0);
 			});
 
@@ -1354,12 +1326,12 @@ describe.concurrent.each([
 		test("updateItem", async () => {
 			const filterlist = new Filterlist({
 				createDataStore,
-				loadItems: vi.fn().mockResolvedValue({
+				loadItems: mock().mockResolvedValue({
 					items: [1, 2, 3],
 				}),
 			});
 
-			await vi.waitFor(() => {
+			await waitFor(() => {
 				expect(filterlist.getListState().items.length).toBeGreaterThan(0);
 			});
 
@@ -1371,11 +1343,9 @@ describe.concurrent.each([
 
 	describe("debounce", () => {
 		test("debounced", async () => {
-			const loadItems = vi
-				.fn<ItemsLoader<unknown, unknown, unknown>>()
-				.mockResolvedValue({
-					items: [1, 2, 3],
-				});
+			const loadItems = mock().mockResolvedValue({
+				items: [1, 2, 3],
+			});
 
 			const filterlist = new Filterlist({
 				createDataStore,
@@ -1387,7 +1357,7 @@ describe.concurrent.each([
 			filterlist.setAndApplyFilter("foo", "baz");
 			filterlist.setAndApplyFilter("foo", "qux");
 
-			await vi.waitFor(() => {
+			await waitFor(() => {
 				expect(loadItems).toHaveBeenCalledTimes(1);
 			});
 
@@ -1397,8 +1367,7 @@ describe.concurrent.each([
 		});
 
 		test("not debounced", async () => {
-			const loadItems = vi
-				.fn<ItemsLoader<unknown, unknown, unknown>>()
+			const loadItems = mock()
 				.mockResolvedValue({
 					items: [1, 2, 3],
 				})
@@ -1427,7 +1396,7 @@ describe.concurrent.each([
 				filterlist.setAndApplyFilter("foo", "qux");
 			});
 
-			await vi.waitFor(() => {
+			await waitFor(() => {
 				expect(loadItems).toHaveBeenCalledTimes(4);
 			});
 
@@ -1437,8 +1406,7 @@ describe.concurrent.each([
 
 	describe("auto refresh", () => {
 		test("disabled", async () => {
-			const loadItems = vi
-				.fn<ItemsLoader<unknown, unknown, unknown>>()
+			const loadItems = mock()
 				.mockResolvedValue({
 					items: [1, 2, 3],
 				})
@@ -1465,8 +1433,7 @@ describe.concurrent.each([
 		});
 
 		test("enabled", async () => {
-			const loadItems = vi
-				.fn<ItemsLoader<unknown, unknown, unknown>>()
+			const loadItems = mock()
 				.mockResolvedValue({
 					items: [1, 2, 3],
 				})
@@ -1503,8 +1470,7 @@ describe.concurrent.each([
 				return res;
 			};
 
-			const loadItems = vi
-				.fn<ItemsLoader<unknown, unknown, unknown>>()
+			const loadItems = mock()
 				.mockResolvedValue({
 					items: [1, 2, 3],
 				})
@@ -1535,8 +1501,7 @@ describe.concurrent.each([
 
 	describe("save items while loading", () => {
 		test("not save", async () => {
-			const loadItems = vi
-				.fn<ItemsLoader<unknown, unknown, unknown>>()
+			const loadItems = mock()
 				.mockResolvedValueOnce({
 					items: [1, 2, 3],
 				})
@@ -1549,7 +1514,7 @@ describe.concurrent.each([
 				loadItems,
 			});
 
-			await vi.waitFor(() => {
+			await waitFor(() => {
 				expect(loadItems).toHaveBeenCalledTimes(1);
 			});
 
@@ -1559,7 +1524,7 @@ describe.concurrent.each([
 
 			expect(filterlist.getListState().items).toEqual([]);
 
-			await vi.waitFor(() => {
+			await waitFor(() => {
 				expect(loadItems).toHaveBeenCalledTimes(2);
 			});
 
@@ -1567,8 +1532,7 @@ describe.concurrent.each([
 		});
 
 		test("save", async () => {
-			const loadItems = vi
-				.fn<ItemsLoader<unknown, unknown, unknown>>()
+			const loadItems = mock()
 				.mockResolvedValueOnce({
 					items: [1, 2, 3],
 				})
@@ -1582,7 +1546,7 @@ describe.concurrent.each([
 				saveItemsWhileLoad: true,
 			});
 
-			await vi.waitFor(() => {
+			await waitFor(() => {
 				expect(loadItems).toHaveBeenCalledTimes(1);
 			});
 
@@ -1592,7 +1556,7 @@ describe.concurrent.each([
 
 			expect(filterlist.getListState().items).toEqual([1, 2, 3]);
 
-			await vi.waitFor(() => {
+			await waitFor(() => {
 				expect(loadItems).toHaveBeenCalledTimes(2);
 			});
 
@@ -1602,8 +1566,7 @@ describe.concurrent.each([
 
 	describe("reset values of filters", () => {
 		test("resetFilter", async () => {
-			const loadItems = vi
-				.fn<ItemsLoader<unknown, unknown, unknown>>()
+			const loadItems = mock()
 				.mockResolvedValueOnce({
 					items: [1, 2, 3],
 				})
@@ -1624,7 +1587,7 @@ describe.concurrent.each([
 
 			expect(filterlist.getListState().loadedPages).toEqual(0);
 
-			await vi.waitFor(() => {
+			await waitFor(() => {
 				expect(loadItems).toHaveBeenCalledTimes(1);
 			});
 
@@ -1632,7 +1595,7 @@ describe.concurrent.each([
 
 			filterlist.resetFilter("foo");
 
-			await vi.waitFor(() => {
+			await waitFor(() => {
 				expect(loadItems).toHaveBeenCalledTimes(2);
 			});
 
@@ -1649,8 +1612,7 @@ describe.concurrent.each([
 		});
 
 		test("resetFilters", async () => {
-			const loadItems = vi
-				.fn<ItemsLoader<unknown, unknown, unknown>>()
+			const loadItems = mock()
 				.mockResolvedValueOnce({
 					items: [1, 2, 3],
 				})
@@ -1673,7 +1635,7 @@ describe.concurrent.each([
 
 			expect(filterlist.getListState().loadedPages).toEqual(0);
 
-			await vi.waitFor(() => {
+			await waitFor(() => {
 				expect(loadItems).toHaveBeenCalledTimes(1);
 			});
 
@@ -1681,7 +1643,7 @@ describe.concurrent.each([
 
 			filterlist.resetFilters(["foo", "baz"]);
 
-			await vi.waitFor(() => {
+			await waitFor(() => {
 				expect(loadItems).toHaveBeenCalledTimes(2);
 			});
 
@@ -1699,8 +1661,7 @@ describe.concurrent.each([
 		});
 
 		test("resetAllFilters", async () => {
-			const loadItems = vi
-				.fn<ItemsLoader<unknown, unknown, unknown>>()
+			const loadItems = mock()
 				.mockResolvedValueOnce({
 					items: [1, 2, 3],
 				})
@@ -1723,7 +1684,7 @@ describe.concurrent.each([
 
 			expect(filterlist.getListState().loadedPages).toEqual(0);
 
-			await vi.waitFor(() => {
+			await waitFor(() => {
 				expect(loadItems).toHaveBeenCalledTimes(1);
 			});
 
@@ -1731,7 +1692,7 @@ describe.concurrent.each([
 
 			filterlist.resetAllFilters();
 
-			await vi.waitFor(() => {
+			await waitFor(() => {
 				expect(loadItems).toHaveBeenCalledTimes(2);
 			});
 
@@ -1750,11 +1711,9 @@ describe.concurrent.each([
 	});
 
 	test("setRefreshTimeout", async () => {
-		const loadItems = vi
-			.fn<ItemsLoader<unknown, unknown, unknown>>()
-			.mockResolvedValue({
-				items: [],
-			});
+		const loadItems = mock().mockResolvedValue({
+			items: [],
+		});
 
 		const filterlist = new Filterlist({
 			createDataStore,

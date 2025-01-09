@@ -31,7 +31,7 @@
     "qwik"
   ],
   "scripts": {
-    "build": "yarn build:lib && yarn build:types",
+    "build": "bun run build:lib && bun run build:types",
     "build:lib": "vite build --mode lib",
     "build:types": "tsc --emitDeclarationOnly",
     "lint": "biome check src",
@@ -40,8 +40,8 @@
     "test:ts": "tsc --noEmit",
     "test:unit": "vitest run",
     "test:unit:dev": "vitest",
-    "test": "yarn test:unit",
-    "prepare": "yarn build"
+    "test": "bun run test:unit",
+    "prepare": "bun run build"
   },
   "peerDependencies": {
     "@builder.io/qwik": "^1.5.1",

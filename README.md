@@ -18,14 +18,14 @@ Util for creating lists with filters, sotring, paginatinon, endless scroll etc.
 
 ## Local development
 
-Repository is using [yarn berry](https://yarnpkg.com/getting-started).
+Repository is using [Bun](https://bun.sh/).
 
 ### Commands
 
-- `yarn build` - build all packages;
+- `bun run lint:fix` - correct code of all packages;
 
-- `yarn clean` - clean all prebuilded files;
+- `bun run build` - build all packages;
 
-- `yarn test` - run code validators and unit tests;
+- `bun run test` - run code validators and unit tests;
 
-- `yarn start` - start [storybook](https://storybook.js.org/) with examples.
+- `bun run start` - start [storybook](https://storybook.js.org/) with examples.

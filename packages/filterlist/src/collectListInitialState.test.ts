@@ -1,4 +1,4 @@
-import { describe, expect, test } from "vitest";
+import { describe, expect, test } from "bun:test";
 
 import { collectListInitialState } from "./collectListInitialState";
 import { listInitialState } from "./listInitialState";
@@ -12,7 +12,7 @@ const defaultParams = {
 	}),
 };
 
-describe.concurrent("collectListInitialState", () => {
+describe("collectListInitialState", () => {
 	test("should return listInitialState", () => {
 		expect(collectListInitialState(defaultParams)).toEqual([
 			initialRequestParams,

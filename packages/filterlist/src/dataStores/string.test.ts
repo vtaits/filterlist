@@ -1,10 +1,13 @@
-import { describe, expect, test, vi } from "vitest";
+import { describe, expect, mock, test } from "bun:test";
+import { waitFor } from "@testing-library/dom";
 import { Filterlist } from "../Filterlist";
 import {
 	type StringBasedDataStoreOptions,
 	createEmitter,
 	createStringBasedDataStore,
 } from "./string";
+
+const ORIGIN = "http://localhost";
 
 const historyEmitter = createEmitter();
 
@@ -17,7 +20,7 @@ function makeCreateDataStore(options: StringBasedDataStoreOptions = {}) {
 		return createStringBasedDataStore(
 			() => window.location.search,
 			(nextSearch) => {
-				window.location.href = `${window.location.pathname}?${nextSearch}`;
+				window.location.href = `${ORIGIN}${window.location.pathname}?${nextSearch}`;
 			},
 			historyEmitter,
 			options,
@@ -27,107 +30,119 @@ function makeCreateDataStore(options: StringBasedDataStoreOptions = {}) {
 	return createDataStore;
 }
 
-test.concurrent.each([
-	{
-		href: "/page",
-		appliedFilters: {},
-		page: 1,
-		pageSize: undefined,
-		sort: {
-			param: undefined,
-			asc: true,
+test.each([
+	[
+		"/page",
+		{
+			appliedFilters: {},
+			page: 1,
+			pageSize: undefined,
+			sort: {
+				param: undefined,
+				asc: true,
+			},
+			options: undefined,
 		},
-		options: undefined,
-	},
-	{
-		href: "/page?page=3&page_size=20&sort=-id&foo=bar&baz=qux",
-		appliedFilters: {
-			foo: "bar",
-			baz: "qux",
+	],
+	[
+		"/page?page=3&page_size=20&sort=-id&foo=bar&baz=qux",
+		{
+			appliedFilters: {
+				foo: "bar",
+				baz: "qux",
+			},
+			page: 3,
+			pageSize: 20,
+			sort: {
+				param: "id",
+				asc: false,
+			},
+			options: undefined,
 		},
-		page: 3,
-		pageSize: 20,
-		sort: {
-			param: "id",
-			asc: false,
+	],
+	[
+		"/page?page=3&page_size=20&sort=id&foo=bar&baz=qux",
+		{
+			appliedFilters: {
+				foo: "bar",
+				baz: "qux",
+			},
+			page: 3,
+			pageSize: 20,
+			sort: {
+				param: "id",
+				asc: true,
+			},
+			options: undefined,
 		},
-		options: undefined,
-	},
-	{
-		href: "/page?page=3&page_size=20&sort=id&foo=bar&baz=qux",
-		appliedFilters: {
-			foo: "bar",
-			baz: "qux",
-		},
-		page: 3,
-		pageSize: 20,
-		sort: {
-			param: "id",
-			asc: true,
-		},
-		options: undefined,
-	},
-	{
-		href: "/page?test_page=3&test_page_size=20&test_sort=id&foo=bar&baz=qux",
-		appliedFilters: {
-			foo: "bar",
-			baz: "qux",
-		},
-		page: 3,
-		pageSize: 20,
-		sort: {
-			param: "id",
-			asc: true,
-		},
-		options: {
-			pageKey: "test_page",
-			pageSizeKey: "test_page_size",
-			sortKey: "test_sort",
-		},
-	},
-	{
-		href: "/page?foo[]&bar=abc&bar=123&baz=qux",
-		appliedFilters: {
-			foo: [],
-			bar: ["abc", "123"],
-			baz: "qux",
-		},
-		page: 1,
-		pageSize: undefined,
-		sort: {
-			param: undefined,
-			asc: true,
-		},
-		options: undefined,
-	},
-	{
-		href: "/page?foo[]+bar=abc+bar=123+baz=qux",
-		appliedFilters: {
-			foo: [""],
-			bar: ["abc", "123"],
-			baz: "qux",
-		},
-		page: 1,
-		pageSize: undefined,
-		sort: {
-			param: undefined,
-			asc: true,
-		},
-		options: {
-			parseOptions: {
-				allowEmptyArrays: false,
-				delimiter: "+",
+	],
+	[
+		"/page?test_page=3&test_page_size=20&test_sort=id&foo=bar&baz=qux",
+		{
+			appliedFilters: {
+				foo: "bar",
+				baz: "qux",
+			},
+			page: 3,
+			pageSize: 20,
+			sort: {
+				param: "id",
+				asc: true,
+			},
+			options: {
+				pageKey: "test_page",
+				pageSizeKey: "test_page_size",
+				sortKey: "test_sort",
 			},
 		},
-	},
+	],
+	[
+		"/page?foo[]&bar=abc&bar=123&baz=qux",
+		{
+			appliedFilters: {
+				foo: [],
+				bar: ["abc", "123"],
+				baz: "qux",
+			},
+			page: 1,
+			pageSize: undefined,
+			sort: {
+				param: undefined,
+				asc: true,
+			},
+			options: undefined,
+		},
+	],
+	[
+		"/page?foo[]+bar=abc+bar=123+baz=qux",
+		{
+			appliedFilters: {
+				foo: [""],
+				bar: ["abc", "123"],
+				baz: "qux",
+			},
+			page: 1,
+			pageSize: undefined,
+			sort: {
+				param: undefined,
+				asc: true,
+			},
+			options: {
+				parseOptions: {
+					allowEmptyArrays: false,
+					delimiter: "+",
+				},
+			},
+		},
+	],
 ])(
-	"should parse query correctly: $href",
-	({ href, appliedFilters, page, pageSize, sort, options }) => {
-		window.location.href = href;
+	"should parse query correctly: %s",
+	(href, { appliedFilters, page, pageSize, sort, options }) => {
+		window.location.href = `${ORIGIN}${href}`;
 
 		const filterlist = new Filterlist({
 			createDataStore: makeCreateDataStore(options),
-			loadItems: vi.fn().mockResolvedValue({
+			loadItems: mock().mockResolvedValue({
 				items: [],
 			}),
 		});
@@ -141,35 +156,39 @@ test.concurrent.each([
 	},
 );
 
-describe.concurrent("should change query", () => {
+describe("should change query", () => {
 	test.each([
-		{
-			filters: {
-				foo: "bar",
-				baz: "qux",
+		[
+			"?foo=bar&baz=qux",
+			{
+				filters: {
+					foo: "bar",
+					baz: "qux",
+				},
 			},
-			search: "?foo=bar&baz=qux",
-		},
-		{
-			filters: {
-				foo: [],
-				bar: ["abc", "123"],
+		],
+		[
+			`?foo[]&bar${encodeURIComponent("[0]")}=abc&bar${encodeURIComponent("[1]")}=123`,
+			{
+				filters: {
+					foo: [],
+					bar: ["abc", "123"],
+				},
 			},
-			search: `?foo[]&bar${encodeURIComponent("[0]")}=abc&bar${encodeURIComponent("[1]")}=123`,
-		},
-	])("filters to $search", async ({ filters, search }) => {
-		window.location.href = "/page";
+		],
+	])("filters to $search", async (search, { filters }) => {
+		window.location.href = `${ORIGIN}/page`;
 
 		const filterlist = new Filterlist({
 			createDataStore: makeCreateDataStore(),
-			loadItems: vi.fn().mockResolvedValue({
+			loadItems: mock().mockResolvedValue({
 				items: [],
 			}),
 		});
 
 		filterlist.setAndApplyFilters(filters);
 
-		await vi.waitFor(() => {
+		await waitFor(() => {
 			expect(window.location.search).toBe(search);
 		});
 
@@ -177,7 +196,7 @@ describe.concurrent("should change query", () => {
 	});
 
 	test("redefine `stringifyOptions`", async () => {
-		window.location.href = "/page";
+		window.location.href = `${ORIGIN}/page`;
 
 		const filterlist = new Filterlist({
 			createDataStore: makeCreateDataStore({
@@ -186,7 +205,7 @@ describe.concurrent("should change query", () => {
 					arrayFormat: "repeat",
 				},
 			}),
-			loadItems: vi.fn().mockResolvedValue({
+			loadItems: mock().mockResolvedValue({
 				items: [],
 			}),
 		});
@@ -196,7 +215,7 @@ describe.concurrent("should change query", () => {
 			bar: ["abc", "123"],
 		});
 
-		await vi.waitFor(() => {
+		await waitFor(() => {
 			expect(window.location.search).toBe("?bar=abc&bar=123");
 		});
 
@@ -204,11 +223,11 @@ describe.concurrent("should change query", () => {
 	});
 
 	test("all parameters", async () => {
-		window.location.href = "/page";
+		window.location.href = `${ORIGIN}/page`;
 
 		const filterlist = new Filterlist({
 			createDataStore: makeCreateDataStore(),
-			loadItems: vi.fn().mockResolvedValue({
+			loadItems: mock().mockResolvedValue({
 				items: [],
 			}),
 		});
@@ -221,7 +240,7 @@ describe.concurrent("should change query", () => {
 		filterlist.setSorting("id", false);
 		filterlist.setPage(3);
 
-		await vi.waitFor(() => {
+		await waitFor(() => {
 			expect(window.location.search).toBe(
 				"?foo=bar&baz=qux&page=3&page_size=20&sort=-id",
 			);
@@ -232,11 +251,11 @@ describe.concurrent("should change query", () => {
 });
 
 test("navigate backward", async () => {
-	window.location.href = "/page";
+	window.location.href = `${ORIGIN}/page`;
 
 	const filterlist = new Filterlist({
 		createDataStore: makeCreateDataStore(),
-		loadItems: vi.fn().mockResolvedValue({
+		loadItems: mock().mockResolvedValue({
 			items: [],
 		}),
 	});
@@ -249,7 +268,7 @@ test("navigate backward", async () => {
 	filterlist.setSorting("id", false);
 	filterlist.setPage(3);
 
-	await vi.waitFor(() => {
+	await waitFor(() => {
 		expect(window.location.search).toBe(
 			"?foo=bar&baz=qux&page=3&page_size=20&sort=-id",
 		);
@@ -257,7 +276,7 @@ test("navigate backward", async () => {
 
 	filterlist.resetFilters(["foo", "baz"]);
 
-	await vi.waitFor(() => {
+	await waitFor(() => {
 		expect(window.location.search).toBe("?page_size=20&sort=-id");
 	});
 

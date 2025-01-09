@@ -1,4 +1,5 @@
 {
+  "name": "filterlist-root",
   "type": "module",
   "private": true,
   "workspaces": [
@@ -12,18 +13,18 @@
   "license": "MIT",
   "scripts": {
     "start": "storybook dev -p 6006",
-    "build": "yarn workspaces foreach --all -t run build",
-    "test:ts": "yarn workspaces foreach --all -p run test:ts",
-    "lint": "yarn workspaces foreach --all -p run lint",
-    "lint:fix": "biome check examples --write --unsafe && yarn workspaces foreach --all -p run lint:fix",
-    "format": "biome format --write examples && yarn workspaces foreach --all -p run format",
-    "test:unit": "yarn workspaces foreach --all -p run test:unit",
-    "test": "yarn lint && yarn test:ts && yarn test:unit",
-    "validate": "yarn format && yarn build && yarn test",
+    "build": "bun --filter='*' run build",
+    "test:ts": "bun --filter='*' run test:ts",
+    "lint": "bun --filter='*' run lint",
+    "lint:fix": "biome check examples --write --unsafe && bun --filter='*' run lint:fix",
+    "format": "biome format --write examples && bun --filter='*' run format",
+    "test:unit": "bun --filter='*' run test:unit",
+    "test": "bun run lint && bun run test:ts && bun run test:unit",
+    "validate": "bun run format && bun run build && bun run test",
     "upload:docs": "gh-pages -d docs",
     "build:docs": "typedoc ./docs-entry.ts",
     "start:docs": "serve ./docs",
-    "deploy:docs": "yarn build:docs && yarn upload:docs",
+    "deploy:docs": "bun run build:docs && bun run upload:docs",
     "prepare": "husky install"
   },
   "devDependencies": {
@@ -57,7 +58,7 @@
     "styled-components": "^6.1.14",
     "typedoc": "^0.27.6",
     "typescript": "5.7.2",
-    "vite": "^6.0.7"
-  },
-  "packageManager": "yarn@4.5.3"
+    "vite": "^6.0.7",
+    "@types/bun": "latest"
+  }
 }

@@ -1,4 +1,4 @@
-import { expect, test } from "vitest";
+import { expect, test } from "bun:test";
 import { Filterlist } from "./Filterlist";
 import { collectListInitialState } from "./collectListInitialState";
 import { collectOptions } from "./collectOptions";

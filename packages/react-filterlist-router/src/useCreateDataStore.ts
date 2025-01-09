@@ -1,3 +1,4 @@
+import type { DataStore } from "@vtaits/filterlist";
 import {
 	type StringBasedDataStoreOptions,
 	createEmitter,
@@ -7,7 +8,9 @@ import { useLatest } from "@vtaits/use-latest";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
-export function useCreateDataStore(options?: StringBasedDataStoreOptions) {
+export function useCreateDataStore(
+	options?: StringBasedDataStoreOptions,
+): () => DataStore {
 	const navigate = useNavigate();
 	const { pathname, search } = useLocation();
 

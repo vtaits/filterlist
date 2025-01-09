@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "bunx --bun vite",
     "build": "echo pass",
     "build:fixme": "tsc && vite build",
     "preview": "serve dist",

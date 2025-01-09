@@ -21,6 +21,12 @@ or
 yarn add @vtaits/filterlist @vtaits/react-filterlist
 ```
 
+or
+
+```
+bun add @vtaits/filterlist @vtaits/react-filterlist
+```
+
 ## Simple examples
 
 ```typescript

@@ -18,6 +18,12 @@ or
 yarn add @vtaits/filterlist @vtaits/qwik-filterlist
 ```
 
+or
+
+```
+bun add @vtaits/filterlist @vtaits/qwik-filterlist
+```
+
 ## Simple examples
 
 ```typescript

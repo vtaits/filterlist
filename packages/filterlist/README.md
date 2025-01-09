@@ -19,6 +19,12 @@ or
 yarn add @vtaits/filterlist
 ```
 
+or
+
+```
+bun add @vtaits/filterlist
+```
+
 ## Api
 
 ```ts

@@ -36,10 +36,10 @@
     "lint:fix": "biome check src --write --unsafe",
     "format": "biome format src --write",
     "test:ts": "tsc --noEmit",
-    "test:unit": "vitest run",
-    "test:unit:dev": "vitest",
-    "test": "yarn test:unit",
-    "prepare": "yarn build"
+    "test:unit": "bun test --coverage",
+    "test:unit:dev": "bun test --watch",
+    "test": "bun run test:unit",
+    "prepare": "bun run build"
   },
   "peerDependencies": {
     "@vtaits/filterlist": "^2.0.0",
@@ -49,12 +49,12 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
+    "@happy-dom/global-registrator": "^16.5.3",
     "@storybook/react": "^8.4.7",
     "@swc/core": "^1.10.4",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/react": "^16.1.0",
     "@types/react": "^19.0.3",
-    "@vitejs/plugin-react": "^4.3.4",
     "@vtaits/filterlist": "^2.3.0",
     "@vtaits/react-filterlist": "^2.1.1",
     "@vtaits/react-router-dom-fake-browser": "^1.0.0",
@@ -64,8 +64,7 @@
     "react-router-dom": "^7.1.1",
     "tsup": "^8.3.5",
     "typescript": "5.7.2",
-    "vite": "^6.0.7",
-    "vitest": "^2.1.8"
+    "vite": "^6.0.7"
   },
   "dependencies": {
     "@vtaits/use-latest": "^1.3.0"
