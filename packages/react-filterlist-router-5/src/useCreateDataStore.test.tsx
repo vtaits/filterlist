@@ -2,8 +2,7 @@ import { describe, expect, mock, test } from "bun:test";
 import { renderHook, waitFor } from "@testing-library/react";
 import type { StringBasedDataStoreOptions } from "@vtaits/filterlist/datastore/string";
 import { type Params, useFilterlist } from "@vtaits/react-filterlist";
-import type { History, Location } from "history";
-import { type PropsWithChildren, type RefObject, createRef } from "react";
+import { type PropsWithChildren, createRef } from "react";
 import { MemoryRouter, Route } from "react-router-dom";
 import { useCreateDataStore } from "./useCreateDataStore";
 
@@ -24,12 +23,13 @@ function setup(
 	href: string,
 	options: StringBasedDataStoreOptions = {},
 ) {
-	const locationRef = createRef<Location<unknown>>() as RefObject<
-		Location<unknown>
-	>;
-	const historyRef = createRef<History<unknown>>() as RefObject<
-		History<unknown>
-	>;
+	const locationRef = createRef<{
+		search: string;
+		pathname: string;
+	}>();
+	const historyRef = createRef<{
+		goBack: VoidFunction;
+	}>();
 
 	const wrapper = ({ children }: PropsWithChildren) => (
 		<MemoryRouter initialEntries={[href]}>

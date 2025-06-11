@@ -49,11 +49,11 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
-    "@builder.io/qwik": "^1.9.1",
+    "@builder.io/qwik": "^1.14.1",
     "@vtaits/filterlist": "^2.3.0",
-    "typescript": "5.7.2",
-    "vite": "^6.0.7",
-    "vitest": "^2.1.8"
+    "typescript": "5.8.3",
+    "vite": "^6.3.5",
+    "vitest": "^3.2.3"
   },
   "dependencies": {
     "is-promise": "^4.0.0"
