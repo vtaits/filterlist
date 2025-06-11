@@ -1,6 +1,6 @@
 import { describe, expect, mock, test } from "bun:test";
 import { renderHook, waitFor } from "@testing-library/react";
-import type { StringBasedDataStoreOptions } from "@vtaits/filterlist/dist/datastore_string";
+import type { StringBasedDataStoreOptions } from "@vtaits/filterlist/datastore/string";
 import { type Params, useFilterlist } from "@vtaits/react-filterlist";
 import { type PropsWithChildren, type RefObject, createRef } from "react";
 import {

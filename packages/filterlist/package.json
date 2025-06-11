@@ -4,23 +4,20 @@
   "version": "2.4.0",
   "description": "Creating lists with filters, sotring, paginatinon, endless scroll etc",
   "files": [
-    "dist",
-    "datastore"
+    "dist"
   ],
-  "main": "./dist/core.cjs",
+  "main": "./dist/core.js",
   "module": "./dist/core.js",
   "types": "dist/core.d.ts",
   "exports": {
     "./package.json": "./package.json",
     ".": {
       "types": "./dist/core.d.ts",
-      "import": "./dist/core.js",
-      "default": "./dist/core.cjs"
+      "import": "./dist/core.js"
     },
     "./datastore/string": {
       "types": "./dist/datastore_string.d.ts",
-      "import": "./dist/datastore_string.js",
-      "default": "./dist/datastore_string.cjs"
+      "import": "./dist/datastore_string.js"
     }
   },
   "repository": {
@@ -37,9 +34,7 @@
     "vanilla"
   ],
   "scripts": {
-    "build": "bun run build:js && bun run build:proxy_directories",
-    "build:js": "tsup",
-    "build:proxy_directories": "exports-fallback -gf",
+    "build": "tsup",
     "lint": "biome check src",
     "lint:fix": "biome check src --write --unsafe",
     "format": "biome format src --write",
@@ -64,7 +59,6 @@
     "@types/react": "^19.1.7",
     "@vtaits/react-router-dom-fake-browser": "^1.0.0",
     "@vtaits/use-latest": "^1.3.0",
-    "exports-fallback": "^1.0.2",
     "happy-dom": "^18.0.1",
     "react": "^19.1.0",
     "react-router-dom": "^7.6.2",

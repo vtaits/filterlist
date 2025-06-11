@@ -6,15 +6,14 @@
   "files": [
     "dist"
   ],
-  "main": "./dist/index.cjs",
+  "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "dist/index.d.ts",
   "exports": {
     "./package.json": "./package.json",
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "default": "./dist/index.cjs"
+      "import": "./dist/index.js"
     }
   },
   "repository": {
@@ -31,7 +30,7 @@
     "react"
   ],
   "scripts": {
-    "build": "tsup src/index.ts --sourcemap --format esm,cjs --dts",
+    "build": "tsup src/index.ts --sourcemap --format esm --dts",
     "lint": "biome check src",
     "lint:fix": "biome check src --write --unsafe",
     "format": "biome format src --write",
