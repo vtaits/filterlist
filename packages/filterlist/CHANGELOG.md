@@ -6,6 +6,13 @@
 * Removed `mitt` in favor of signals
 * Chagned format of data stores
 
+## 3.0.0 (11 jun 2025)
+
+### Breaking changes
+
+* Removed CommonJS build
+* Removed proxy-directories fallback for `@vtaits/filterlist/datastore/string`
+
 ## 2.4.0 (21 oct 2024)
 
 ### New features

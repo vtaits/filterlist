@@ -1,20 +1,19 @@
 {
   "type": "module",
   "name": "@vtaits/react-filterlist",
-  "version": "2.1.1-signals.0",
+  "version": "3.0.0-signals.0",
   "description": "React wrapper above @vtaits/filterlist",
   "files": [
     "dist"
   ],
-  "main": "./dist/index.cjs",
+  "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "dist/index.d.ts",
   "exports": {
     "./package.json": "./package.json",
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "default": "./dist/index.cjs"
+      "import": "./dist/index.js"
     }
   },
   "repository": {
@@ -31,7 +30,7 @@
     "react"
   ],
   "scripts": {
-    "build": "tsup src/index.ts --sourcemap --format esm,cjs --dts",
+    "build": "tsup src/index.ts --sourcemap --format esm --dts",
     "lint": "biome check src",
     "lint:fix": "biome check src --write --unsafe",
     "format": "biome format src --write",
@@ -42,28 +41,28 @@
     "prepare": "bun run build"
   },
   "peerDependencies": {
-    "@vtaits/filterlist": "^2.4.0-signals.0",
+    "@vtaits/filterlist": "^3.0.0-signals.0",
     "react": "^16.14.0 || ^17.0.0 || ^18.0.0 || ^19.0.0"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
-    "@happy-dom/global-registrator": "^16.5.3",
-    "@storybook/react": "^8.4.7",
-    "@swc/core": "^1.10.4",
+    "@happy-dom/global-registrator": "^18.0.1",
+    "@storybook/react-vite": "^9.0.8",
+    "@swc/core": "^1.12.0",
     "@testing-library/dom": "^10.4.0",
-    "@testing-library/react": "^16.1.0",
-    "@types/qs": "^6.9.17",
-    "@types/react": "^19.0.3",
-    "@vtaits/filterlist": "^2.4.0-signals.0",
+    "@testing-library/react": "^16.3.0",
+    "@types/qs": "^6.14.0",
+    "@types/react": "^19.1.7",
+    "@vtaits/filterlist": "^3.0.0-signals.0",
     "@vtaits/react-router-dom-fake-browser": "^1.0.0",
-    "happy-dom": "^16.3.0",
-    "qs": "^6.13.1",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "react-router-dom": "^7.1.1",
-    "tsup": "^8.3.5",
-    "typescript": "5.7.2",
-    "vite": "^6.0.7"
+    "happy-dom": "^18.0.1",
+    "qs": "^6.14.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "react-router-dom": "^7.6.2",
+    "tsup": "^8.5.0",
+    "typescript": "5.8.3",
+    "vite": "^6.3.5"
   },
   "dependencies": {
     "@vtaits/react-signals": "^1.0.1",

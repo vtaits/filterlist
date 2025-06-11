@@ -6,6 +6,6 @@ export default defineConfig({
     datastore_string: "src/dataStores/string.ts",
   },
   sourcemap: true,
-  format: ['esm', 'cjs'],
+  format: ['esm'],
   dts: true,
 });
