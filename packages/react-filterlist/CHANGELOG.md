@@ -1,3 +1,9 @@
+## 3.0.0 (11 jun 2025)
+
+### Breaking changes
+
+* Removed CommonJS build
+
 ## 2.1.0 (21 oct 2024)
 
 ### Improvement
