@@ -3,8 +3,8 @@ import { waitFor } from "@testing-library/dom";
 import { Signal } from "signal-polyfill";
 import { Filterlist } from "../Filterlist";
 import {
-	type StringBasedDataStoreOptions,
 	createStringBasedDataStore,
+	type StringBasedDataStoreOptions,
 } from "./string";
 
 const searchSignal = new Signal.State("");

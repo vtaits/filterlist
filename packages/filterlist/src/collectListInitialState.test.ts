@@ -1,9 +1,8 @@
 import { describe, expect, test } from "bun:test";
 
 import { collectListInitialState } from "./collectListInitialState";
-import { listInitialState } from "./listInitialState";
-
 import { initialRequestParams } from "./initialRequestParams";
+import { listInitialState } from "./listInitialState";
 import type { ItemsLoaderResponse } from "./types";
 
 const defaultParams = {

@@ -1,7 +1,7 @@
 import type { DataStore } from "@vtaits/filterlist";
 import {
-	type StringBasedDataStoreOptions,
 	createStringBasedDataStore,
+	type StringBasedDataStoreOptions,
 } from "@vtaits/filterlist/datastore/string";
 import { useSignalify } from "@vtaits/react-signals";
 import { useLatest } from "@vtaits/use-latest";

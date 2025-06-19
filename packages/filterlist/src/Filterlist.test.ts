@@ -2,8 +2,8 @@ import { describe, expect, mock, test } from "bun:test";
 import { waitFor } from "@testing-library/dom";
 import { Signal } from "signal-polyfill";
 import sleep from "sleep-promise";
-import { Filterlist } from "./Filterlist";
 import { LoadListError } from "./errors";
+import { Filterlist } from "./Filterlist";
 import { type DataStore, LoadListAction, type RequestParams } from "./types";
 
 export function createAsyncDataStore(initalValue: RequestParams): DataStore {

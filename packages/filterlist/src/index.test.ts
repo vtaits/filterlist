@@ -1,8 +1,8 @@
 import { expect, test } from "bun:test";
-import { Filterlist } from "./Filterlist";
 import { collectListInitialState } from "./collectListInitialState";
 import { collectOptions } from "./collectOptions";
 import { LoadListError } from "./errors";
+import { Filterlist } from "./Filterlist";
 import * as lib from "./index";
 import { initialRequestParams } from "./initialRequestParams";
 import { listInitialState } from "./listInitialState";

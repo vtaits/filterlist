@@ -747,7 +747,7 @@ export class Filterlist<Item, Additional, Error> {
 		this.listState.set({
 			...prevListState,
 
-			items: prevListState.items.filter((item, index) => index !== itemIndex),
+			items: prevListState.items.filter((_item, index) => index !== itemIndex),
 
 			additional:
 				typeof additional !== "undefined"

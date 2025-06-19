@@ -1,8 +1,8 @@
 /** @jsxImportSource react */
 import {
+	memo,
 	type ReactElement,
 	type SyntheticEvent,
-	memo,
 	useCallback,
 } from "react";
 

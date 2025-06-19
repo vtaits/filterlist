@@ -1,9 +1,9 @@
 /** @jsxImportSource react */
 import {
 	type KeyboardEventHandler,
+	memo,
 	type ReactElement,
 	type ReactNode,
-	memo,
 	useCallback,
 } from "react";
 

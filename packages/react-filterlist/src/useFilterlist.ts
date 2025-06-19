@@ -2,13 +2,13 @@
  * TO DO: add tests
  */
 
-import { Filterlist } from "@vtaits/filterlist";
 import type {
 	ItemsLoader,
 	ListState,
 	RequestParams,
 	UpdateStateParams,
 } from "@vtaits/filterlist";
+import { Filterlist } from "@vtaits/filterlist";
 import {
 	type AnySignal,
 	useRerender,
@@ -198,6 +198,7 @@ export const useFilterlist = <Item, Additional, Error, FiltersAndSortData>(
 
 	const useBoundFilter = useCallback(
 		<Value>(filterName: string) =>
+			// biome-ignore lint/correctness/useHookAtTopLevel: it's a wrapper to generate the hook
 			useFilter<Value, Item, Additional, Error>(
 				requestParams,
 				listState,
