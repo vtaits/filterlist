@@ -1,5 +1,5 @@
 /** @jsxImportSource @builder.io/qwik */
-import { type QRL, component$ } from "@builder.io/qwik";
+import { component$, type QRL } from "@builder.io/qwik";
 import styles from "./ItemsPerPage.module.css";
 
 type ItemsPerPageProps = Readonly<{

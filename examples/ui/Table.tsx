@@ -1,5 +1,5 @@
 /** @jsxImportSource react */
-import { type ReactElement, memo } from "react";
+import { memo, type ReactElement } from "react";
 import type { Sort } from "../../packages/filterlist/src/types";
 import type { User } from "../types";
 import { Th } from "./Th";

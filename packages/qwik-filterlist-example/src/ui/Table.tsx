@@ -1,5 +1,5 @@
 /** @jsxImportSource @builder.io/qwik */
-import { type QRL, component$ } from "@builder.io/qwik";
+import { component$, type QRL } from "@builder.io/qwik";
 import type { User } from "../../../../examples/types";
 import type { Sort } from "../../../filterlist/src/types";
 import styles from "./Table.module.css";

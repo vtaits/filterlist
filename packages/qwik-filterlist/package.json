@@ -48,12 +48,12 @@
     "@vtaits/filterlist": "^3.0.0"
   },
   "devDependencies": {
-    "@biomejs/biome": "^1.9.4",
+    "@biomejs/biome": "^2.0.0",
     "@builder.io/qwik": "^1.14.1",
     "@vtaits/filterlist": "^3.0.0",
     "typescript": "5.8.3",
     "vite": "^6.3.5",
-    "vitest": "^3.2.3"
+    "vitest": "^3.2.4"
   },
   "dependencies": {
     "is-promise": "^4.0.0"

@@ -1,6 +1,5 @@
-import { usersGenerator } from "./usersGenerator";
-
 import type { User } from "../types";
+import { usersGenerator } from "./usersGenerator";
 
 const delay = (time: number): Promise<void> =>
 	new Promise((resolve) => {

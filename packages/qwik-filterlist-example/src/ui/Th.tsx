@@ -1,5 +1,5 @@
 /** @jsxImportSource @builder.io/qwik */
-import { type QRL, Slot, component$ } from "@builder.io/qwik";
+import { component$, type QRL, Slot } from "@builder.io/qwik";
 import styles from "./Th.module.css";
 
 type ThProps = Readonly<{

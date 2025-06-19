@@ -1,5 +1,5 @@
 /** @jsxImportSource @builder.io/qwik */
-import { type QRL, component$ } from "@builder.io/qwik";
+import { component$, type QRL } from "@builder.io/qwik";
 import { clsx } from "clsx";
 import buttonStyles from "./Button.module.css";
 import styles from "./Filters.module.css";

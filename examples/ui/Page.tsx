@@ -1,7 +1,7 @@
 import {
 	type Components,
-	Paginator,
 	components,
+	Paginator,
 } from "@vtaits/react-paginator";
 /** @jsxImportSource react */
 import type { ReactElement } from "react";

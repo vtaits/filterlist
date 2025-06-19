@@ -2,13 +2,13 @@
  * TO DO: add tests
  */
 
-import { EventType, Filterlist } from "@vtaits/filterlist";
 import type {
 	ItemsLoader,
 	ListState,
 	RequestParams,
 	UpdateStateParams,
 } from "@vtaits/filterlist";
+import { EventType, Filterlist } from "@vtaits/filterlist";
 import { useLatest } from "@vtaits/use-latest";
 import isPromise from "is-promise";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -248,6 +248,7 @@ export const useFilterlist = <Item, Additional, Error, FiltersAndSortData>(
 	// biome-ignore lint/correctness/useExhaustiveDependencies: bug
 	const useBoundFilter = useCallback(
 		<Value>(filterName: string) =>
+			// biome-ignore lint/correctness/useHookAtTopLevel: it's a wrapper to generate the hook
 			useFilter<Value, Item, Additional, Error>(
 				requestParams,
 				listState,

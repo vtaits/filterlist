@@ -2,9 +2,9 @@ import { describe, expect, mock, test } from "bun:test";
 import { waitFor } from "@testing-library/dom";
 import { Filterlist } from "../Filterlist";
 import {
-	type StringBasedDataStoreOptions,
 	createEmitter,
 	createStringBasedDataStore,
+	type StringBasedDataStoreOptions,
 } from "./string";
 
 const ORIGIN = "http://localhost";

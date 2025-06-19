@@ -4,21 +4,20 @@
 
 import {
 	type NoSerialize,
+	noSerialize,
 	type QRL,
 	type Signal,
 	type Tracker,
-	noSerialize,
 	useSignal,
 	useVisibleTask$,
 } from "@builder.io/qwik";
-
-import { EventType, Filterlist } from "@vtaits/filterlist";
 import type {
 	ItemsLoader,
 	ListState,
 	RequestParams,
 	UpdateStateParams,
 } from "@vtaits/filterlist";
+import { EventType, Filterlist } from "@vtaits/filterlist";
 
 import isPromise from "is-promise";
 
@@ -118,9 +117,7 @@ const initFilterlist = <Item, Additional, Error, FiltersAndSortData>(
 
 export const useFilterlist = <Item, Additional, Error, FiltersAndSortData>(
 	params: Params<Item, Additional, Error, FiltersAndSortData>,
-	trackInputs?: (params: {
-		track: Tracker;
-	}) => void,
+	trackInputs?: (params: { track: Tracker }) => void,
 ): [
 	Signal<RequestParams | null>,
 	Signal<ListState<Item, Additional, Error> | null>,

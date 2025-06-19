@@ -2,7 +2,7 @@ import { describe, expect, mock, test } from "bun:test";
 import { renderHook, waitFor } from "@testing-library/react";
 import type { StringBasedDataStoreOptions } from "@vtaits/filterlist/datastore/string";
 import { type Params, useFilterlist } from "@vtaits/react-filterlist";
-import { type PropsWithChildren, createRef } from "react";
+import { createRef, type PropsWithChildren } from "react";
 import { MemoryRouter, Route } from "react-router-dom";
 import { useCreateDataStore } from "./useCreateDataStore";
 

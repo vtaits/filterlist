@@ -1,8 +1,8 @@
 import { describe, expect, mock, test } from "bun:test";
 import { waitFor } from "@testing-library/dom";
 import sleep from "sleep-promise";
-import { Filterlist } from "./Filterlist";
 import { LoadListError } from "./errors";
+import { Filterlist } from "./Filterlist";
 import {
 	type DataStore,
 	type DataStoreListener,

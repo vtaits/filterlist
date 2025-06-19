@@ -1,5 +1,5 @@
 /** @jsxImportSource @builder.io/qwik */
-import { type QRL, component$ } from "@builder.io/qwik";
+import { component$, type QRL } from "@builder.io/qwik";
 import { qwikify$ } from "@builder.io/qwik-react";
 import type { ListState, RequestParams } from "@vtaits/filterlist";
 import { Paginator as ReactPaginator } from "@vtaits/react-paginator";

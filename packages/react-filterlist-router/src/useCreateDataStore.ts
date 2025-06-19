@@ -1,8 +1,8 @@
 import type { DataStore } from "@vtaits/filterlist";
 import {
-	type StringBasedDataStoreOptions,
 	createEmitter,
 	createStringBasedDataStore,
+	type StringBasedDataStoreOptions,
 } from "@vtaits/filterlist/datastore/string";
 import { useLatest } from "@vtaits/use-latest";
 import { useCallback, useEffect, useRef, useState } from "react";
