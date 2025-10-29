@@ -9,7 +9,7 @@ import {
 	type Signal,
 	type Tracker,
 	useSignal,
-	useVisibleTask$,
+	useTask$,
 } from "@builder.io/qwik";
 import type {
 	ItemsLoader,
@@ -211,7 +211,7 @@ export const useFilterlist = <Item, Additional, Error, FiltersAndSortData>(
 	}
 	filtersAndSortDataRef.value = filtersAndSortData;
 
-	useVisibleTask$(({ track }) => {
+	useTask$(({ track }) => {
 		track(() => canInit);
 		if (trackInputs) {
 			trackInputs({ track });

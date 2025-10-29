@@ -38,8 +38,8 @@
     "lint:fix": "biome check src --write --unsafe",
     "format": "biome format src --write",
     "test:ts": "tsc --noEmit",
-    "test:unit": "vitest run",
-    "test:unit:dev": "vitest",
+    "test:unit": "bun test --coverage",
+    "test:unit:dev": "bun test --watch",
     "test": "bun run test:unit",
     "prepare": "bun run build"
   },
@@ -48,12 +48,11 @@
     "@vtaits/filterlist": "^3.0.0"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.0.0",
-    "@builder.io/qwik": "^1.14.1",
+    "@biomejs/biome": "^2.3.2",
+    "@builder.io/qwik": "^1.17.1",
     "@vtaits/filterlist": "^3.0.0",
-    "typescript": "5.8.3",
-    "vite": "^6.3.5",
-    "vitest": "^3.2.4"
+    "typescript": "5.9.3",
+    "vite": "^7.1.12"
   },
   "dependencies": {
     "is-promise": "^4.0.0"
