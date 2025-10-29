@@ -8,11 +8,11 @@
   ],
   "main": "./dist/index.js",
   "module": "./dist/index.js",
-  "types": "dist/index.d.ts",
+  "types": "dist/ts/index.d.ts",
   "exports": {
     "./package.json": "./package.json",
     ".": {
-      "types": "./dist/index.d.ts",
+      "types": "./dist/ts/index.d.ts",
       "import": "./dist/index.js"
     }
   },
@@ -30,11 +30,11 @@
     "react"
   ],
   "scripts": {
-    "build": "tsup src/index.ts --sourcemap --format esm --dts",
+    "build": "bun build.ts && tsgo -p tsconfig.build.json",
     "lint": "biome check src",
     "lint:fix": "biome check src --write --unsafe",
     "format": "biome format src --write",
-    "test:ts": "tsc --noEmit",
+    "test:ts": "tsgo",
     "test:unit": "bun test --coverage",
     "test:unit:dev": "bun test --watch",
     "test": "bun run test:unit",
@@ -53,6 +53,7 @@
     "@testing-library/react": "^16.3.0",
     "@types/qs": "^6.14.0",
     "@types/react": "^19.2.2",
+    "@typescript/native-preview": "^7.0.0-dev.20251029.1",
     "@vtaits/filterlist": "^3.0.0",
     "@vtaits/react-router-dom-fake-browser": "^1.0.0",
     "happy-dom": "^20.0.10",
@@ -60,7 +61,6 @@
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-router-dom": "^7.9.4",
-    "tsup": "^8.5.0",
     "typescript": "5.9.3",
     "vite": "^7.1.12"
   },

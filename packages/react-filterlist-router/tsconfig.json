@@ -14,7 +14,8 @@
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "rootDir": "../.."
+    "rootDir": "../..",
+    "noEmit": true
   },
   "include": [
     "__stories__/**/*",

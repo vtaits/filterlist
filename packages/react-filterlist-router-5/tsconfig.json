@@ -17,7 +17,9 @@
     "paths": {
       "react-router": ["../../node_modules/@types/react-router"],
       "react-router-dom": ["../../node_modules/@types/react-router-dom"]
-    }
+    },
+    "rootDir": "../..",
+    "noEmit": true
   },
   "include": [
     "src/**/*"

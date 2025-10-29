@@ -13,7 +13,7 @@
   "license": "MIT",
   "scripts": {
     "start": "storybook dev -p 6006",
-    "build": "bun --filter='*' run build",
+    "build": "bun ./scripts/build.ts",
     "test:ts": "bun --filter='*' run test:ts",
     "lint": "bun --filter='*' run lint",
     "lint:fix": "biome check examples --write --unsafe && bun --filter='*' run lint:fix",

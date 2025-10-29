@@ -6,18 +6,19 @@
   "scripts": {
     "dev": "bunx --bun vite",
     "build": "echo pass",
-    "build:fixme": "tsc && vite build",
+    "build:fixme": "tsgo && vite build",
     "preview": "serve dist",
     "lint": "biome check src",
     "lint:fix": "biome check src --write --unsafe",
     "format": "biome format src --write",
-    "test:ts": "tsc --noEmit",
+    "test:ts": "tsgo --noEmit",
     "test:unit": "echo pass",
     "test:unit:dev": "echo pass",
     "test": "echo pass"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.3.2",
+    "@typescript/native-preview": "^7.0.0-dev.20251029.1",
     "serve": "^14.2.5",
     "typescript": "5.9.3",
     "vite": "^7.1.12"
