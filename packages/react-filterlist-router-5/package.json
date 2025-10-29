@@ -48,6 +48,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^2.0.0",
+    "@happy-dom/global-registrator": "^20.0.10",
     "@swc/core": "^1.12.3",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/react": "^16.3.0",
