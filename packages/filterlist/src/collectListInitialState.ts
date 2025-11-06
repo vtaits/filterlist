@@ -2,9 +2,30 @@ import { initialRequestParams } from "./initialRequestParams";
 import { listInitialState as defaultListInitialState } from "./listInitialState";
 import type { ListState, Params, RequestParams } from "./types";
 
-export const collectListInitialState = <Item, Additional, Error>(
+function getInitialPageSize<Item, Additional, Error>({
+	pageSize,
+	pageSizeLocalStorageKey,
+}: Params<Item, Additional, Error>) {
+	if (pageSizeLocalStorageKey) {
+		const pageSizeStr = localStorage.getItem(pageSizeLocalStorageKey);
+
+		if (pageSizeStr) {
+			const parsedPageSize = parseInt(pageSizeStr, 10);
+
+			if (!Number.isNaN(parsedPageSize) && parsedPageSize > 0) {
+				return parsedPageSize;
+			}
+
+			localStorage.removeItem(pageSizeLocalStorageKey);
+		}
+	}
+
+	return pageSize;
+}
+
+export function collectListInitialState<Item, Additional, Error>(
 	params: Params<Item, Additional, Error>,
-): [RequestParams, ListState<Item, Additional, Error>] => {
+): [RequestParams, ListState<Item, Additional, Error>] {
 	const listInitialState = defaultListInitialState as ListState<
 		Item,
 		Additional,
@@ -18,7 +39,7 @@ export const collectListInitialState = <Item, Additional, Error>(
 			appliedFilters:
 				params.appliedFilters || initialRequestParams.appliedFilters,
 			page: params.page || 1,
-			pageSize: params.pageSize,
+			pageSize: getInitialPageSize(params),
 		},
 		{
 			...(listInitialState as ListState<Item, Additional, Error>),
@@ -36,4 +57,4 @@ export const collectListInitialState = <Item, Additional, Error>(
 			total: params.total,
 		},
 	];
-};
+}

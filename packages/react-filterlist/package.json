@@ -31,9 +31,9 @@
   ],
   "scripts": {
     "build": "bun build.ts && tsgo -p tsconfig.build.json",
-    "lint": "biome check src",
-    "lint:fix": "biome check src --write --unsafe",
-    "format": "biome format src --write",
+    "lint": "biome check src __stories__",
+    "lint:fix": "biome check src __stories__ --write --unsafe",
+    "format": "biome format src __stories__ --write",
     "test:ts": "tsgo",
     "test:unit": "bun test --coverage",
     "test:unit:dev": "bun test --watch",

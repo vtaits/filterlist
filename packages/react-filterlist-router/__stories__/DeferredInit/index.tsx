@@ -1,186 +1,157 @@
-import {
-  type ReactElement,
-  useState,
-  useCallback,
-  useEffect,
-} from 'react';
-import { useFilterlist } from '@vtaits/react-filterlist';
-import { useCreateDataStore } from '@vtaits/react-filterlist-router';
-import { Page } from '../../../../examples/ui/Page';
-import * as api from '../../../../examples/api';
-import type {
-  User,
-} from '../../../../examples/types';
+import { useFilterlist } from "@vtaits/react-filterlist";
+import { useCreateDataStore } from "@vtaits/react-filterlist-router";
+import { type ReactElement, useCallback, useEffect, useState } from "react";
+import * as api from "../../../../examples/api";
+import type { User } from "../../../../examples/types";
+import { Page } from "../../../../examples/ui/Page";
 
 export function DeferredInit(): ReactElement | null {
-  const [canInit, setCanInit] = useState(false);
+	const [canInit, setCanInit] = useState(false);
 
-  useEffect((): void => {
-    setTimeout((): void => {
-      setCanInit(true);
-    }, 2000);
-  }, []);
+	useEffect((): void => {
+		setTimeout((): void => {
+			setCanInit(true);
+		}, 2000);
+	}, []);
 
-  const createDataStore = useCreateDataStore();
+	const createDataStore = useCreateDataStore();
 
-  const [requestParams, listState, filterlist] = useFilterlist<
-  User,
-  {
-    count: number,
-  },
-  never,
-  unknown
-  >({
-    canInit,
+	const [requestParams, listState, filterlist] = useFilterlist<
+		User,
+		{
+			count: number;
+		},
+		never,
+		unknown
+	>({
+		canInit,
 
-    createDataStore,
+		createDataStore,
 
-    loadItems: async ({
-      sort,
-      appliedFilters,
-      page,
-      pageSize,
-    }) => {
-      const response = await api.loadUsers({
-        ...appliedFilters,
-        page,
-        pageSize,
-        sort: `${sort.param ? `${sort.asc ? '' : '-'}${sort.param}` : ''}`,
-      });
+		loadItems: async ({ sort, appliedFilters, page, pageSize }) => {
+			const response = await api.loadUsers({
+				...appliedFilters,
+				page,
+				pageSize,
+				sort: `${sort.param ? `${sort.asc ? "" : "-"}${sort.param}` : ""}`,
+			});
 
-      return {
-        items: response.users,
-        total: response.count,
-      };
-    },
-  });
+			return {
+				items: response.users,
+				total: response.count,
+			};
+		},
+	});
 
-  const setPage = useCallback((page: number) => {
-    if (!filterlist) {
-      throw new Error('filterlist is not initialized');
-    }
+	const setPage = useCallback(
+		(page: number) => {
+			if (!filterlist) {
+				throw new Error("filterlist is not initialized");
+			}
 
-    return filterlist.setPage(page);
-  }, [filterlist]);
+			return filterlist.setPage(page);
+		},
+		[filterlist],
+	);
 
-  const setPageSize = useCallback((pageSize: number | null | undefined) => {
-    if (!filterlist) {
-      throw new Error('filterlist is not initialized');
-    }
+	const setPageSize = useCallback(
+		(pageSize: number | null | undefined) => {
+			if (!filterlist) {
+				throw new Error("filterlist is not initialized");
+			}
 
-    return filterlist.setPageSize(pageSize);
-  }, [filterlist]);
+			return filterlist.setPageSize(pageSize);
+		},
+		[filterlist],
+	);
 
-  const setFilterValue = useCallback((
-    filterName: string,
-    value: any,
-  ): void => {
-    if (!filterlist) {
-      throw new Error('filterlist is not initialized');
-    }
+	const setFilterValue = useCallback(
+		(filterName: string, value: unknown): void => {
+			if (!filterlist) {
+				throw new Error("filterlist is not initialized");
+			}
 
-    return filterlist.setFilterValue(
-      filterName,
-      value,
-    );
-  }, [filterlist]);
+			filterlist.setFilterValue(filterName, value);
+		},
+		[filterlist],
+	);
 
-  const setSorting = useCallback((
-    paramName: string,
-    asc?: boolean,
-  ) => {
-    if (!filterlist) {
-      throw new Error('filterlist is not initialized');
-    }
+	const setSorting = useCallback(
+		(paramName: string, asc?: boolean) => {
+			if (!filterlist) {
+				throw new Error("filterlist is not initialized");
+			}
 
-    return filterlist.setSorting(
-      paramName,
-      asc,
-    );
-  }, [filterlist]);
+			return filterlist.setSorting(paramName, asc);
+		},
+		[filterlist],
+	);
 
-  const resetAllFilters = useCallback(
-    () => {
-      if (!filterlist) {
-        throw new Error('filterlist is not initialized');
-      }
-  
-      return filterlist.resetAllFilters();
-    },
-    [filterlist],
-  );
+	const resetAllFilters = useCallback(() => {
+		if (!filterlist) {
+			throw new Error("filterlist is not initialized");
+		}
 
-  const reload = useCallback(
-    () => {
-      if (!filterlist) {
-        throw new Error('filterlist is not initialized');
-      }
-  
-      return filterlist.reload();
-    },
-    [filterlist],
-  );
+		return filterlist.resetAllFilters();
+	}, [filterlist]);
 
-  const resetFilter = useCallback((
-    filterName: string,
-  ) => {
-    if (!filterlist) {
-      throw new Error('filterlist is not initialized');
-    }
+	const reload = useCallback(() => {
+		if (!filterlist) {
+			throw new Error("filterlist is not initialized");
+		}
 
-    return filterlist.resetFilter(
-      filterName,
-    );
-  }, [filterlist]);
+		return filterlist.reload();
+	}, [filterlist]);
 
-  const applyFilter = useCallback((
-    filterName: string,
-  ) => {
-    if (!filterlist) {
-      throw new Error('filterlist is not initialized');
-    }
+	const resetFilter = useCallback(
+		(filterName: string) => {
+			if (!filterlist) {
+				throw new Error("filterlist is not initialized");
+			}
 
-    return filterlist.applyFilter(
-      filterName,
-    );
-  }, [filterlist]);
+			return filterlist.resetFilter(filterName);
+		},
+		[filterlist],
+	);
 
-  if (!listState || !requestParams) {
-    return null;
-  }
+	const applyFilter = useCallback(
+		(filterName: string) => {
+			if (!filterlist) {
+				throw new Error("filterlist is not initialized");
+			}
 
-  const {
-    page,
-    pageSize,
-    sort,
-  } = requestParams;
+			return filterlist.applyFilter(filterName);
+		},
+		[filterlist],
+	);
 
-  const {
-    items,
-    loading,
-    total,
-    filters,
-  } = listState;
+	if (!listState || !requestParams) {
+		return null;
+	}
 
-  return (
-    <Page
-      requestParams={requestParams}
-      listState={listState}
-      filters={filters}
-      page={page}
-      pageSize={pageSize}
-      sort={sort}
-      items={items}
-      loading={loading}
-      setFilterValue={setFilterValue}
-      resetFilter={resetFilter}
-      applyFilter={applyFilter}
-      resetAllFilters={resetAllFilters}
-      reload={reload}
-      total={total}
-      setPage={setPage}
-      setPageSize={setPageSize}
-      setSorting={setSorting}
-    />
-  );
+	const { page, pageSize, sort } = requestParams;
+
+	const { items, loading, total, filters } = listState;
+
+	return (
+		<Page
+			requestParams={requestParams}
+			listState={listState}
+			filters={filters}
+			page={page}
+			pageSize={pageSize}
+			sort={sort}
+			items={items}
+			loading={loading}
+			setFilterValue={setFilterValue}
+			resetFilter={resetFilter}
+			applyFilter={applyFilter}
+			resetAllFilters={resetAllFilters}
+			reload={reload}
+			total={total}
+			setPage={setPage}
+			setPageSize={setPageSize}
+			setSorting={setSorting}
+		/>
+	);
 }

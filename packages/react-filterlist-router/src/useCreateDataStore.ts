@@ -1,4 +1,4 @@
-import type { DataStore } from "@vtaits/filterlist";
+import type { DataStore, RequestParams } from "@vtaits/filterlist";
 import {
 	createEmitter,
 	createStringBasedDataStore,
@@ -10,7 +10,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 export function useCreateDataStore(
 	options?: StringBasedDataStoreOptions,
-): () => DataStore {
+): (initialParams: RequestParams) => DataStore {
 	const navigate = useNavigate();
 	const { pathname, search } = useLocation();
 
@@ -33,14 +33,17 @@ export function useCreateDataStore(
 	}, [search]);
 
 	const createDataStore = useCallback(
-		() =>
+		(initialParams: RequestParams) =>
 			createStringBasedDataStore(
 				() => searchRef.current,
 				(nextSearch) => {
 					navigateRef.current(`${pathnameRef.current}?${nextSearch}`);
 				},
 				emitter,
-				options,
+				{
+					...options,
+					initialPageSize: initialParams.pageSize ?? undefined,
+				},
 			),
 		[emitter, navigateRef, options, pathnameRef, searchRef],
 	);

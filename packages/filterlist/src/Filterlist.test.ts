@@ -45,9 +45,9 @@ export function createAsyncDataStore(initalValue: RequestParams): DataStore {
 }
 
 describe.each([
-	{ name: "default", createDataStore: undefined },
-	{ name: "async", createDataStore: createAsyncDataStore },
-])("data store: $name", ({ createDataStore }) => {
+	{ dataStoreName: "default", createDataStore: undefined },
+	{ dataStoreName: "async", createDataStore: createAsyncDataStore },
+])("data store: $name", ({ dataStoreName, createDataStore }) => {
 	describe("init", () => {
 		test("load items on init", async () => {
 			const loadItems = mock().mockResolvedValue({
@@ -843,48 +843,156 @@ describe.each([
 			expect(requestListState.items).toEqual([]);
 		});
 
-		test("setPageSize", async () => {
-			const loadItems = mock()
-				.mockResolvedValueOnce({
-					items: [1, 2, 3],
-				})
-				.mockResolvedValueOnce({
-					items: [4, 5, 6],
+		describe("setPageSize", () => {
+			test("without local storage", async () => {
+				const loadItems = mock()
+					.mockResolvedValueOnce({
+						items: [1, 2, 3],
+					})
+					.mockResolvedValueOnce({
+						items: [4, 5, 6],
+					});
+
+				const filterlist = new Filterlist({
+					createDataStore,
+					loadItems,
 				});
 
-			const filterlist = new Filterlist({
-				createDataStore,
-				loadItems,
+				expect(filterlist.getListState().loadedPages).toEqual(0);
+
+				await waitFor(() => {
+					expect(loadItems).toHaveBeenCalledTimes(1);
+				});
+
+				expect(filterlist.getListState().loadedPages).toEqual(1);
+
+				filterlist.setPageSize(30);
+
+				await waitFor(() => {
+					expect(loadItems).toHaveBeenCalledTimes(2);
+				});
+
+				expect(loadItems).toHaveBeenNthCalledWith(
+					2,
+					expect.anything(),
+					expect.anything(),
+					LoadListAction.changeRequestParams,
+				);
+
+				expect(filterlist.getListState().items).toEqual([4, 5, 6]);
+				expect(filterlist.getListState().loadedPages).toEqual(1);
+
+				const [requestParams, requestListState] = loadItems.mock.calls[1];
+
+				expect(requestParams.pageSize).toBe(30);
+				expect(requestListState.items).toEqual([]);
 			});
 
-			expect(filterlist.getListState().loadedPages).toEqual(0);
+			describe("with local storage", () => {
+				test("store value", async () => {
+					const storageKey = `${dataStoreName}/pageSize/store`;
 
-			await waitFor(() => {
-				expect(loadItems).toHaveBeenCalledTimes(1);
+					localStorage.removeItem(storageKey);
+
+					const loadItems = mock()
+						.mockResolvedValueOnce({
+							items: [1, 2, 3],
+						})
+						.mockResolvedValueOnce({
+							items: [4, 5, 6],
+						});
+
+					const filterlist = new Filterlist({
+						createDataStore,
+						loadItems,
+						pageSizeLocalStorageKey: storageKey,
+					});
+
+					expect(filterlist.getListState().loadedPages).toEqual(0);
+
+					await waitFor(() => {
+						expect(loadItems).toHaveBeenCalledTimes(1);
+					});
+
+					expect(filterlist.getListState().loadedPages).toEqual(1);
+
+					filterlist.setPageSize(30);
+
+					await waitFor(() => {
+						expect(loadItems).toHaveBeenCalledTimes(2);
+					});
+
+					expect(localStorage.getItem(storageKey)).toBe("30");
+
+					expect(loadItems).toHaveBeenNthCalledWith(
+						2,
+						expect.anything(),
+						expect.anything(),
+						LoadListAction.changeRequestParams,
+					);
+
+					expect(filterlist.getListState().items).toEqual([4, 5, 6]);
+					expect(filterlist.getListState().loadedPages).toEqual(1);
+
+					const [requestParams, requestListState] = loadItems.mock.calls[1];
+
+					expect(requestParams.pageSize).toBe(30);
+					expect(requestListState.items).toEqual([]);
+				});
+
+				test("clean value", async () => {
+					const storageKey = `${dataStoreName}/pageSize/clean`;
+
+					localStorage.setItem(storageKey, "30");
+
+					const loadItems = mock()
+						.mockResolvedValueOnce({
+							items: [1, 2, 3],
+						})
+						.mockResolvedValueOnce({
+							items: [4, 5, 6],
+						});
+
+					const filterlist = new Filterlist({
+						createDataStore,
+						loadItems,
+						pageSizeLocalStorageKey: storageKey,
+					});
+
+					expect(filterlist.getRequestParams().pageSize).toBe(30);
+
+					expect(filterlist.getListState().loadedPages).toEqual(0);
+
+					await waitFor(() => {
+						expect(loadItems).toHaveBeenCalledTimes(1);
+					});
+
+					expect(filterlist.getListState().loadedPages).toEqual(1);
+
+					filterlist.setPageSize(null);
+
+					await waitFor(() => {
+						expect(loadItems).toHaveBeenCalledTimes(2);
+					});
+
+					expect(localStorage.getItem(storageKey)).toBeFalsy();
+
+					expect(loadItems).toHaveBeenNthCalledWith(
+						2,
+						expect.anything(),
+						expect.anything(),
+						LoadListAction.changeRequestParams,
+					);
+
+					expect(filterlist.getListState().items).toEqual([4, 5, 6]);
+					expect(filterlist.getListState().loadedPages).toEqual(1);
+
+					const [requestParams, requestListState] = loadItems.mock.calls[1];
+
+					expect(requestParams.pageSize).toBe(null);
+					expect(requestListState.items).toEqual([]);
+				});
 			});
-
-			expect(filterlist.getListState().loadedPages).toEqual(1);
-
-			filterlist.setPageSize(30);
-
-			await waitFor(() => {
-				expect(loadItems).toHaveBeenCalledTimes(2);
-			});
-
-			expect(loadItems).toHaveBeenNthCalledWith(
-				2,
-				expect.anything(),
-				expect.anything(),
-				LoadListAction.changeRequestParams,
-			);
-
-			expect(filterlist.getListState().items).toEqual([4, 5, 6]);
-			expect(filterlist.getListState().loadedPages).toEqual(1);
-
-			const [requestParams, requestListState] = loadItems.mock.calls[1];
-
-			expect(requestParams.pageSize).toBe(30);
-			expect(requestListState.items).toEqual([]);
 		});
 
 		describe("setSorting", () => {

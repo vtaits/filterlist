@@ -316,3 +316,45 @@ test("navigate backward", async () => {
 		},
 	});
 });
+
+describe("restore page size from local storage", () => {
+	test("restore if not defined in url", async () => {
+		const pageSizeLocalStorageKey = "filterlist-router/pageSize/restore";
+
+		localStorage.setItem(pageSizeLocalStorageKey, "30");
+
+		const loadItems = mock().mockResolvedValue({
+			items: [],
+		});
+
+		const { result } = setup(
+			{
+				loadItems,
+				pageSizeLocalStorageKey,
+			},
+			"/page",
+		);
+
+		expect(result.current[2]?.getRequestParams().pageSize).toBe(30);
+	});
+
+	test("restore from url", async () => {
+		const pageSizeLocalStorageKey = "filterlist-router/pageSize/no_restore";
+
+		localStorage.setItem(pageSizeLocalStorageKey, "30");
+
+		const loadItems = mock().mockResolvedValue({
+			items: [],
+		});
+
+		const { result } = setup(
+			{
+				loadItems,
+				pageSizeLocalStorageKey,
+			},
+			"/page?page_size=40",
+		);
+
+		expect(result.current[2]?.getRequestParams().pageSize).toBe(40);
+	});
+});

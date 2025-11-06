@@ -861,6 +861,8 @@ export class Filterlist<Item, Additional, Error> {
 			return res;
 		}, {});
 
+		this.storePageSize(nextValue.pageSize);
+
 		const stateBeforeChange = this.getListStateBeforeChange();
 		this.setListState({
 			...stateBeforeChange,
@@ -914,5 +916,20 @@ export class Filterlist<Item, Additional, Error> {
 				this.reloadByTimeout();
 			}, this.refreshTimeout);
 		}
+	}
+
+	storePageSize(pageSize: number | null | undefined) {
+		const { pageSizeLocalStorageKey } = this.options;
+
+		if (!pageSizeLocalStorageKey) {
+			return;
+		}
+
+		if (pageSize) {
+			localStorage.setItem(pageSizeLocalStorageKey, `${pageSize}`);
+			return;
+		}
+
+		localStorage.removeItem(pageSizeLocalStorageKey);
 	}
 }

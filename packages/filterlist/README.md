@@ -199,6 +199,9 @@ const filterlist = new Filterlist({
 	page,
 	// initial size of the page
 	pageSize,
+  // key to store page size in local storage
+  // parsed value will be used after the page is reloaded
+  pageSizeLocalStorageKey,
   // check whether the list should be refreshed by timeout
   shouldRefresh,
 	// timeout to refresh the list

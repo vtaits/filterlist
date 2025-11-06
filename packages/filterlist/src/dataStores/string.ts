@@ -27,6 +27,7 @@ export function createEmitter() {
 }
 
 export type StringBasedDataStoreOptions = Readonly<{
+	initialPageSize?: number;
 	pageKey?: string;
 	pageSizeKey?: string;
 	sortKey?: string;
@@ -57,6 +58,7 @@ export function createStringBasedDataStore(
 	options: StringBasedDataStoreOptions = {},
 ): DataStore {
 	const {
+		initialPageSize,
 		pageKey = "page",
 		pageSizeKey = "page_size",
 		sortKey = "sort",
@@ -93,7 +95,7 @@ export function createStringBasedDataStore(
 			},
 			appliedFilters,
 			page: page ? Number(page) : 1,
-			pageSize: pageSize ? Number(pageSize) : undefined,
+			pageSize: (pageSize && Number(pageSize)) || initialPageSize,
 		};
 	}
 

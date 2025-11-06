@@ -97,15 +97,73 @@ describe("collectListInitialState", () => {
 		expect(state[0].page).toBe(page);
 	});
 
-	test("should set pageSize", () => {
-		const pageSize = 20;
+	describe("pageSize", () => {
+		test("set from params if the local storage key is not defined", () => {
+			const pageSize = 20;
 
-		const state = collectListInitialState({
-			...defaultParams,
-			pageSize,
+			const state = collectListInitialState({
+				...defaultParams,
+				pageSize,
+			});
+
+			expect(state[0].pageSize).toBe(pageSize);
 		});
 
-		expect(state[0].pageSize).toBe(pageSize);
+		test("set from params if the local storage key is defined", () => {
+			const pageSize = 20;
+
+			const state = collectListInitialState({
+				...defaultParams,
+				pageSize,
+				pageSizeLocalStorageKey: "test",
+			});
+
+			expect(state[0].pageSize).toBe(pageSize);
+		});
+
+		test("set from params if the local storage value is not a number", () => {
+			const pageSize = 20;
+
+			localStorage.setItem("test", "not_a_number");
+
+			const state = collectListInitialState({
+				...defaultParams,
+				pageSize,
+				pageSizeLocalStorageKey: "test",
+			});
+
+			expect(localStorage.getItem("test")).toBeFalsy();
+			expect(state[0].pageSize).toBe(pageSize);
+		});
+
+		test("set from params if the local storage value is not a positive number", () => {
+			const pageSize = 20;
+
+			localStorage.setItem("test", "-5");
+
+			const state = collectListInitialState({
+				...defaultParams,
+				pageSize,
+				pageSizeLocalStorageKey: "test",
+			});
+
+			expect(localStorage.getItem("test")).toBeFalsy();
+			expect(state[0].pageSize).toBe(pageSize);
+		});
+
+		test("set from local storage", () => {
+			const pageSize = 20;
+
+			localStorage.setItem("test", "50");
+
+			const state = collectListInitialState({
+				...defaultParams,
+				pageSize,
+				pageSizeLocalStorageKey: "test",
+			});
+
+			expect(state[0].pageSize).toBe(50);
+		});
 	});
 
 	test("should set total", () => {

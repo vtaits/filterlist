@@ -64,6 +64,7 @@ export type Options = Readonly<{
 	resetFiltersTo: Readonly<Record<string, unknown>>;
 	saveFiltersOnResetAll: readonly string[];
 	saveItemsWhileLoad: boolean;
+	pageSizeLocalStorageKey?: string;
 }>;
 
 /**
@@ -173,6 +174,12 @@ export type Params<Item, Additional, Error> = Readonly<{
 	 * initial size of the page
 	 */
 	pageSize?: number | null;
+	/**
+	 * key to store page size in local storage
+	 *
+	 * parsed value will be used after the page is reloaded
+	 */
+	pageSizeLocalStorageKey?: string;
 	/**
 	 * check whether the list should be refreshed by timeout
 	 *

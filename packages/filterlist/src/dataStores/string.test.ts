@@ -295,3 +295,35 @@ test("navigate backward", async () => {
 		},
 	});
 });
+
+describe("initial page size", () => {
+	test("restore if not defined", () => {
+		window.location.href = `${ORIGIN}/page`;
+
+		const filterlist = new Filterlist({
+			createDataStore: makeCreateDataStore({
+				initialPageSize: 30,
+			}),
+			loadItems: mock().mockResolvedValue({
+				items: [],
+			}),
+		});
+
+		expect(filterlist.getRequestParams().pageSize).toBe(30);
+	});
+
+	test("no overlap the parsed one", () => {
+		window.location.href = `${ORIGIN}/page?page_size=15`;
+
+		const filterlist = new Filterlist({
+			createDataStore: makeCreateDataStore({
+				initialPageSize: 30,
+			}),
+			loadItems: mock().mockResolvedValue({
+				items: [],
+			}),
+		});
+
+		expect(filterlist.getRequestParams().pageSize).toBe(15);
+	});
+});

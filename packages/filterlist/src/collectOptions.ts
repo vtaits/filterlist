@@ -31,6 +31,8 @@ export const collectOptions = <Item, Additional, Error>(
 	alwaysResetFilters:
 		params.alwaysResetFilters || defaultOptions.alwaysResetFilters,
 
+	pageSizeLocalStorageKey: params.pageSizeLocalStorageKey || undefined,
+
 	refreshTimeout: params.refreshTimeout,
 
 	resetFiltersTo: params.resetFiltersTo || defaultOptions.resetFiltersTo,

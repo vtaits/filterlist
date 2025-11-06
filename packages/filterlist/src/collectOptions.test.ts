@@ -1,4 +1,4 @@
-import { expect, test } from "bun:test";
+import { describe, expect, test } from "bun:test";
 
 import { collectOptions, defaultOptions } from "./collectOptions";
 
@@ -28,28 +28,30 @@ test("should set filters for resetting", () => {
 	expect(options.alwaysResetFilters).toEqual(alwaysResetFilters);
 });
 
-test("should set isDefaultSortAsc true", () => {
-	const options = collectOptions({
-		...defaultParams,
-		isDefaultSortAsc: true,
+describe("isDefaultSortAsc", () => {
+	test("set true from params", () => {
+		const options = collectOptions({
+			...defaultParams,
+			isDefaultSortAsc: true,
+		});
+
+		expect(options.isDefaultSortAsc).toBe(true);
 	});
 
-	expect(options.isDefaultSortAsc).toEqual(true);
-});
+	test("set false from params", () => {
+		const options = collectOptions({
+			...defaultParams,
+			isDefaultSortAsc: false,
+		});
 
-test("should set isDefaultSortAsc false", () => {
-	const options = collectOptions({
-		...defaultParams,
-		isDefaultSortAsc: true,
+		expect(options.isDefaultSortAsc).toBe(false);
 	});
 
-	expect(options.isDefaultSortAsc).toEqual(true);
-});
+	test("true by default", () => {
+		const options = collectOptions(defaultParams);
 
-test("should no set isDefaultSortAsc (true by default)", () => {
-	const options = collectOptions(defaultParams);
-
-	expect(options.isDefaultSortAsc).toEqual(true);
+		expect(options.isDefaultSortAsc).toBe(true);
+	});
 });
 
 test("should set saveFiltersOnResetAll", () => {
@@ -61,32 +63,62 @@ test("should set saveFiltersOnResetAll", () => {
 	expect(options.saveFiltersOnResetAll).toEqual(["filter1", "filter2"]);
 });
 
-test("should set saveItemsWhileLoad", () => {
-	const options = collectOptions({
-		...defaultParams,
-		saveItemsWhileLoad: true,
+describe("saveItemsWhileLoad", () => {
+	test("set from params", () => {
+		const options = collectOptions({
+			...defaultParams,
+			saveItemsWhileLoad: true,
+		});
+
+		expect(options.saveItemsWhileLoad).toBe(true);
 	});
 
-	expect(options.saveItemsWhileLoad).toEqual(true);
+	test("false by default", () => {
+		const options = collectOptions(defaultParams);
+
+		expect(options.saveItemsWhileLoad).toBe(false);
+	});
 });
 
-test("should no set saveItemsWhileLoad (false by default)", () => {
-	const options = collectOptions(defaultParams);
+describe("autoload", () => {
+	test("set from params", () => {
+		const options = collectOptions({
+			...defaultParams,
+			autoload: false,
+		});
 
-	expect(options.saveItemsWhileLoad).toEqual(false);
-});
-
-test("should set autoload", () => {
-	const options = collectOptions({
-		...defaultParams,
-		autoload: false,
+		expect(options.autoload).toBe(false);
 	});
 
-	expect(options.autoload).toEqual(false);
+	test("true by default", () => {
+		const options = collectOptions(defaultParams);
+
+		expect(options.autoload).toBe(true);
+	});
 });
 
-test("should no set autoload (true by default)", () => {
-	const options = collectOptions(defaultParams);
+describe("pageSizeLocalStorageKey", () => {
+	test("undefined by default", () => {
+		const options = collectOptions(defaultParams);
 
-	expect(options.autoload).toEqual(true);
+		expect(options.pageSizeLocalStorageKey).toBe(undefined);
+	});
+
+	test("set from params", () => {
+		const options = collectOptions({
+			...defaultParams,
+			pageSizeLocalStorageKey: "test",
+		});
+
+		expect(options.pageSizeLocalStorageKey).toBe("test");
+	});
+
+	test("map empty string to undefined", () => {
+		const options = collectOptions({
+			...defaultParams,
+			pageSizeLocalStorageKey: "",
+		});
+
+		expect(options.pageSizeLocalStorageKey).toBe(undefined);
+	});
 });
