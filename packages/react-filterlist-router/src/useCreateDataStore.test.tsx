@@ -15,7 +15,7 @@ import {
 import { useCreateDataStore } from "./useCreateDataStore";
 
 function useCompositeHook(
-	params: Params<unknown, unknown, unknown, unknown>,
+	params: Params<unknown, unknown, unknown>,
 	options: StringBasedDataStoreOptions = {},
 ) {
 	const createDataStore = useCreateDataStore(options);
@@ -43,7 +43,7 @@ function TestRouteComponent({
 }
 
 function setup(
-	params: Params<unknown, unknown, unknown, unknown>,
+	params: Params<unknown, unknown, unknown>,
 	href: string,
 	options: StringBasedDataStoreOptions = {},
 ) {

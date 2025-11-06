@@ -111,10 +111,6 @@ import { useFilterlist } from '@vtaits/react-filterlist';
 
 const [requestParams, listState, filterlist] = useFilterlist({
   ...options,
-  parseFiltersAndSort,
-  filtersAndSortData,
-  shouldRecount,
-  isRecountAsync,
   onChangeLoadParams,
   canInit,
 });
@@ -125,14 +121,6 @@ const [requestParams, listState, filterlist] = useFilterlist({
 #### Params
 
 - **options** - options of [@vtaits/filterlist](https://www.npmjs.com/package/@vtaits/filterlist)
-
-- **parseFiltersAndSort** - function, receives `filtersAndSortData` as first argument, should return params for call `filtersAndSortData` method of [@vtaits/filterlist](https://www.npmjs.com/package/@vtaits/filterlist)
-
-- **filtersAndSortData** - see above
-
-- **shouldRecount** - function, called on every update of component. Receives new `filtersAndSortData` as first argument and old `filtersAndSortData` as second. If returns true, `parseFiltersAndSort` will called. By default checks equality with `===` operator
-
-- **isRecountAsync** - boolean, is `parseFiltersAndSort` async, false by default
 
 - **onChangeLoadParams** - function, callback of `changeLoadParams` event of [@vtaits/filterlist](https://www.npmjs.com/package/@vtaits/filterlist)
 

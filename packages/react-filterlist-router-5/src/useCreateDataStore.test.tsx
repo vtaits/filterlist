@@ -7,7 +7,7 @@ import { MemoryRouter, Route } from "react-router-dom";
 import { useCreateDataStore } from "./useCreateDataStore";
 
 function useCompositeHook(
-	params: Params<unknown, unknown, unknown, unknown>,
+	params: Params<unknown, unknown, unknown>,
 	options: StringBasedDataStoreOptions = {},
 ) {
 	const createDataStore = useCreateDataStore(options);
@@ -19,7 +19,7 @@ function useCompositeHook(
 }
 
 function setup(
-	params: Params<unknown, unknown, unknown, unknown>,
+	params: Params<unknown, unknown, unknown>,
 	href: string,
 	options: StringBasedDataStoreOptions = {},
 ) {

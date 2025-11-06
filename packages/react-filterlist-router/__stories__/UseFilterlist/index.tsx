@@ -13,8 +13,7 @@ export function UseFilterlist(): ReactElement | null {
 		{
 			count: number;
 		},
-		never,
-		unknown
+		never
 	>({
 		createDataStore,
 

@@ -13,8 +13,7 @@ export function InfinityList(): ReactElement | null {
 		{
 			count: number;
 		},
-		never,
-		unknown
+		never
 	>({
 		createDataStore,
 

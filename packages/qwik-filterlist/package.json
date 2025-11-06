@@ -1,52 +1,12 @@
 {
-  "type": "module",
   "name": "@vtaits/qwik-filterlist",
   "version": "2.0.0",
-  "description": "Qwik wrapper above @vtaits/filterlist",
-  "files": [
-    "lib",
-    "lib-types"
-  ],
-  "main": "./lib/index.qwik.mjs",
-  "qwik": "./lib/index.qwik.mjs",
-  "types": "./lib-types/index.d.ts",
-  "exports": {
-    ".": {
-      "types": "./lib-types/index.d.ts",
-      "import": "./lib/index.qwik.mjs",
-      "require": "./lib/index.qwik.cjs"
-    }
-  },
+  "author": "Vadim Taits <taizvadim@gmail.com>",
   "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com/vtaits/filterlist.git"
   },
-  "author": "Vadim Taits <taizvadim@gmail.com>",
-  "license": "MIT",
-  "keywords": [
-    "filterlist",
-    "filter",
-    "sort",
-    "pagination",
-    "qwik"
-  ],
-  "scripts": {
-    "build": "bun run build:lib && bun run build:types",
-    "build:lib": "vite build --mode lib",
-    "build:types": "tsgo --emitDeclarationOnly",
-    "lint": "biome check src",
-    "lint:fix": "biome check src --write --unsafe",
-    "format": "biome format src --write",
-    "test:ts": "tsgo --noEmit",
-    "test:unit": "bun test --coverage",
-    "test:unit:dev": "bun test --watch",
-    "test": "bun run test:unit",
-    "prepare": "bun run build"
-  },
-  "peerDependencies": {
-    "@builder.io/qwik": "^1.5.1",
-    "@vtaits/filterlist": "^3.0.0"
-  },
+  "main": "./lib/index.qwik.mjs",
   "devDependencies": {
     "@biomejs/biome": "^2.3.2",
     "@builder.io/qwik": "^1.17.1",
@@ -55,7 +15,44 @@
     "typescript": "5.9.3",
     "vite": "^7.1.12"
   },
-  "dependencies": {
-    "is-promise": "^4.0.0"
-  }
+  "peerDependencies": {
+    "@builder.io/qwik": "^1.5.1",
+    "@vtaits/filterlist": "^3.0.0"
+  },
+  "exports": {
+    ".": {
+      "types": "./lib-types/index.d.ts",
+      "import": "./lib/index.qwik.mjs",
+      "require": "./lib/index.qwik.cjs"
+    }
+  },
+  "description": "Qwik wrapper above @vtaits/filterlist",
+  "files": [
+    "lib",
+    "lib-types"
+  ],
+  "keywords": [
+    "filterlist",
+    "filter",
+    "sort",
+    "pagination",
+    "qwik"
+  ],
+  "license": "MIT",
+  "qwik": "./lib/index.qwik.mjs",
+  "scripts": {
+    "build": "bun run build:lib && bun run build:types",
+    "build:lib": "vite build --mode lib",
+    "build:types": "tsgo --emitDeclarationOnly",
+    "lint": "biome check src",
+    "lint:fix": "biome check src --write --unsafe",
+    "format": "biome format src --write",
+    "test:ts": "tsgo --noEmit",
+    "test:unit": "",
+    "test:unit:dev": "bun test --watch",
+    "test": "bun run test:unit",
+    "prepare": "bun run build"
+  },
+  "type": "module",
+  "types": "./lib-types/index.d.ts"
 }

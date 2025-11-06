@@ -1,3 +1,9 @@
+## 4.0.0
+
+### Breaking changes
+
+* Removed `parseFiltersAndSort`, `filtersAndSortData`, `shouldRecount` in favor of using data stores
+
 ## 3.0.0 (11 jun 2025)
 
 ### Breaking changes

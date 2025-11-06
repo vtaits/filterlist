@@ -1,13 +1,7 @@
-import type { UpdateStateParams } from "@vtaits/filterlist";
 import { useFilterlist } from "@vtaits/react-filterlist";
 import qs from "qs";
-import { type ReactElement, useCallback } from "react";
-import {
-	type Location,
-	useLocation,
-	useNavigate,
-	useNavigationType,
-} from "react-router-dom";
+import { type ReactElement, useCallback, useMemo } from "react";
+import { useLocation, useNavigate, useNavigationType } from "react-router-dom";
 import * as api from "../../../../examples/api";
 import type { User } from "../../../../examples/types";
 import { Page } from "../../../../examples/ui/Page";
@@ -17,95 +11,82 @@ export function UseFilterlist(): ReactElement | null {
 	const navigationType = useNavigationType();
 	const location = useLocation();
 
+	const parsedParams = useMemo(() => {
+		const parsed: Record<string, any> = qs.parse(location.search, {
+			ignoreQueryPrefix: true,
+		});
+
+		const { sort } = parsed;
+
+		const appliedFilters = {
+			name: parsed.name || "",
+			email: parsed.email || "",
+			city: parsed.city || "",
+		};
+
+		return {
+			sort: {
+				param: sort
+					? sort[0] === "-"
+						? sort.substring(1, sort.length)
+						: sort
+					: "id",
+
+				asc: !sort || sort[0] !== "-",
+			},
+
+			filters: appliedFilters,
+			appliedFilters,
+			page: parsed.page ? Number(parsed.page) : 1,
+			pageSize: (parsed.pageSize && Number(parsed.pageSize)) || 10,
+		};
+	}, [location.search]);
+
 	const [requestParams, listState, filterlist] = useFilterlist<
 		User,
 		{
 			count: number;
 		},
-		never,
+		never
+	>(
 		{
-			navigationType: string;
-			location: Location;
-		}
-	>({
-		pageSizeLocalStorageKey: "react-filterlist/UseFilterlist/pageSize",
+			pageSizeLocalStorageKey: "react-filterlist/UseFilterlist/pageSize",
 
-		loadItems: async ({ sort, appliedFilters, page, pageSize }) => {
-			const response = await api.loadUsers({
-				...appliedFilters,
-				page,
-				pageSize,
-				sort: `${sort.param ? `${sort.asc ? "" : "-"}${sort.param}` : ""}`,
-			});
-
-			return {
-				items: response.users,
-				total: response.count,
-			};
-		},
-
-		onChangeLoadParams: () => {
-			if (filterlist) {
-				const nextRequestParams = filterlist.getRequestParams();
-
-				const newQuery = qs.stringify({
-					...nextRequestParams.appliedFilters,
-					page: nextRequestParams.page,
-					pageSize: nextRequestParams.pageSize,
-					sort: nextRequestParams.sort.param
-						? `${nextRequestParams.sort.asc ? "" : "-"}${nextRequestParams.sort.param}`
-						: null,
+			loadItems: async ({ sort, appliedFilters, page, pageSize }) => {
+				const response = await api.loadUsers({
+					...appliedFilters,
+					page,
+					pageSize,
+					sort: `${sort.param ? `${sort.asc ? "" : "-"}${sort.param}` : ""}`,
 				});
 
-				navigate(`${location.pathname}?${newQuery}`);
-			}
+				return {
+					items: response.users,
+					total: response.count,
+				};
+			},
+
+			onChangeLoadParams: () => {
+				if (filterlist) {
+					const nextRequestParams = filterlist.getRequestParams();
+
+					const newQuery = qs.stringify({
+						...nextRequestParams.appliedFilters,
+						page: nextRequestParams.page,
+						pageSize: nextRequestParams.pageSize,
+						sort: nextRequestParams.sort.param
+							? `${nextRequestParams.sort.asc ? "" : "-"}${nextRequestParams.sort.param}`
+							: null,
+					});
+
+					navigate(`${location.pathname}?${newQuery}`);
+				}
+			},
+
+			...parsedParams,
 		},
-
-		parseFiltersAndSort: async ({
-			location: { search },
-		}): Promise<UpdateStateParams> => {
-			const parsed: Record<string, any> = qs.parse(search, {
-				ignoreQueryPrefix: true,
-			});
-
-			const { sort } = parsed;
-
-			const appliedFilters = {
-				name: parsed.name || "",
-				email: parsed.email || "",
-				city: parsed.city || "",
-			};
-
-			return {
-				sort: {
-					param: sort
-						? sort[0] === "-"
-							? sort.substring(1, sort.length)
-							: sort
-						: "id",
-
-					asc: !sort || sort[0] !== "-",
-				},
-
-				filters: appliedFilters,
-				appliedFilters,
-				page: parsed.page ? Number(parsed.page) : 1,
-				pageSize: (parsed.pageSize && Number(parsed.pageSize)) || 10,
-			};
-		},
-
-		filtersAndSortData: {
-			navigationType,
-			location,
-		},
-
-		shouldRecount: (
-			{ navigationType: navigationTypeParam, location },
-			prevProps,
-		) =>
-			navigationTypeParam === "POP" &&
-			location.search !== prevProps.location.search,
-	});
+		[navigationType === "POP" ? location.search : ""],
+	);
 
 	const setPage = useCallback(
 		(page: number) => {

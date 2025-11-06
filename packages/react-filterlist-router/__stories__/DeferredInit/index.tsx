@@ -21,8 +21,7 @@ export function DeferredInit(): ReactElement | null {
 		{
 			count: number;
 		},
-		never,
-		unknown
+		never
 	>({
 		canInit,
 

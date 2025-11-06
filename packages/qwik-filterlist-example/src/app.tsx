@@ -11,7 +11,6 @@ export const App = component$(() => {
 		{
 			count: number;
 		},
-		never,
 		never
 	>({
 		loadItems$: $(async ({ sort, appliedFilters, page, pageSize }) => {

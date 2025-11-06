@@ -2,70 +2,25 @@
  * TO DO: add tests
  */
 
-import type {
-	ItemsLoader,
-	ListState,
-	RequestParams,
-	UpdateStateParams,
-} from "@vtaits/filterlist";
+import type { ItemsLoader, ListState, RequestParams } from "@vtaits/filterlist";
 import { EventType, Filterlist } from "@vtaits/filterlist";
 import { useLatest } from "@vtaits/use-latest";
-import isPromise from "is-promise";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { defaultShouldRecount } from "./defaultShouldRecount";
-import type {
-	AsyncParams,
-	AsyncParsedFiltersAndSort,
-	OnChangeLoadParams,
-	Params,
-	UseFilterReturn,
-} from "./types";
+import type { OnChangeLoadParams, Params, UseFilterReturn } from "./types";
 import { useFilter } from "./useFilter";
 
 type SyncListState = () => void;
 
-type GetFilterlistOptionsRestul<Item, Additional, Error, FiltersAndSortData> =
-	| Params<Item, Additional, Error, FiltersAndSortData>
-	| AsyncParams<Item, Additional, Error, FiltersAndSortData>;
-
-const getFilterlistOptions = <Item, Additional, Error, FiltersAndSortData>(
-	params: Params<Item, Additional, Error, FiltersAndSortData>,
+const initFilterlist = <Item, Additional, Error>(
+	params: Params<Item, Additional, Error>,
 	loadItems: ItemsLoader<Item, Additional, Error>,
-): GetFilterlistOptionsRestul<Item, Additional, Error, FiltersAndSortData> => {
-	const { parseFiltersAndSort, filtersAndSortData } = params;
-
-	if (parseFiltersAndSort && typeof filtersAndSortData !== "undefined") {
-		const parseResult = parseFiltersAndSort(filtersAndSortData);
-
-		if (isPromise(parseResult)) {
-			return (parseResult as AsyncParsedFiltersAndSort).then(
-				(parsedFiltersAndSort) => ({
-					...params,
-					...parsedFiltersAndSort,
-					loadItems,
-				}),
-			);
-		}
-
-		return {
-			...params,
-			...(parseResult as UpdateStateParams),
-			loadItems,
-		};
-	}
-
-	return {
-		...params,
-		loadItems,
-	};
-};
-
-const createFilterlist = <Item, Additional, Error, FiltersAndSortData>(
-	options: Params<Item, Additional, Error, FiltersAndSortData>,
 	syncListState: SyncListState,
 	onChangeLoadParams: OnChangeLoadParams<Item, Additional, Error>,
-): Filterlist<Item, Additional, Error> => {
-	const filterlist = new Filterlist<Item, Additional, Error>(options);
+) => {
+	const filterlist = new Filterlist<Item, Additional, Error>({
+		...params,
+		loadItems,
+	});
 
 	filterlist.emitter.on(EventType.changeListState, syncListState);
 	filterlist.emitter.on(EventType.changeRequestParams, onChangeLoadParams);
@@ -73,33 +28,8 @@ const createFilterlist = <Item, Additional, Error, FiltersAndSortData>(
 	return filterlist;
 };
 
-const initFilterlist = <Item, Additional, Error, FiltersAndSortData>(
-	params: Params<Item, Additional, Error, FiltersAndSortData>,
-	loadItems: ItemsLoader<Item, Additional, Error>,
-	syncListState: SyncListState,
-	onChangeLoadParams: OnChangeLoadParams<Item, Additional, Error>,
-):
-	| Filterlist<Item, Additional, Error>
-	| Promise<Filterlist<Item, Additional, Error>> => {
-	const optionsResult = getFilterlistOptions(params, loadItems);
-
-	if (isPromise(optionsResult)) {
-		return (
-			optionsResult as AsyncParams<Item, Additional, Error, FiltersAndSortData>
-		).then((options) =>
-			createFilterlist(options, syncListState, onChangeLoadParams),
-		);
-	}
-
-	return createFilterlist(
-		optionsResult as Params<Item, Additional, Error, FiltersAndSortData>,
-		syncListState,
-		onChangeLoadParams,
-	);
-};
-
-export const useFilterlist = <Item, Additional, Error, FiltersAndSortData>(
-	params: Params<Item, Additional, Error, FiltersAndSortData>,
+export const useFilterlist = <Item, Additional, Error>(
+	params: Params<Item, Additional, Error>,
 	inputs: readonly unknown[] = [],
 ): [
 	RequestParams | null,
@@ -109,14 +39,7 @@ export const useFilterlist = <Item, Additional, Error, FiltersAndSortData>(
 		useBoundFilter: <Value>(filterName: string) => UseFilterReturn<Value>;
 	},
 ] => {
-	const {
-		parseFiltersAndSort = null,
-		filtersAndSortData = null,
-		shouldRecount = defaultShouldRecount,
-		onChangeLoadParams = null,
-		loadItems,
-		canInit = true,
-	} = params;
+	const { onChangeLoadParams = null, loadItems, canInit = true } = params;
 
 	const loadItemsRef = useLatest(loadItems);
 
@@ -134,7 +57,6 @@ export const useFilterlist = <Item, Additional, Error, FiltersAndSortData>(
 		[onChangeLoadParamsRef],
 	);
 
-	const isInitInProgressRef = useRef(false);
 	const filterlistRef = useRef<Filterlist<Item, Additional, Error>>(null);
 
 	const setListStateRef =
@@ -154,8 +76,8 @@ export const useFilterlist = <Item, Additional, Error, FiltersAndSortData>(
 		]);
 	};
 
-	const initFilterlistInComponent = (isInEffect: boolean): void => {
-		if (!filterlistRef.current && !isInitInProgressRef.current) {
+	const initFilterlistInComponent = (): void => {
+		if (!filterlistRef.current) {
 			const filterlistResult = initFilterlist(
 				params,
 				loadItemsProxy,
@@ -163,36 +85,16 @@ export const useFilterlist = <Item, Additional, Error, FiltersAndSortData>(
 				onChangeLoadParamsProxy,
 			);
 
-			if (isPromise(filterlistResult)) {
-				isInitInProgressRef.current = true;
-
-				(filterlistResult as Promise<Filterlist<Item, Additional, Error>>).then(
-					(filterlist) => {
-						filterlistRef.current = filterlist;
-						isInitInProgressRef.current = false;
-
-						setListStateRef.current?.([
-							filterlist.getRequestParams(),
-							filterlist.getListState(),
-						]);
-					},
-				);
-			} else {
-				filterlistRef.current = filterlistResult as Filterlist<
-					Item,
-					Additional,
-					Error
-				>;
-			}
-		}
-
-		if (isInEffect) {
-			syncListState();
+			filterlistRef.current = filterlistResult as Filterlist<
+				Item,
+				Additional,
+				Error
+			>;
 		}
 	};
 
 	if (canInit) {
-		initFilterlistInComponent(false);
+		initFilterlistInComponent();
 	}
 
 	const [[requestParams, listState], setListStateHandler] = useState<
@@ -203,33 +105,15 @@ export const useFilterlist = <Item, Additional, Error, FiltersAndSortData>(
 	]);
 	setListStateRef.current = setListStateHandler;
 
-	const filtersAndSortDataRef = useRef(filtersAndSortData);
-	if (
-		parseFiltersAndSort &&
-		filtersAndSortData &&
-		filtersAndSortDataRef.current &&
-		shouldRecount(filtersAndSortData, filtersAndSortDataRef.current)
-	) {
-		(async (): Promise<void> => {
-			const parsedFiltersAndSort =
-				await parseFiltersAndSort(filtersAndSortData);
-
-			const filterlist = filterlistRef.current;
-
-			if (filterlist) {
-				filterlist.updateStateAndRequest(parsedFiltersAndSort);
-			}
-		})();
-	}
-	filtersAndSortDataRef.current = filtersAndSortData;
-
 	// biome-ignore lint/correctness/useExhaustiveDependencies: call only on init
 	useEffect(() => {
 		if (!canInit) {
 			return undefined;
 		}
 
-		initFilterlistInComponent(true);
+		initFilterlistInComponent();
+
+		syncListState();
 
 		return () => {
 			if (filterlistRef.current) {
@@ -241,7 +125,6 @@ export const useFilterlist = <Item, Additional, Error, FiltersAndSortData>(
 			}
 
 			filterlistRef.current = null;
-			isInitInProgressRef.current = false;
 		};
 	}, [...inputs, canInit]);
 
