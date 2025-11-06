@@ -11,13 +11,13 @@
     "@biomejs/biome": "^2.3.4",
     "@builder.io/qwik": "^1.17.2",
     "@typescript/native-preview": "^7.0.0-dev.20251106.1",
-    "@vtaits/filterlist": "^3.0.0",
+    "@vtaits/filterlist": "^3.1.0",
     "typescript": "5.9.3",
     "vite": "^7.2.1"
   },
   "peerDependencies": {
     "@builder.io/qwik": "^1.5.1",
-    "@vtaits/filterlist": "^3.0.0"
+    "@vtaits/filterlist": "^3.1.0"
   },
   "exports": {
     ".": {

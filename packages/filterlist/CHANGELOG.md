@@ -1,3 +1,9 @@
+## 3.1.0 (06 nov 2025)
+
+### New features
+
+* Added `pageSizeLocalStorageKey` parameter
+
 ## 3.0.0 (11 jun 2025)
 
 ### Breaking changes
