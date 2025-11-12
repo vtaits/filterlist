@@ -327,3 +327,47 @@ describe("initial page size", () => {
 		expect(filterlist.getRequestParams().pageSize).toBe(15);
 	});
 });
+
+describe("initial sort", () => {
+	test("restore if not defined", () => {
+		window.location.href = `${ORIGIN}/page`;
+
+		const filterlist = new Filterlist({
+			createDataStore: makeCreateDataStore({
+				initialSort: {
+					param: "test",
+					asc: false,
+				},
+			}),
+			loadItems: mock().mockResolvedValue({
+				items: [],
+			}),
+		});
+
+		expect(filterlist.getRequestParams().sort).toEqual({
+			param: "test",
+			asc: false,
+		});
+	});
+
+	test("no overlap the parsed one", () => {
+		window.location.href = `${ORIGIN}/page?sort=id`;
+
+		const filterlist = new Filterlist({
+			createDataStore: makeCreateDataStore({
+				initialSort: {
+					param: "test",
+					asc: false,
+				},
+			}),
+			loadItems: mock().mockResolvedValue({
+				items: [],
+			}),
+		});
+
+		expect(filterlist.getRequestParams().sort).toEqual({
+			param: "id",
+			asc: true,
+		});
+	});
+});

@@ -76,17 +76,19 @@ function setup(
 
 test.each([
 	{
+		params: {},
 		href: "/page",
 		appliedFilters: {},
 		page: 1,
 		pageSize: undefined,
 		sort: {
-			param: undefined,
+			param: null,
 			asc: true,
 		},
 		options: undefined,
 	},
 	{
+		params: {},
 		href: "/page?page=3&page_size=20&sort=-id&foo=bar&baz=qux",
 		appliedFilters: {
 			foo: "bar",
@@ -101,6 +103,7 @@ test.each([
 		options: undefined,
 	},
 	{
+		params: {},
 		href: "/page?page=3&page_size=20&sort=id&foo=bar&baz=qux",
 		appliedFilters: {
 			foo: "bar",
@@ -115,6 +118,24 @@ test.each([
 		options: undefined,
 	},
 	{
+		params: {
+			sort: {
+				param: "id",
+				asc: true,
+			},
+		},
+		href: "/page",
+		appliedFilters: {},
+		page: 1,
+		pageSize: undefined,
+		sort: {
+			param: "id",
+			asc: true,
+		},
+		options: undefined,
+	},
+	{
+		params: {},
 		href: "/page?test_page=3&test_page_size=20&test_sort=id&foo=bar&baz=qux",
 		appliedFilters: {
 			foo: "bar",
@@ -134,13 +155,14 @@ test.each([
 	},
 ])(
 	"should parse query correctly: $href",
-	({ href, appliedFilters, page, pageSize, sort, options }) => {
+	({ href, appliedFilters, page, pageSize, sort, params, options }) => {
 		const loadItems = mock().mockResolvedValue({
 			items: [],
 		});
 
 		const { result } = setup(
 			{
+				...params,
 				loadItems,
 			},
 			href,

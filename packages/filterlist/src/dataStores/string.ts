@@ -1,6 +1,6 @@
 import mitt from "mitt";
 import qs from "qs";
-import type { DataStore, RequestParams } from "../types";
+import type { DataStore, RequestParams, Sort } from "../types";
 
 const EVENT_TYPE = "UPDATE_SEARCH";
 
@@ -28,6 +28,7 @@ export function createEmitter() {
 
 export type StringBasedDataStoreOptions = Readonly<{
 	initialPageSize?: number;
+	initialSort?: Sort;
 	pageKey?: string;
 	pageSizeKey?: string;
 	sortKey?: string;
@@ -59,6 +60,7 @@ export function createStringBasedDataStore(
 ): DataStore {
 	const {
 		initialPageSize,
+		initialSort,
 		pageKey = "page",
 		pageSizeKey = "page_size",
 		sortKey = "sort",
@@ -85,14 +87,19 @@ export function createStringBasedDataStore(
 		const sort = getFirst(sortValue);
 
 		return {
-			sort: {
-				param: sort
-					? sort[0] === "-"
-						? sort.substring(1, sort.length)
-						: sort
-					: undefined,
-				asc: !sort || sort[0] !== "-",
-			},
+			sort: sort
+				? {
+						param: sort
+							? sort[0] === "-"
+								? sort.substring(1, sort.length)
+								: sort
+							: undefined,
+						asc: !sort || sort[0] !== "-",
+					}
+				: (initialSort ?? {
+						param: undefined,
+						asc: true,
+					}),
 			appliedFilters,
 			page: page ? Number(page) : 1,
 			pageSize: (pageSize && Number(pageSize)) || initialPageSize,

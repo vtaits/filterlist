@@ -1,3 +1,9 @@
+## 3.1.1 (12 nov 2025)
+
+# Bugfix
+
+* Provide initial sort to string-based datastore
+
 ## 3.1.0 (06 nov 2025)
 
 ### New features

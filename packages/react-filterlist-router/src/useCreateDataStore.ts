@@ -43,6 +43,7 @@ export function useCreateDataStore(
 				{
 					...options,
 					initialPageSize: initialParams.pageSize ?? undefined,
+					initialSort: initialParams.sort,
 				},
 			),
 		[emitter, navigateRef, options, pathnameRef, searchRef],

@@ -19,6 +19,11 @@ export function UseFilterlist(): ReactElement | null {
 
 		pageSizeLocalStorageKey: "react-filterlist-router/UseFilterlist/pageSize",
 
+		sort: {
+			param: "id",
+			asc: true,
+		},
+
 		loadItems: async ({ sort, appliedFilters, page, pageSize }) => {
 			const response = await api.loadUsers({
 				...appliedFilters,
