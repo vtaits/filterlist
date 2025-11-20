@@ -135,26 +135,29 @@ test.each([
 			},
 		},
 	],
-])(
-	"should parse query correctly: %s",
-	(href, { appliedFilters, page, pageSize, sort, options }) => {
-		window.location.href = `${ORIGIN}${href}`;
+])("should parse query correctly: %s", (href, {
+	appliedFilters,
+	page,
+	pageSize,
+	sort,
+	options,
+}) => {
+	window.location.href = `${ORIGIN}${href}`;
 
-		const filterlist = new Filterlist({
-			createDataStore: makeCreateDataStore(options),
-			loadItems: mock().mockResolvedValue({
-				items: [],
-			}),
-		});
+	const filterlist = new Filterlist({
+		createDataStore: makeCreateDataStore(options),
+		loadItems: mock().mockResolvedValue({
+			items: [],
+		}),
+	});
 
-		expect(filterlist.getRequestParams()).toEqual({
-			appliedFilters,
-			page,
-			pageSize,
-			sort,
-		});
-	},
-);
+	expect(filterlist.getRequestParams()).toEqual({
+		appliedFilters,
+		page,
+		pageSize,
+		sort,
+	});
+});
 
 describe("should change query", () => {
 	test.each([

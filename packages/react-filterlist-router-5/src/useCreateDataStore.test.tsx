@@ -137,32 +137,37 @@ test.each([
 			sortKey: "test_sort",
 		},
 	},
-])(
-	"should parse query correctly: $href",
-	({ href, appliedFilters, page, pageSize, sort, params, options }) => {
-		const loadItems = mock().mockResolvedValue({
-			items: [],
-		});
+])("should parse query correctly: $href", ({
+	href,
+	appliedFilters,
+	page,
+	pageSize,
+	sort,
+	params,
+	options,
+}) => {
+	const loadItems = mock().mockResolvedValue({
+		items: [],
+	});
 
-		const { result } = setup(
-			{
-				...params,
-				loadItems,
-			},
-			href,
-			options,
-		);
+	const { result } = setup(
+		{
+			...params,
+			loadItems,
+		},
+		href,
+		options,
+	);
 
-		expect(loadItems).toHaveBeenCalledTimes(1);
+	expect(loadItems).toHaveBeenCalledTimes(1);
 
-		expect(result.current[2]?.getRequestParams()).toEqual({
-			appliedFilters,
-			page,
-			pageSize,
-			sort,
-		});
-	},
-);
+	expect(result.current[2]?.getRequestParams()).toEqual({
+		appliedFilters,
+		page,
+		pageSize,
+		sort,
+	});
+});
 
 describe("should change query", () => {
 	test("only filters", async () => {
