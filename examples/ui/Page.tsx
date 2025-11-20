@@ -91,7 +91,7 @@ export function Page({
 					reload={reload}
 				/>
 
-				{total && <TotalCount count={total} />}
+				{typeof total === 'number' && <TotalCount count={total} />}
 
 				<Table items={items} sort={sort} setSorting={setSorting} />
 
