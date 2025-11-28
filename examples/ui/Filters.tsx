@@ -4,6 +4,7 @@ import { StringFilter } from "./StringFilter";
 
 type FiltersProps = Readonly<{
 	filters: Readonly<Record<string, unknown>>;
+	setAndApplyFilter: (filterName: string, value: unknown) => void;
 	setFilterValue: (filterName: string, value: unknown) => void;
 	resetFilter: (filterName: string) => void;
 	applyFilter: (filterName: string) => void;
@@ -14,6 +15,7 @@ type FiltersProps = Readonly<{
 export function Filters({
 	filters,
 	resetAllFilters,
+	setAndApplyFilter,
 	setFilterValue,
 	resetFilter,
 	applyFilter,
@@ -44,6 +46,19 @@ export function Filters({
 				resetFilter={resetFilter}
 				applyFilter={applyFilter}
 			/>
+
+			<div className="field-row">
+				<input
+					type="checkbox"
+					name="onlyGmail"
+					id="onlyGmail"
+					checked={Boolean(filters.onlyGmail)}
+					onChange={(event) => {
+						setAndApplyFilter("onlyGmail", event.target.checked);
+					}}
+				/>
+				<label htmlFor="onlyGmail">Only gmail</label>
+			</div>
 
 			<div className="field-row">
 				<button type="button" onClick={reload}>

@@ -39,6 +39,14 @@ export function AllFeatures(): ReactElement {
     return new Filterlist({
       loadItems,
       refreshTimeout: 10000,
+      filtersConfig: {
+        onlyGmail: {
+          store: {
+            type: 'localStorage',
+            key: 'filterlist/AllFeatures/filters/onlyGmail'
+          }
+        }
+      }
     });
   });
 
@@ -76,8 +84,16 @@ export function AllFeatures(): ReactElement {
 
   const setFilterValue = useCallback((
     filterName: string,
-    value: any,
+    value: unknown,
   ) => filterlist.setFilterValue(
+    filterName,
+    value,
+  ), []);
+
+  const setAndApplyFilter = useCallback((
+    filterName: string,
+    value: unknown,
+  ) => filterlist.setAndApplyFilter(
     filterName,
     value,
   ), []);
@@ -133,6 +149,7 @@ export function AllFeatures(): ReactElement {
       setFilterValue={setFilterValue}
       resetFilter={resetFilter}
       applyFilter={applyFilter}
+      setAndApplyFilter={setAndApplyFilter}
       setPage={setPage}
       setPageSize={setPageSize}
       resetAllFilters={resetAllFilters}

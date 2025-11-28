@@ -4,6 +4,8 @@ export const defaultOptions: Options = {
 	alwaysResetFilters: {},
 	autoload: true,
 	debounceTimeout: undefined,
+	excludeFiltersFromDataStore: new Set([]),
+	filtersConfig: {},
 	isDefaultSortAsc: true,
 	refreshTimeout: undefined,
 	resetFiltersTo: {},
@@ -22,6 +24,18 @@ export const collectOptions = <Item, Additional, Error>(
 			: defaultOptions.autoload,
 
 	debounceTimeout: params.debounceTimeout,
+
+	excludeFiltersFromDataStore: new Set(
+		params.filtersConfig
+			? Object.entries(params.filtersConfig)
+					.filter(
+						([_, value]) => value?.store && value.store.type !== "dataStore",
+					)
+					.map(([filterName]) => filterName)
+			: [],
+	),
+
+	filtersConfig: params.filtersConfig ?? {},
 
 	isDefaultSortAsc:
 		typeof params.isDefaultSortAsc === "boolean"

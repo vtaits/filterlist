@@ -27,6 +27,7 @@ export function createEmitter() {
 }
 
 export type StringBasedDataStoreOptions = Readonly<{
+	excludeFiltersFromDataStore?: Set<string>;
 	initialPageSize?: number;
 	initialSort?: Sort;
 	pageKey?: string;
@@ -59,6 +60,7 @@ export function createStringBasedDataStore(
 	options: StringBasedDataStoreOptions = {},
 ): DataStore {
 	const {
+		excludeFiltersFromDataStore,
 		initialPageSize,
 		initialSort,
 		pageKey = "page",
@@ -100,7 +102,11 @@ export function createStringBasedDataStore(
 						param: undefined,
 						asc: true,
 					}),
-			appliedFilters,
+			appliedFilters: excludeFiltersFromDataStore ? Object.fromEntries(
+				Object.entries(appliedFilters).filter(
+					([filterName]) => !excludeFiltersFromDataStore.has(filterName),
+				),
+			) : appliedFilters,
 			page: page ? Number(page) : 1,
 			pageSize: (pageSize && Number(pageSize)) || initialPageSize,
 		};
@@ -130,9 +136,15 @@ export function createStringBasedDataStore(
 			return cacheValue;
 		},
 		setValue: (nextRequestParams) => {
+			const appliedFilters = excludeFiltersFromDataStore ? Object.fromEntries(
+				Object.entries(nextRequestParams.appliedFilters ?? {}).filter(
+					([filterName]) => !excludeFiltersFromDataStore.has(filterName),
+				),
+			): nextRequestParams.appliedFilters;
+
 			const newQuery = qs.stringify(
 				{
-					...nextRequestParams.appliedFilters,
+					...appliedFilters,
 					[pageKey]:
 						nextRequestParams.page === 1 ? undefined : nextRequestParams.page,
 					[pageSizeKey]: nextRequestParams.pageSize,

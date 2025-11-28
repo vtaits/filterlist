@@ -1,4 +1,6 @@
+import { tryCatch } from "krustykrab";
 import mitt, { type Emitter } from "mitt";
+import { Signal } from "signal-polyfill";
 import sleep from "sleep-promise";
 import { arrayInsert } from "./arrayInsert";
 import { collectListInitialState } from "./collectListInitialState";
@@ -20,6 +22,12 @@ import {
 
 export class Filterlist<Item, Additional, Error> {
 	requestId: number;
+
+	dataStoreRequestParams: Signal.State<RequestParams>;
+
+	localStorageFilters: Signal.State<Record<string, unknown>>;
+
+	requestParams: Signal.Computed<RequestParams>;
 
 	dataStore: DataStore;
 
@@ -58,17 +66,67 @@ export class Filterlist<Item, Additional, Error> {
 
 		const [requestParams, listState] = collectListInitialState(params);
 
-		this.dataStore = createDataStore(requestParams);
+		this.options = collectOptions(params);
+
+		const localStorageFilters: Record<string, unknown> = {};
+
+		for (const [filterName, filterConfig] of Object.entries(
+			this.options.filtersConfig,
+		)) {
+			if (filterConfig?.store) {
+				switch (filterConfig.store.type) {
+					case "localStorage":
+						{
+							const strValue = localStorage.getItem(filterConfig.store.key);
+
+							if (strValue) {
+								const parsedValue = tryCatch(() => JSON.parse(strValue));
+
+								if (parsedValue.isOk()) {
+									localStorageFilters[filterName] = parsedValue.unwrap();
+								}
+							}
+						}
+						break;
+
+					default:
+						break;
+				}
+			}
+		}
+
+		this.localStorageFilters = new Signal.State(localStorageFilters);
+
+		this.dataStore = createDataStore({
+			initialRequestParams: requestParams,
+			excludeFiltersFromDataStore: this.options.excludeFiltersFromDataStore,
+		});
+
+		this.dataStoreRequestParams = new Signal.State(this.dataStore.getValue());
+
+		this.requestParams = new Signal.Computed(() => {
+			const { appliedFilters, page, sort, pageSize } =
+				this.dataStoreRequestParams.get();
+
+			return {
+				appliedFilters: {
+					...appliedFilters,
+					...this.localStorageFilters.get(),
+				},
+				page,
+				sort,
+				pageSize,
+			};
+		});
+
 		this.dataStoreUnsubscribe = this.dataStore.subscribe(
 			this.onChangeDataStore,
 		);
 
 		this.listState = {
 			...listState,
-			filters: this.dataStore.getValue().appliedFilters,
+			filters: this.getRequestParams().appliedFilters,
 		};
-
-		this.options = collectOptions(params);
 
 		this.refreshTimeout = params.refreshTimeout;
 		this.shouldRefresh = params.shouldRefresh;
@@ -108,7 +166,7 @@ export class Filterlist<Item, Additional, Error> {
 	getRequestParamsBeforeChange(): RequestParams {
 		const { alwaysResetFilters } = this.options;
 
-		const requestParams = this.dataStore.getValue();
+		const requestParams = this.getRequestParams();
 
 		return {
 			...requestParams,
@@ -482,7 +540,7 @@ export class Filterlist<Item, Additional, Error> {
 	 * reset all of the filters to the corresponding value in `resetFiltersTo` (or `undefined`) and request
 	 */
 	resetAllFilters() {
-		const prevRequestParams = this.dataStore.getValue();
+		const prevRequestParams = this.getRequestParams();
 		const prevListState = this.listState;
 		const requestParamsBeforeChange = this.getRequestParamsBeforeChange();
 		const stateBeforeChange = this.getListStateBeforeChange();
@@ -662,7 +720,7 @@ export class Filterlist<Item, Additional, Error> {
 		let error: Error | undefined;
 		try {
 			response = await this.itemsLoader(
-				this.dataStore.getValue(),
+				this.getRequestParams(),
 				this.listState,
 				action,
 			);
@@ -842,10 +900,48 @@ export class Filterlist<Item, Additional, Error> {
 	}
 
 	setRequestParams(nextRequestParams: RequestParams) {
+		let hasAppliedFilters = false;
+		const changedLocalStorageFilters: Record<string, unknown> = {};
+
+		for (const [filterName, filterValue] of Object.entries(
+			nextRequestParams.appliedFilters,
+		)) {
+			const filterConfig = this.options.filtersConfig[filterName];
+
+			if (filterConfig?.store) {
+				switch (filterConfig.store.type) {
+					case "localStorage":
+						localStorage.setItem(
+							filterConfig.store.key,
+							JSON.stringify(filterValue),
+						);
+						changedLocalStorageFilters[filterName] = filterValue;
+						hasAppliedFilters = true;
+						break;
+
+					default:
+						break;
+				}
+			}
+		}
+
+		if (hasAppliedFilters) {
+			const prevLocalStorageFilters = this.localStorageFilters.get();
+
+			this.localStorageFilters.set({
+				...prevLocalStorageFilters,
+				...changedLocalStorageFilters,
+			});
+
+			this.requestItems(LoadListAction.changeRequestParams);
+		}
+
 		this.dataStore.setValue(nextRequestParams);
 	}
 
 	onChangeDataStore = (nextValue: RequestParams, prevValue: RequestParams) => {
+		this.dataStoreRequestParams.set(nextValue);
+
 		const changedFilters = Object.keys({
 			...nextValue.appliedFilters,
 			...prevValue.appliedFilters,
@@ -888,7 +984,7 @@ export class Filterlist<Item, Additional, Error> {
 	}
 
 	getRequestParams(): RequestParams {
-		return this.dataStore.getValue();
+		return this.requestParams.get();
 	}
 
 	reloadByTimeout() {

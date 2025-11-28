@@ -170,6 +170,17 @@ export function UseFilterlist(): ReactElement | null {
 		[filterlist],
 	);
 
+	const setAndApplyFilter = useCallback(
+		(filterName: string, value: unknown) => {
+			if (!filterlist) {
+				throw new Error("filterlist is not initialized");
+			}
+
+			return filterlist.setAndApplyFilter(filterName, value);
+		},
+		[filterlist],
+	);
+
 	if (!listState || !requestParams) {
 		return null;
 	}
@@ -193,6 +204,7 @@ export function UseFilterlist(): ReactElement | null {
 			applyFilter={applyFilter}
 			resetAllFilters={resetAllFilters}
 			reload={reload}
+			setAndApplyFilter={setAndApplyFilter}
 			setPage={setPage}
 			setPageSize={setPageSize}
 			setSorting={setSorting}

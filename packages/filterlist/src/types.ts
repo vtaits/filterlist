@@ -58,6 +58,8 @@ export type RequestParams = Readonly<{
 export type Options = Readonly<{
 	autoload: boolean;
 	debounceTimeout?: number;
+	excludeFiltersFromDataStore: Set<string>;
+	filtersConfig: Partial<Record<string, FilterConfig>>;
 	isDefaultSortAsc: boolean;
 	alwaysResetFilters: Readonly<Record<string, unknown>>;
 	refreshTimeout?: number;
@@ -104,12 +106,30 @@ export type ItemsLoader<Item, Additional, Error> = (
 	| ItemsLoaderResponse<Item, Additional>
 	| Promise<ItemsLoaderResponse<Item, Additional>>;
 
+export type FilterStoreType =
+	| {
+			type: "dataStore";
+	  }
+	| {
+			type: "localStorage";
+			key: string;
+	  };
+
+export type FilterConfig = {
+	store?: FilterStoreType;
+};
+
+export type CreateDataStoreParams = {
+	excludeFiltersFromDataStore: Set<string>;
+	initialRequestParams: RequestParams;
+};
+
 export type Params<Item, Additional, Error> = Readonly<{
 	/**
 	 * Create data store to store parameters such as currently applied filtes, sorting state, current page and number of items on one page
-	 * @param initalValue Inital parameters based on parameters of filterlist
+	 * @param params.initalRequestParams Inital parameters based on parameters of filterlist
 	 */
-	createDataStore?: (initalValue: RequestParams) => DataStore;
+	createDataStore?: (params: CreateDataStoreParams) => DataStore;
 	/**
 	 * function that loads items into the list
 	 *
@@ -142,6 +162,7 @@ export type Params<Item, Additional, Error> = Readonly<{
 	 * debounce timeout to prevent extra requests
 	 */
 	debounceTimeout?: number;
+	filtersConfig?: Partial<Record<string, FilterConfig>>;
 	/**
 	 * default `asc` param after change sorting column
 	 *

@@ -32,6 +32,7 @@ type PageProps = Readonly<{
 	setFilterValue: (filterName: string, value: unknown) => void;
 	resetFilter: (filterName: string) => void;
 	applyFilter: (filterName: string) => void;
+	setAndApplyFilter: (filterName: string, value: unknown) => void;
 	setPage: (page: number) => void;
 	setPageSize: (pageSize: number | null | undefined) => void;
 	resetAllFilters: () => void;
@@ -69,6 +70,7 @@ export function Page({
 	setFilterValue,
 	resetFilter,
 	applyFilter,
+	setAndApplyFilter,
 	setPage,
 	setPageSize,
 	setSorting,
@@ -85,13 +87,14 @@ export function Page({
 				<Filters
 					filters={filters}
 					resetAllFilters={resetAllFilters}
+					setAndApplyFilter={setAndApplyFilter}
 					setFilterValue={setFilterValue}
 					resetFilter={resetFilter}
 					applyFilter={applyFilter}
 					reload={reload}
 				/>
 
-				{typeof total === 'number' && <TotalCount count={total} />}
+				{typeof total === "number" && <TotalCount count={total} />}
 
 				<Table items={items} sort={sort} setSorting={setSorting} />
 

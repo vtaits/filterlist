@@ -16,6 +16,7 @@ export type Response = {
 };
 
 export type Params = {
+	onlyGmail?: boolean;
 	page?: number;
 	pageSize?: number | null;
 	name?: string;
@@ -28,6 +29,7 @@ export const loadUsers = async (params: Params): Promise<Response> => {
 	const page: number = params.page || 1;
 	const pageSize: number = params.pageSize || 10;
 
+	const onlyGmail = params.onlyGmail || false;
 	const name = (params.name || "").toLowerCase();
 	const email = (params.email || "").toLowerCase();
 	const city = (params.city || "").toLowerCase();
@@ -52,6 +54,10 @@ export const loadUsers = async (params: Params): Promise<Response> => {
 		}
 
 		if (email && !user.email.toLowerCase().includes(email)) {
+			return false;
+		}
+
+		if (onlyGmail && !user.email.endsWith("@gmail.com")) {
 			return false;
 		}
 

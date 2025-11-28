@@ -110,8 +110,16 @@ export function HistoryDataStore(): ReactElement {
 
   const setFilterValue = useCallback((
     filterName: string,
-    value: any,
+    value: unknown,
   ) => filterlist.setFilterValue(
+    filterName,
+    value,
+  ), []);
+
+  const setAndApplyFilter = useCallback((
+    filterName: string,
+    value: unknown,
+  ) => filterlist.setAndApplyFilter(
     filterName,
     value,
   ), []);
@@ -167,6 +175,7 @@ export function HistoryDataStore(): ReactElement {
       setFilterValue={setFilterValue}
       resetFilter={resetFilter}
       applyFilter={applyFilter}
+      setAndApplyFilter={setAndApplyFilter}
       setPage={setPage}
       setPageSize={setPageSize}
       resetAllFilters={resetAllFilters}

@@ -124,6 +124,17 @@ export function DeferredInit(): ReactElement | null {
 		[filterlist],
 	);
 
+	const setAndApplyFilter = useCallback(
+		(filterName: string, value: unknown) => {
+			if (!filterlist) {
+				throw new Error("filterlist is not initialized");
+			}
+
+			return filterlist.setAndApplyFilter(filterName, value);
+		},
+		[filterlist],
+	);
+
 	if (!listState || !requestParams) {
 		return null;
 	}
@@ -148,6 +159,7 @@ export function DeferredInit(): ReactElement | null {
 			resetAllFilters={resetAllFilters}
 			reload={reload}
 			total={total}
+			setAndApplyFilter={setAndApplyFilter}
 			setPage={setPage}
 			setPageSize={setPageSize}
 			setSorting={setSorting}

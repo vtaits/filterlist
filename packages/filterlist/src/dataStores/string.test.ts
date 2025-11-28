@@ -239,7 +239,21 @@ describe("should change query", () => {
 			foo: "bar",
 			baz: "qux",
 		});
+
+		await waitFor(() => {
+			expect(window.location.search).toBe(
+				"?foo=bar&baz=qux",
+			);
+		});
+
 		filterlist.setPageSize(20);
+
+				await waitFor(() => {
+			expect(window.location.search).toBe(
+				"?foo=bar&baz=qux&page_size=20",
+			);
+		});
+
 		filterlist.setSorting("id", false);
 		filterlist.setPage(3);
 
@@ -267,7 +281,21 @@ test("navigate backward", async () => {
 		foo: "bar",
 		baz: "qux",
 	});
+
+	await waitFor(() => {
+		expect(window.location.search).toBe(
+			"?foo=bar&baz=qux",
+		);
+	});
+
 	filterlist.setPageSize(20);
+
+	await waitFor(() => {
+		expect(window.location.search).toBe(
+			"?foo=bar&baz=qux&page_size=20",
+		);
+	});
+
 	filterlist.setSorting("id", false);
 	filterlist.setPage(3);
 
