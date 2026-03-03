@@ -24,7 +24,7 @@
     "vite": "^7.2.2"
   },
   "dependencies": {
-    "@builder.io/qwik": "1.17.2",
+    "@builder.io/qwik": "1.19.1",
     "@builder.io/qwik-react": "^0.5.7",
     "@fortawesome/free-solid-svg-icons": "^7.1.0",
     "@fortawesome/react-fontawesome": "^3.1.0",
