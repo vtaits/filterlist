@@ -1,3 +1,15 @@
+# ⚠️ Deprecation warning ⚠️
+
+This project solves problems that were relevant 10 years ago. But development goes on and there are much better solutions to these problems.
+
+The project can be decomposed for the indepdended components:
+
+1. Data fetcher with features such as auto refresh, request status etc. Alternatives: [tanstack query](https://tanstack.com/query/latest), [swr](https://swr.vercel.app/)
+
+2. Filters and sorting state resolver. Any form library can be used as alternative ([react-hook-form](https://react-hook-form.com/), [tanstack form](https://tanstack.com/form/latest))
+
+------
+
 [![devDependencies status](https://david-dm.org/vtaits/filterlist/dev-status.svg)](https://david-dm.org/vtaits/filterlist?type=dev)
 
 # filterlist
