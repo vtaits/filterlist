@@ -2,7 +2,7 @@
 
 This project solves problems that were relevant 10 years ago. But development goes on and there are much better solutions to these problems.
 
-The project can be decomposed for the indepdended components:
+The project can be decomposed into independent components:
 
 1. Data fetcher with features such as auto refresh, request status etc. Alternatives: [tanstack query](https://tanstack.com/query/latest), [swr](https://swr.vercel.app/)
 
